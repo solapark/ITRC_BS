@@ -122,7 +122,6 @@ CarSnukt detector
 #define LAT_OFFSET					(int64_t) 369720000
 
 // For background update algorithm
-#define BGM_FIRST_BUILD				1				// use the 1st frame for background. 
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
 #define BGM_WB						1.5				// The weight for the update of the current background model 
 #define BGM_N						3				// The number of background image candidates
@@ -131,6 +130,7 @@ CarSnukt detector
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Flags
+#define BGM_FIRST_BUILD				1				// use the 1st frame for background. 
 #define WIFI_MODULE					0
 #define RF_MODULE					0
 #define SHADOW_REMOVAL				0

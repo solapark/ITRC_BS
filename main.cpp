@@ -16,10 +16,6 @@ int main() {
 
 #if VIDEO
 	// open the video file
-//	char VideoName[200];
-//	sprintf(VideoName, "%s", VIDEO_FILE);
-//	VideoCapture cap("RC_Car_Vid_2.mp4");
-//	cout << VideoName << endl;
 	VideoCapture cap(VIDEO_FILE);
 	assert(cap.isOpened() && "Cannot open the video file");
 	double count = cap.get(CV_CAP_PROP_FRAME_COUNT);
@@ -35,18 +31,24 @@ int main() {
 #endif	 
 	bool isFirstFrame = true;
 
-	// read the background image 
-	//clock_t t_start = clock();
-#if BGM_FIRST_BUILD
-#if STATIC_IMAGE
-	Mat firstFrame = ReadImage(tmpImgIdx);
 
-	myCarSnukt.LoadBG();
+// read the background image 
+#if BGM_FIRST_BUILD
+	Mat firstFrame;
+#if STATIC_IMAGE
+	char ImgName[100];
+	sprintf(ImgName, "%s%0.4d%s", DATASET_DIR, ImgIdx, FILE_EXT);
+	//cout << ImgName << endl;
+	firstFrame = imread(ImgName);
+#elif VIDEO||CAMERA
+	cap >> firstFrame;
+#endif
+	assert(firstFrame.empty() != 1 && "Cannot first frame for bgl");
+	myCarSnukt.LoadBG(firstFrame);
 #else
 	myCarSnukt.LoadBG();
 #endif
-	//clock_t t_loadBG = clock();
-	//cout << "t_loadBG : " << t_loadBG - t_start << endl;
+
 
 #if STATIC_IMAGE
 	for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
