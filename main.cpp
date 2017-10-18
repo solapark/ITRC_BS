@@ -173,6 +173,21 @@ int main() {
 #endif 
 
 #if SEND_DATA
+#if	WAIT_BGM_BUILD
+		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {
+		else {
+			vector<camToCar> dataToSend;
+			size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
+			for (size_t i = 0; i < numOfObj; i++) {
+				cout << "ID : " << dataToSend[i].id
+					<< "   TimeStamp : " << dataToSend[i].tStmp
+					<< "   long, lat : " << dataToSend[i].longitude << ", " << dataToSend[i].latitude
+					<< "   Vx, Vy : " << dataToSend[i].vx << ", " << dataToSend[i].vy
+					<< "   Heading, width, length  : " << dataToSend[i].heading
+					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
+			}
+		}
+#else
 		vector<camToCar> dataToSend;
 		size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
 		for (size_t i = 0; i < numOfObj; i++) {
@@ -183,6 +198,7 @@ int main() {
 				<< "   Heading, width, length  : " << dataToSend[i].heading
 				<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
 		}
+#endif
 #endif
 
 		// Check the termination condition		
