@@ -13,11 +13,6 @@ int main() {
 	//assert((ANN + RANTREE + SIZE_SALIENCY) == 1 && "Only one type of classification should be enable at a time");
 	assert(BGM_STABLE_CNT > BGM_N);
 
-	// read the background image 
-	//clock_t t_start = clock();
-	myCarSnukt.LoadBG();
-	//clock_t t_loadBG = clock();
-	//cout << "t_loadBG : " << t_loadBG - t_start << endl;
 
 #if VIDEO
 	// open the video file
@@ -39,6 +34,19 @@ int main() {
 	bool isStop = false;
 #endif	 
 	bool isFirstFrame = true;
+
+	// read the background image 
+	//clock_t t_start = clock();
+#if BGM_FIRST_BUILD
+#if STATIC_IMAGE
+	Mat firstFrame = ReadImage(tmpImgIdx);
+
+	myCarSnukt.LoadBG();
+#else
+	myCarSnukt.LoadBG();
+#endif
+	//clock_t t_loadBG = clock();
+	//cout << "t_loadBG : " << t_loadBG - t_start << endl;
 
 #if STATIC_IMAGE
 	for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)

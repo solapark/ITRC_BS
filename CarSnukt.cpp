@@ -194,6 +194,31 @@ Void CarSnukt::StoreBG()
 	}
 }
 
+Void CarSnukt::LoadBG(Mat firstFrame)
+{
+	Mat BG = firstFrame;
+	if (BG.rows != SIZE_VER || BG.cols != SIZE_HOR) {
+		cout << "BG size != img size" << endl;
+		resize(BG, BG, Size(SIZE_HOR, SIZE_VER));
+		//resize(BG, BG, Size(SIZE_HOR, SIZE_VER));
+	}
+	if (!BG.empty())
+	{
+		imshow("BackGround Img", BG);
+		printf("Do you want to load BG image ? y/n \n");
+		destroyWindow("BackGround Img");
+		string input = "y";
+		//cin >> input;
+		if (input == "y")
+		{
+			BG.convertTo(BG, CV_32FC3, 1 / 255.0);
+			Bs = BG;
+			isBsAvai = true;
+			isBLoaded = true;
+		}
+	}
+}
+
 Void CarSnukt::LoadBG()
 {
 	Mat BG = imread(BG_FILE);

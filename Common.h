@@ -122,11 +122,12 @@ CarSnukt detector
 #define LAT_OFFSET					(int64_t) 369720000
 
 // For background update algorithm
-#define BGM_DYNAMIC					1			  // 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
-#define BGM_WB						1.5				  // The weight for the update of the current background model 
-#define BGM_N						3				  // The number of background image candidates
-#define BGM_DT						400			  // The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				  // 1: use the knowledge-base BGM, default 0
+#define BGM_FIRST_BUILD				1				// use the 1st frame for background. 
+#define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
+#define BGM_WB						1.5				// The weight for the update of the current background model 
+#define BGM_N						3				// The number of background image candidates
+#define BGM_DT						400				// The BGM update interval (frames)
+#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Flags

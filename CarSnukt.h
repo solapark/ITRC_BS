@@ -236,6 +236,7 @@ public:
 	/*
 		@Brief: load the background from a saved image
 		*/
+	Void LoadBG(Mat firstFrame);
 	Void LoadBG(void);
 	bool isBGLoaded(void){ return isBLoaded; }
 
