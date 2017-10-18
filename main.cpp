@@ -49,6 +49,9 @@ int main() {
 	myCarSnukt.LoadBG();
 #endif
 
+#if	BGM_BUILD_WATITING_FRAME
+	int numberOfSkip = 0;
+#endif
 
 #if STATIC_IMAGE
 	for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
@@ -134,7 +137,17 @@ int main() {
 
 #endif
 		// CarSnukt Detector 
+#if	WAIT_BGM_BUILD
+		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {
+			numberOfSkip++;
+		}
+		else {
+			myCarSnukt.CarSnuktDet(I, III);
+		}
+
+#else
 		myCarSnukt.CarSnuktDet(I, III);
+#endif
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;

@@ -92,8 +92,8 @@ Perspective transformation
 //const Point2i ROI_BR(479, 22);
 //const Point2i ROI_TR(479, 269);
 //const Point2i ROI_TL(1, 269);
-const Point2i ROI_BL(1, 1);
-const Point2i ROI_BR(SIZE_HOR - 1, 1);
+const Point2i ROI_BL(1, 22);
+const Point2i ROI_BR(SIZE_HOR - 1, 22);
 const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER-1);
 const Point2i ROI_TL(1, SIZE_VER - 1);
 ///////////////////////////////////////////////////////////////
@@ -125,14 +125,14 @@ CarSnukt detector
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
 #define BGM_WB						1.5				// The weight for the update of the current background model 
 #define BGM_N						3				// The number of background image candidates
-#define BGM_DT						400				// The BGM update interval (frames)
+#define BGM_DT						300				// The BGM update interval (frames)
 #define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Flags
 #define BGM_FIRST_BUILD				1				// use the 1st frame for background. 
-#define WIFI_MODULE					0
-#define RF_MODULE					0
+#define WAIT_BGM_BUILD				1				// wait until bgm is built.
+#define BGM_BUILD_WATITING_FRAME	BGM_DT*3			//waiting time for bgm built.
 #define SHADOW_REMOVAL				0
 #define TRANSFORM_CENTER_POINT		0
 #define TRANSFORM_CRITICAL_POINT	0
@@ -185,7 +185,7 @@ CarSnukt detector
 
 // Tracking for MVO
 #define HIS_POS_SIZE				15
-#define LIVE_OBJECT_SIZE			1000
+#define LIVE_OBJECT_SIZE			100
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
@@ -201,14 +201,14 @@ CarSnukt detector
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
-#define DEBUG_NONZ_SEG_TWICE		0
+#define DEBUG_NONZ_SEG_TWICE		1
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
 
 //sola
-#define DEBUG_SUB					0
+#define DEBUG_SUB					1
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			1
