@@ -174,7 +174,7 @@ int main() {
 
 #if SEND_DATA
 #if	WAIT_BGM_BUILD
-		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {
+		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {}
 		else {
 			vector<camToCar> dataToSend;
 			size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);

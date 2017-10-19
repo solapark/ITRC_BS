@@ -40,6 +40,7 @@ CarSnukt::CarSnukt()
 	// Tracking
 	LiveObjList = Mat::zeros(1, LIVE_OBJECT_SIZE, CV_8UC1);
 	NewTrackObj = 0;
+	vID = MVO_VIRTUAL_ID_START;
 }
 
 //need to study -sola
@@ -1243,6 +1244,12 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 	// Update the hard_ID
 	TrackObj[NewTrackObj].HardID = UNKNOW_HARD_ID;
 
+	// Update the virtual_ID for ITRC projcet
+	if (vID > MOV_VIRTUAL_ID_END) {
+		vID = MVO_VIRTUAL_ID_START;
+	}
+	TrackObj[NewTrackObj].vID = vID++;
+ 
 	// Calculate the color histograms of the current object					
 	MVOCalColorHistogram(SEG,
 		TrackObj[NewTrackObj].b_hist,
@@ -2242,16 +2249,20 @@ inline Void CarSnukt::prepareSendData() {
 			uint8_t ID = NonZ.at<Point2i>(i).x;
 			camToCar* pCamToCar = & TrackObj[ID].dataCamToCar;
 			//id
-			pCamToCar->id = ID+MVO_ID_OFFSET;
+			pCamToCar->id = TrackObj[ID].vID;
 			//timestamp
 			pCamToCar->tStmp = t;
 			//long, lat
-			pCamToCar->latitude = TrackObj[ID].CenterTrans.x + LON_OFFSET;
-			pCamToCar->longitude = TrackObj[ID].CenterTrans.y + LAT_OFFSET;
+			pCamToCar->longitude = TrackObj[ID].CenterImgPlane.x;
+			pCamToCar->latitude = TrackObj[ID].CenterImgPlane.y;
+//			pCamToCar->latitude = TrackObj[ID].CenterTrans.x + LON_OFFSET;
+//			pCamToCar->longitude = TrackObj[ID].CenterTrans.y + LAT_OFFSET;
 
 			//vx, vy
-			pCamToCar->vx = (TrackObj[ID].CenterImgPlane.x - TrackObj[ID].HisPos->x) / intervalT * (0.1/0.001);
-			pCamToCar->vy = (TrackObj[ID].CenterImgPlane.y - TrackObj[ID].HisPos->y) / intervalT * (0.1 / 0.001);
+			pCamToCar->vx = 0;
+			pCamToCar->vy = 0;
+//			pCamToCar->vx = (TrackObj[ID].CenterImgPlane.x - TrackObj[ID].HisPos->x) / intervalT * (0.1/0.001);
+//			pCamToCar->vy = (TrackObj[ID].CenterImgPlane.y - TrackObj[ID].HisPos->y) / intervalT * (0.1 / 0.001);
 		}
 	}
 }

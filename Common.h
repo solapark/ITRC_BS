@@ -51,8 +51,8 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						1			  
-#define CAMERA						0	  
+#define VIDEO						0			  
+#define CAMERA						1	  
 
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.182/video1"
@@ -115,7 +115,8 @@ const uint32_t Trans_H = 450;
 /*
 CarSnukt detector
 */
-#define MVO_ID_OFFSET				2000 //autoBus = 1000~1999, MVO = 2000~2999
+#define MVO_VIRTUAL_ID_START				2000 //autoBus = 1000~1999, MVO = 2000~2999
+#define MOV_VIRTUAL_ID_END					2999
 
 //For GPS transforamtion
 #define LON_OFFSET					(int64_t) 1278700000
@@ -141,7 +142,7 @@ CarSnukt detector
 #define LOAD_STORE_BG				0
 //sola
 #define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
-#define SEND_DATA					0
+#define SEND_DATA					1
 
 
 // Thresholds and gains
@@ -201,14 +202,14 @@ CarSnukt detector
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
-#define DEBUG_NONZ_SEG_TWICE		1
+#define DEBUG_NONZ_SEG_TWICE		0
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
 
 //sola
-#define DEBUG_SUB					1
+#define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			1
