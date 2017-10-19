@@ -53,7 +53,7 @@ inline Mat ReadImage(VideoCapture &cap)
 
 	assert(I.empty() != 1 && "Cannot read imagel");
 //	cout << "I.type() : " << I.type() << endl;
-//	resize(I, I, Size(SIZE_HOR, SIZE_VER));
+	resize(I, I, Size(SIZE_HOR, SIZE_VER));
 	//t_arr[i++] = clock();
 	//cout << "ReadImage() resize " << t_arr[i - 1] - t_arr[i - 2] << endl;
 

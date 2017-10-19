@@ -54,7 +54,6 @@ private:
 	float ROI_iTL_BL_Param[3];			// The parameter of the line formed by TL and BL points
 
 	int NewTrackObj;					// New track object ID
-	int32_t	vID;						//virtual MVO ID for ITRC project
 
 	// ============================================
 	// ================= Structs  =================
@@ -76,7 +75,6 @@ private:
 		Mat TransROI;
 		uint8_t SoftID;
 		uint8_t HardID;
-		int32_t vID;
 		uint32_t NumOfHisPt;
 
 		camToCar dataCamToCar;
@@ -238,7 +236,6 @@ public:
 	/*
 		@Brief: load the background from a saved image
 		*/
-	Void LoadBG(Mat firstFrame);
 	Void LoadBG(void);
 	bool isBGLoaded(void){ return isBLoaded; }
 

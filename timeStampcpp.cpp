@@ -21,7 +21,7 @@ void timeStamp::getCurT(uint64_t &t) const
 		;
 
 }
-void timeStamp::getIntervalT(uint64_t & tDiff) const
+void timeStamp::getTDiff(uint64_t & tDiff) const
 {
 	union timeunion {
 		FILETIME fileTime;

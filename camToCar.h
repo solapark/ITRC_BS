@@ -13,8 +13,8 @@ struct camToCar
 
 	int16_t vx, vy;
 
-	uint16_t heading;
-	int16_t length, width;
+	int16_t heading;
+	uint16_t length, width;
 };
 
 #endif

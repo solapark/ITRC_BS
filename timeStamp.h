@@ -11,7 +11,7 @@ class timeStamp {
 public:
 	void updateT(const SYSTEMTIME &now);
 	void getCurT(uint64_t &t) const;
-	void getIntervalT(uint64_t & TDiff) const;
+	void getTDiff(uint64_t & TDiff) const;
 
 private:
 	SYSTEMTIME curT, pastT;
