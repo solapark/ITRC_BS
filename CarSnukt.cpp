@@ -2209,6 +2209,8 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		}
 	}
 
+#if	EXCLUDE_SMALL_MVOS_IN_TRK
+#else
 	// display small objects' information in the 2D image
 	for (size_t i = 0; i < SmallObjectROI.size(); i++)
 	{
@@ -2220,6 +2222,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			);
 		rectangle(tmpI, rect, Scalar(0, 255, 0), 1);
 	}
+#endif
 
 	// Draw the outer ROI
 	line(tmpI, ROI_BL, ROI_BR, Scalar(255, 0, 255), 2, 4, 0);
