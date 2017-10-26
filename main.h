@@ -19,6 +19,7 @@ double PredDisError = 0.0f;
 double CurDisError = 0.0f;
 Point2i CurPos(0, 0);
 int key;
+bool isBgInitEnd = false;
 
 #if STATIC_IMAGE
 inline Mat  ReadImage(int ImgIdx);
@@ -32,9 +33,7 @@ inline Mat ReadImage(int ImgIdx)
 inline Mat ReadImage(VideoCapture &cap)
 #endif
 {
-//	clock_t t_arr[100];
 	int i = 0;
-	//t_arr[i++] = clock();
 
 	Mat I;
 #if STATIC_IMAGE
@@ -48,22 +47,16 @@ inline Mat ReadImage(VideoCapture &cap)
 #if SEND_DATA
 	GetLocalTime(&now);
 #endif
-	//t_arr[i++] = clock();
-	//cout << "ReadImage() cap >> I " << t_arr[i - 1] - t_arr[i - 2] << endl;
-
+	
 	assert(I.empty() != 1 && "Cannot read imagel");
-//	cout << "I.type() : " << I.type() << endl;
-	resize(I, I, Size(SIZE_HOR, SIZE_VER));
-	//t_arr[i++] = clock();
-	//cout << "ReadImage() resize " << t_arr[i - 1] - t_arr[i - 2] << endl;
+	//while (I.empty()) {
+	//	cout << "Cannot read image!" << endl;
+	//	cap >> I;
+	//	waitKey(30);
+	//}
 
 	I.convertTo(I, CV_32FC3, 1 / 255.0);
-	//t_arr[i++] = clock();
-	//cout << "ReadImage() I.convertTo " << t_arr[i - 1] - t_arr[i - 2] << endl;
-
 	GaussianBlur(I, I, cv::Size(5, 5), 0.3);
-	//t_arr[i++] = clock();
-	//cout << "ReadImage() GaussianBlur " << t_arr[i - 1] - t_arr[i - 2] << endl;
 	return I;
 }
 

@@ -51,22 +51,25 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						1			  
-#define CAMERA						0		  
+#define VIDEO						0			  
+#define CAMERA						1  
 
 // Dataset configurations
-#define VIDEO_FILE					"data/clip_181_640_360_171002.avi"
+#define CAM_ID						"rtsp://admin:1234@222.116.156.182/video1"
+#define VIDEO_FILE					"data/182_170929.avi"
 #define DATASET_DIR					"../../../Datasets/intersection/image_"
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
-#define BG_FILE						"data/bg_181_640_360_171002.jpg"
+#define BG_FILE						"data/bg_182_170929.jpg"
 #define FILE_FORMAT					"%0.4d"
 #define FILE_EXT					".jpg"
 #define FIRST_IMG_IDX				0 
 #define LAST_IMG_IDX				4999 
 
 // Image size
-#define SIZE_HOR					480
-#define SIZE_VER					270
+#define SIZE_HOR					640
+#define SIZE_VER					360
+//#define SIZE_HOR					480
+//#define SIZE_VER					270
 
 
 
@@ -85,10 +88,14 @@ Perspective transformation
 //////////			ROI static setup			///////////////
 ///////////////////////////////////////////////////////////////
 
+//const Point2i ROI_BL(1, 22);
+//const Point2i ROI_BR(479, 22);
+//const Point2i ROI_TR(479, 269);
+//const Point2i ROI_TL(1, 269);
 const Point2i ROI_BL(1, 22);
-const Point2i ROI_BR(479, 22);
-const Point2i ROI_TR(479, 269);
-const Point2i ROI_TL(1, 269);
+const Point2i ROI_BR(SIZE_HOR - 1, 22);
+const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER-1);
+const Point2i ROI_TL(1, SIZE_VER - 1);
 ///////////////////////////////////////////////////////////////
 //////////	Perspective transform static setup	///////////////
 ///////////////////////////////////////////////////////////////
@@ -104,22 +111,32 @@ const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
 
 
+
 /*
 CarSnukt detector
 */
+#define MVO_VIRTUAL_ID_START				2000 //autoBus = 1000~1999, MVO = 2000~2999
+#define MOV_VIRTUAL_ID_END					2999
+
+//For GPS transforamtion
+#define LON_OFFSET					(int64_t) 1278700000
+#define LAT_OFFSET					(int64_t) 369720000
 
 // For background update algorithm
-#define BGM_DYNAMIC					1			  // 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
-#define BGM_WB						1.5				  // The weight for the update of the current background model 
-#define BGM_N						3				  // The number of background image candidates
-#define BGM_DT						400			  // The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				  // 1: use the knowledge-base BGM, default 0
+#define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
+#define BGM_WB						1.5				// The weight for the update of the current background model 
+#define BGM_N						3				// The number of background image candidates
+#define BGM_DT						150				// The BGM update interval (frames)
+#define INITAIL_BGM_DT				10				// The BGM update interval (frames)
+#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Flags
-#define WIFI_MODULE					0
-#define RF_MODULE					0
+#define BGM_FIRST_BUILD				1					// use the 1st frame for background. 
+#define WAIT_BGM_BUILD				1					// wait until bgm is built.
+#define BGM_BUILD_WATITING_FRAME	INITAIL_BGM_DT*5	//waiting time for bgm built.
 #define SHADOW_REMOVAL				0
+#define TRANSFORM_CENTER_POINT		0
 #define TRANSFORM_CRITICAL_POINT	0
 #define DETECT_HARD_ID				0
 #define DETECT_DIRECTION			0
@@ -130,7 +147,7 @@ CarSnukt detector
 
 
 // Thresholds and gains
-#define TL_MIN						0.1				  // suppression noise level threshold after the background subtraction step (min)
+#define TL_MIN						0.05				  // suppression noise level threshold after the background subtraction step (min)
 //#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
 #define TL_MAX						3.00              // suppression noise level threshold after the background subtraction step (max)
 #define ALPHA						0.4               // the low threshold for detecting shadow as presented in the paper
@@ -170,7 +187,7 @@ CarSnukt detector
 
 // Tracking for MVO
 #define HIS_POS_SIZE				15
-#define LIVE_OBJECT_SIZE			1000
+#define LIVE_OBJECT_SIZE			100
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
@@ -179,7 +196,7 @@ CarSnukt detector
 #define HISTOGRAM_THRES				200
 
 #define PREDICTIVE_TRACK			0
-#define KALMAN_TRACK				1
+#define KALMAN_TRACK				0
 
 // Debug
 #define DEBUG_FINAL					1

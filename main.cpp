@@ -13,18 +13,9 @@ int main() {
 	//assert((ANN + RANTREE + SIZE_SALIENCY) == 1 && "Only one type of classification should be enable at a time");
 	assert(BGM_STABLE_CNT > BGM_N);
 
-	// read the background image 
-	//clock_t t_start = clock();
-	myCarSnukt.LoadBG();
-	//clock_t t_loadBG = clock();
-	//cout << "t_loadBG : " << t_loadBG - t_start << endl;
 
 #if VIDEO
 	// open the video file
-//	char VideoName[200];
-//	sprintf(VideoName, "%s", VIDEO_FILE);
-//	VideoCapture cap("RC_Car_Vid_2.mp4");
-//	cout << VideoName << endl;
 	VideoCapture cap(VIDEO_FILE);
 	assert(cap.isOpened() && "Cannot open the video file");
 	double count = cap.get(CV_CAP_PROP_FRAME_COUNT);
@@ -39,6 +30,28 @@ int main() {
 	bool isStop = false;
 #endif	 
 	bool isFirstFrame = true;
+
+
+// read the background image 
+#if BGM_FIRST_BUILD
+	Mat firstFrame;
+#if STATIC_IMAGE
+	char ImgName[100];
+	sprintf(ImgName, "%s%0.4d%s", DATASET_DIR, ImgIdx, FILE_EXT);
+	//cout << ImgName << endl;
+	firstFrame = imread(ImgName);
+#elif VIDEO||CAMERA
+	cap >> firstFrame;
+#endif
+	assert(firstFrame.empty() != 1 && "Cannot first frame for bgl");
+	myCarSnukt.LoadBG(firstFrame);
+#else
+	myCarSnukt.LoadBG();
+#endif
+
+#if	BGM_BUILD_WATITING_FRAME
+	int numberOfSkip = 0;
+#endif
 
 #if STATIC_IMAGE
 	for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
@@ -104,13 +117,31 @@ int main() {
 #endif
 		// CarSnukt algorithm 
 #if BGM_DYNAMIC
+#if WAIT_BGM_BUILD
+		if (!isBgInitEnd) {
+			cout << "NOT initBgIsOver" << endl;
+			if ((ImgIdx%INITAIL_BGM_DT) == 0) {
+				myCarSnukt.UpdateBGM(I);
+			}
+		}
+		else {
+			cout << "initBgIsOver" << endl;
+			if ((ImgIdx%BGM_DT) == 0) {
+					myCarSnukt.UpdateBGM(I);
+				}
+		}
+#else
 		if ((ImgIdx%BGM_DT) == 0) {
 			myCarSnukt.UpdateBGM(I);
 #if SAVE_NEW_BG
-				myCarSnukt.StoreBG();
+			myCarSnukt.StoreBG();
+		}
+#else
+		}
+#endif
 #endif
 
-		}
+
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "BGM update " << t_arr[i - 1] - t_arr[i - 2] << endl;
@@ -124,7 +155,18 @@ int main() {
 
 #endif
 		// CarSnukt Detector 
+#if	WAIT_BGM_BUILD
+		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {
+			numberOfSkip++;
+		}
+		else {
+			isBgInitEnd = true;
+			myCarSnukt.CarSnuktDet(I, III);
+		}
+
+#else
 		myCarSnukt.CarSnuktDet(I, III);
+#endif
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
@@ -150,6 +192,26 @@ int main() {
 #endif 
 
 #if SEND_DATA
+#if	WAIT_BGM_BUILD
+		if (numberOfSkip == 1) {
+			cout << "Waiting for backgound image built...." << endl;
+		}
+		if (numberOfSkip < BGM_BUILD_WATITING_FRAME) {}
+		else {
+			vector<camToCar> dataToSend;
+			size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
+			for (size_t i = 0; i < numOfObj; i++) {
+				cout << "ID : " << dataToSend[i].id
+					<< "   TimeStamp : " << dataToSend[i].tStmp
+					<< "   long, lat : " << dataToSend[i].longitude << ", " << dataToSend[i].latitude
+					<< "   Vx, Vy : " << dataToSend[i].vx << ", " << dataToSend[i].vy
+					<< "   Heading, width, length  : " << dataToSend[i].heading
+					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
+			}
+			cout << "********************************************" << endl;
+
+		}
+#else
 		vector<camToCar> dataToSend;
 		size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
 		for (size_t i = 0; i < numOfObj; i++) {
@@ -160,6 +222,8 @@ int main() {
 				<< "   Heading, width, length  : " << dataToSend[i].heading
 				<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
 		}
+		cout << "********************************************" << endl;
+#endif
 #endif
 
 		// Check the termination condition		
@@ -177,8 +241,9 @@ int main() {
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
-#endif
 		cout << "********************************************" << endl;
+#endif
+
 	}
 
 	return(0);

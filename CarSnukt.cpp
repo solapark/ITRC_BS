@@ -40,6 +40,7 @@ CarSnukt::CarSnukt()
 	// Tracking
 	LiveObjList = Mat::zeros(1, LIVE_OBJECT_SIZE, CV_8UC1);
 	NewTrackObj = 0;
+	vID = MVO_VIRTUAL_ID_START;
 }
 
 //need to study -sola
@@ -191,6 +192,31 @@ Void CarSnukt::StoreBG()
 			B = Bs;
 		}
 		do_once = true;
+	}
+}
+
+Void CarSnukt::LoadBG(Mat firstFrame)
+{
+	Mat BG = firstFrame;
+	if (BG.rows != SIZE_VER || BG.cols != SIZE_HOR) {
+		cout << "BG size != img size" << endl;
+		resize(BG, BG, Size(SIZE_HOR, SIZE_VER));
+		//resize(BG, BG, Size(SIZE_HOR, SIZE_VER));
+	}
+	if (!BG.empty())
+	{
+		imshow("BackGround Img", BG);
+		printf("Do you want to load BG image ? y/n \n");
+		destroyWindow("BackGround Img");
+		string input = "y";
+		//cin >> input;
+		if (input == "y")
+		{
+			BG.convertTo(BG, CV_32FC3, 1 / 255.0);
+			Bs = BG;
+			isBsAvai = true;
+			isBLoaded = true;
+		}
 	}
 }
 
@@ -1218,6 +1244,12 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 	// Update the hard_ID
 	TrackObj[NewTrackObj].HardID = UNKNOW_HARD_ID;
 
+	// Update the virtual_ID for ITRC projcet
+	if (vID > MOV_VIRTUAL_ID_END) {
+		vID = MVO_VIRTUAL_ID_START;
+	}
+	TrackObj[NewTrackObj].vID = vID++;
+ 
 	// Calculate the color histograms of the current object					
 	MVOCalColorHistogram(SEG,
 		TrackObj[NewTrackObj].b_hist,
@@ -1227,6 +1259,10 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 	// update the center in the image plane
 	TrackObj[NewTrackObj].CenterImgPlane = TrackObj[NewTrackObj].HisPos[HIS_POS_SIZE - 1];
 
+#if IS_USE_PER_TRANS && TRANSFORM_CENTER_POINT
+	// The center for the transformed p
+	TrackObj[NewTrackObj].CenterTrans = TransformPoint(TrackObj[NewTrackObj].CenterImgPlane);
+#endif
 	// Transforms those detected critical points
 #if IS_USE_PER_TRANS && TRANSFORM_CRITICAL_POINT
 	// The center for the transformed p
@@ -2213,16 +2249,20 @@ inline Void CarSnukt::prepareSendData() {
 			uint8_t ID = NonZ.at<Point2i>(i).x;
 			camToCar* pCamToCar = & TrackObj[ID].dataCamToCar;
 			//id
-			pCamToCar->id = ID+100;
+			pCamToCar->id = TrackObj[ID].vID;
 			//timestamp
 			pCamToCar->tStmp = t;
 			//long, lat
-			pCamToCar->latitude = TrackObj[ID].CenterImgPlane.x;
-			pCamToCar->longitude = TrackObj[ID].CenterImgPlane.y;
+			pCamToCar->longitude = TrackObj[ID].CenterImgPlane.x;
+			pCamToCar->latitude = TrackObj[ID].CenterImgPlane.y;
+//			pCamToCar->latitude = TrackObj[ID].CenterTrans.x + LON_OFFSET;
+//			pCamToCar->longitude = TrackObj[ID].CenterTrans.y + LAT_OFFSET;
 
 			//vx, vy
-			//pCamToCar->vx = (TrackObj[ID].CenterImgPlane.x - TrackObj[ID].HisPos->x) / intervalT * (0.1/0.001);
-			//pCamToCar->vy = (TrackObj[ID].CenterImgPlane.y - TrackObj[ID].HisPos->y) / intervalT * (0.1 / 0.001);
+			pCamToCar->vx = 0;
+			pCamToCar->vy = 0;
+//			pCamToCar->vx = (TrackObj[ID].CenterImgPlane.x - TrackObj[ID].HisPos->x) / intervalT * (0.1/0.001);
+//			pCamToCar->vy = (TrackObj[ID].CenterImgPlane.y - TrackObj[ID].HisPos->y) / intervalT * (0.1 / 0.001);
 		}
 	}
 }
