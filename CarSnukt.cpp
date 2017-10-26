@@ -636,8 +636,11 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 				bool isRefined = RefineDetecedMVO(curSeg, curROI);
 				//cout << "isRefined : "<< isRefined << endl;
 				// check inside the ROI
+#if CHECK_INSIDE_ROI
 				bool isInROI = CheckInsideROI(curROI);
-//				bool isInROI = 1;
+#else
+				bool isInROI = 1;
+#endif
 
 #if DEBUG_SHADOW_DET
 				// debug

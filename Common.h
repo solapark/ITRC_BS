@@ -141,8 +141,10 @@ CarSnukt detector
 #define DETECT_HARD_ID				0
 #define DETECT_DIRECTION			0
 #define LOAD_STORE_BG				0
-#define REOPEN_CAM_WHEN_TIME_OVER	1
+#define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
+#define CHECK_INSIDE_ROI			0
+
 //sola
 #define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					0
@@ -205,14 +207,14 @@ CarSnukt detector
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
-#define DEBUG_NONZ_SEG_TWICE		0
+#define DEBUG_NONZ_SEG_TWICE		1
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
 
 //sola
-#define DEBUG_SUB					0
+#define DEBUG_SUB					1
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
