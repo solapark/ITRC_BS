@@ -231,6 +231,7 @@ Void CarSnukt::LoadBG()
 	if (!BG.empty())
 	{
 		imshow("BackGround Img", BG);
+		waitKey();
 		printf("Do you want to load BG image ? y/n \n");
 		destroyWindow("BackGround Img");
 		string input = "y";
@@ -326,7 +327,7 @@ inline Bool CarSnukt::NonZeroSeg(Mat &BinImg, vector<Mat> &ROI, vector<Mat> &SEG
 			cout << "VerSeg.size() : "<< VerSeg.size() << endl;
 #endif
 		
-			for (uint16_t verSegIdx = 0; verSegIdx < VerSeg.size(); verSegIdx++)
+			for (int verSegIdx = 0; verSegIdx < VerSeg.size(); verSegIdx++)
 			{
 				Point2i curVerSeg = VerSeg.at(verSegIdx);
 				// split to the smaller images				
@@ -338,7 +339,7 @@ inline Bool CarSnukt::NonZeroSeg(Mat &BinImg, vector<Mat> &ROI, vector<Mat> &SEG
 				findNonZero(tVerSeg.t(), VerSegLocs);
 				// complete segmentation inside the current vertical segmentation
 				Point2i tmpHorSeg(VerSegLocs.at<Point2i>(0).y, 0);
-				for (uint16_t HorPosIdx = 0; HorPosIdx < VerSegLocs.total() - 1; HorPosIdx++)
+				for (int HorPosIdx = 0; HorPosIdx < VerSegLocs.total() - 1; HorPosIdx++)
 				{
 					int curX = VerSegLocs.at<Point2i>(HorPosIdx).y;
 					int nextX = VerSegLocs.at<Point2i>(HorPosIdx + 1).y;
@@ -399,7 +400,7 @@ inline Bool CarSnukt::NonZeroSeg(Mat &BinImg, vector<Mat> &ROI, vector<Mat> &SEG
 				cvtColor(BinImg, grayRGB, COLOR_GRAY2BGR);
 
 				// draw all the detected bounding boxes
-				for (uint16_t i = 0; i < SEG.size(); i++)
+				for (int i = 0; i < SEG.size(); i++)
 				{
 					Mat CurROI = ROI.at(i);
 					Rect rect(CurROI.at<int>(0),
@@ -453,7 +454,8 @@ inline Bool CarSnukt::NonZeroSegTwice(Mat &BinImg, vector<Mat>& ROI, vector<Mat>
 	bool isValid = false;
 	if (NonZeroSeg(BinImg, ROI1, SEG1, SNonZero1))
 	{
-		for (uint16_t i = 0; i < ROI1.size(); i++)
+		cout << "NonZeroSeg done" << endl;
+		for (int i = 0; i < ROI1.size(); i++)
 		{
 			Mat curROI1 = ROI1.at(i);
 			Mat curSeg = SEG1.at(i);
@@ -463,7 +465,7 @@ inline Bool CarSnukt::NonZeroSegTwice(Mat &BinImg, vector<Mat>& ROI, vector<Mat>
 			if (NonZeroSeg(curSeg, ROI2, SEG2, SNonZero2))
 			{
 				// Shift to the Image co-ordinate
-				for (uint16_t j = 0; j < ROI2.size(); j++)
+				for (int j = 0; j < ROI2.size(); j++)
 				{
 					Mat curROI2 = ROI2.at(j);
 					Mat curSEG2 = SEG2.at(j);
@@ -503,7 +505,7 @@ inline Bool CarSnukt::NonZeroSegTwice(Mat &BinImg, vector<Mat>& ROI, vector<Mat>
 		cvtColor(BinImg, grayRGB, COLOR_GRAY2BGR);
 
 		// draw all the detected bounding boxes
-		for (uint16_t i = 0; i < SEG.size(); i++)
+		for (int i = 0; i < SEG.size(); i++)
 		{
 			Mat CurROI = ROI.at(i);
 			Mat CurSeg = SEG.at(i);
@@ -582,8 +584,9 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 #endif
 	if (NonZeroSegTwice(MVOSH, MVOSH_ROI, MVOSH_SEG, MVOSH_nonZPixl))
 	{
+		cout << "NonZeroSegTwice done" << endl;
 		//cout << "NonZeroSegTwice size : " << MVOSH_ROI.size() << endl;
-		for (uint16_t segIdx = 0; segIdx < MVOSH_ROI.size(); segIdx++)
+		for (int segIdx = 0; segIdx < MVOSH_ROI.size(); segIdx++)
 		{
 			Mat curROI = MVOSH_ROI.at(segIdx);
 			Mat curSeg = MVOSH_SEG.at(segIdx);
@@ -613,7 +616,7 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 					// find the shadow pixels 
 					Mat NonZPixel;
 					findNonZero(curSeg, NonZPixel);
-					for (uint16_t nonZPixIdx = 0; nonZPixIdx < NonZPixel.total(); nonZPixIdx++)
+					for (int nonZPixIdx = 0; nonZPixIdx < NonZPixel.total(); nonZPixIdx++)
 					{
 						Point2i p = NonZPixel.at<Point2i>(nonZPixIdx);
 						Vec3f pI_HSV = SegI_HSV.at<Vec3f>(p);
@@ -2058,8 +2061,9 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 //		imshow("MVOSH", MVOSH);
 //		waitKey(0);
 
-		// Shadow detection		
+		// Shadow detection
 		ShadowDet(I, B, MVOSH, MVO_ROI, MVO_SEG);
+		cout << "ShadowDet done" << endl;
 
 		// Knowledge-based background model update (having low impacts to the system, optional)
 #if BGM_KNOWLEDGE
@@ -2068,6 +2072,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 		// Detect the large MVOs (cars, trucs, etc.)
 		LargeMVODetection(I, MVO_SEG, MVO_ROI, isLargeObject);
+		cout << "LargeMVODetection done" << endl;
 		//for (int i = 0; i < MVO_SEG.size(); i++) {
 		//	imshow("MOV_SEG", MVO_SEG[i]);
 		//	waitKey();
@@ -2077,7 +2082,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		//}
 		// Tracking for the detected large MVO
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
-
+		cout << "LargeMVOTracking done" << endl;
 #if SEND_DATA
 		prepareSendData();
 #endif

@@ -146,12 +146,12 @@ int main() {
 		t_arr[i++] = clock();
 		cout << "BGM update " << t_arr[i - 1] - t_arr[i - 2] << endl;
 #endif
-#if DEBUG_IMG_IDX
-		if (ImgIdx < TARGET_IMG_IDX) {
-			ImgIdx++;
-			continue;
-		}
 
+#if DEBUG_IMG_IDX
+		//if (ImgIdx < TARGET_IMG_IDX) {
+		//	ImgIdx++;
+		//	continue;
+		//}
 
 #endif
 		// CarSnukt Detector 
@@ -162,6 +162,7 @@ int main() {
 		else {
 			isBgInitEnd = true;
 			myCarSnukt.CarSnuktDet(I, III);
+
 		}
 
 #else
