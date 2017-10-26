@@ -13,7 +13,6 @@ int main() {
 	//assert((ANN + RANTREE + SIZE_SALIENCY) == 1 && "Only one type of classification should be enable at a time");
 	assert(BGM_STABLE_CNT > BGM_N);
 
-
 #if VIDEO
 	// open the video file
 	VideoCapture cap(VIDEO_FILE);
@@ -45,6 +44,7 @@ int main() {
 #endif
 	assert(firstFrame.empty() != 1 && "Cannot first frame for bgl");
 	myCarSnukt.LoadBG(firstFrame);
+	cout << "please wait for backgound image built..." << endl;
 #else
 	myCarSnukt.LoadBG();
 #endif
@@ -82,7 +82,7 @@ int main() {
 #endif
 		// Initilization once
 		if (isFirstFrame){
-			printf("Define the ROI and the image region for the perspective transformation.\n");
+//			printf("Define the ROI and the image region for the perspective transformation.\n");
 			myCarSnukt.Initialize(tmpI.rows, tmpI.cols);
 
 #if STATIC_ROI
@@ -119,13 +119,13 @@ int main() {
 #if BGM_DYNAMIC
 #if WAIT_BGM_BUILD
 		if (!isBgInitEnd) {
-			cout << "NOT initBgIsOver" << endl;
+//			cout << "NOT initBgIsOver" << endl;
 			if ((ImgIdx%INITAIL_BGM_DT) == 0) {
 				myCarSnukt.UpdateBGM(I);
 			}
 		}
 		else {
-			cout << "initBgIsOver" << endl;
+//			cout << "initBgIsOver" << endl;
 			if ((ImgIdx%BGM_DT) == 0) {
 					myCarSnukt.UpdateBGM(I);
 				}
@@ -245,6 +245,23 @@ int main() {
 		cout << "********************************************" << endl;
 #endif
 
+#if CAMERA
+#if REOPEN_CAM_WHEN_TIME_OVER
+		//waitKey();
+		if (clock() - process_start > TIME_LIMIT) {
+			isTimeOver = true;
+		}
+
+		if (isTimeOver) {
+			cout << "Process exceed time limit. Reopen cam" << endl;
+			cap.release();
+			if (!cap.open(CAM_ID)) {
+				std::cout << "Error opening video stream or file" << std::endl;
+				return -1;
+			}
+		}
+#endif
+#endif
 	}
 
 	return(0);

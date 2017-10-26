@@ -51,12 +51,12 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						1			  
-#define CAMERA						0 
+#define VIDEO						0			  
+#define CAMERA						1 
 
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.182/video1"
-#define VIDEO_FILE					"C:/Users/user/source/repos/ITRC_bus_171004/ITRC_BS/ITRC_BS/1.avi"
+#define VIDEO_FILE					"data/1.avi"
 #define DATASET_DIR					"data/182_175_"
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
 #define BG_FILE						"data/bus_bg.jpg"
@@ -141,9 +141,11 @@ CarSnukt detector
 #define DETECT_HARD_ID				0
 #define DETECT_DIRECTION			0
 #define LOAD_STORE_BG				0
+#define REOPEN_CAM_WHEN_TIME_OVER	1
+#define TIME_LIMIT					3000
 //sola
 #define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
-#define SEND_DATA					1
+#define SEND_DATA					0
 
 
 // Thresholds and gains
@@ -203,19 +205,19 @@ CarSnukt detector
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
-#define DEBUG_NONZ_SEG_TWICE		1
+#define DEBUG_NONZ_SEG_TWICE		0
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
 
 //sola
-#define DEBUG_SUB					1
+#define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			1
+#define DEBUG_RUNNING_TIME			0
 
-#define DEBUG_IMG_IDX				1
+#define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
 
 #define SAVE_NEW_BG					0

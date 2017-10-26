@@ -20,6 +20,10 @@ double CurDisError = 0.0f;
 Point2i CurPos(0, 0);
 int key;
 bool isBgInitEnd = false;
+//to reopen cam when processing time > TIME_LIMIT
+bool isTimeOver = false;
+double process_start;
+
 
 #if STATIC_IMAGE
 inline Mat  ReadImage(int ImgIdx);
@@ -47,13 +51,14 @@ inline Mat ReadImage(VideoCapture &cap)
 #if SEND_DATA
 	GetLocalTime(&now);
 #endif
-	
 	assert(I.empty() != 1 && "Cannot read imagel");
-	//while (I.empty()) {
-	//	cout << "Cannot read image!" << endl;
-	//	cap >> I;
-	//	waitKey(30);
-	//}
+
+#if CAMERA
+#if REOPEN_CAM_WHEN_TIME_OVER
+	isTimeOver = false;
+	process_start = clock();
+#endif
+#endif
 
 	I.convertTo(I, CV_32FC3, 1 / 255.0);
 	GaussianBlur(I, I, cv::Size(5, 5), 0.3);

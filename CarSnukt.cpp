@@ -178,7 +178,7 @@ Void CarSnukt::StoreBG()
 #endif
 
 	if (!do_once){
-		printf("Do you want to store the current background ? y/n \n");
+//		printf("Do you want to store the current background ? y/n \n");
 #if SAVE_NEW_BG
 		imshow("BS save", Bs);
 		waitKey();
@@ -205,9 +205,9 @@ Void CarSnukt::LoadBG(Mat firstFrame)
 	}
 	if (!BG.empty())
 	{
-		imshow("BackGround Img", BG);
-		printf("Do you want to load BG image ? y/n \n");
-		destroyWindow("BackGround Img");
+//		imshow("BackGround Img", BG);
+//		printf("Do you want to load BG image ? y/n \n");
+//		destroyWindow("BackGround Img");
 		string input = "y";
 		//cin >> input;
 		if (input == "y")
@@ -454,7 +454,7 @@ inline Bool CarSnukt::NonZeroSegTwice(Mat &BinImg, vector<Mat>& ROI, vector<Mat>
 	bool isValid = false;
 	if (NonZeroSeg(BinImg, ROI1, SEG1, SNonZero1))
 	{
-		cout << "NonZeroSeg done" << endl;
+		//cout << "NonZeroSeg done" << endl;
 		for (int i = 0; i < ROI1.size(); i++)
 		{
 			Mat curROI1 = ROI1.at(i);
@@ -584,7 +584,7 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 #endif
 	if (NonZeroSegTwice(MVOSH, MVOSH_ROI, MVOSH_SEG, MVOSH_nonZPixl))
 	{
-		cout << "NonZeroSegTwice done" << endl;
+		//cout << "NonZeroSegTwice done" << endl;
 		//cout << "NonZeroSegTwice size : " << MVOSH_ROI.size() << endl;
 		for (int segIdx = 0; segIdx < MVOSH_ROI.size(); segIdx++)
 		{
@@ -2063,7 +2063,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 		// Shadow detection
 		ShadowDet(I, B, MVOSH, MVO_ROI, MVO_SEG);
-		cout << "ShadowDet done" << endl;
+		//cout << "ShadowDet done" << endl;
 
 		// Knowledge-based background model update (having low impacts to the system, optional)
 #if BGM_KNOWLEDGE
@@ -2072,7 +2072,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 		// Detect the large MVOs (cars, trucs, etc.)
 		LargeMVODetection(I, MVO_SEG, MVO_ROI, isLargeObject);
-		cout << "LargeMVODetection done" << endl;
+		//cout << "LargeMVODetection done" << endl;
 		//for (int i = 0; i < MVO_SEG.size(); i++) {
 		//	imshow("MOV_SEG", MVO_SEG[i]);
 		//	waitKey();
@@ -2082,7 +2082,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		//}
 		// Tracking for the detected large MVO
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
-		cout << "LargeMVOTracking done" << endl;
+		//cout << "LargeMVOTracking done" << endl;
 #if SEND_DATA
 		prepareSendData();
 #endif
