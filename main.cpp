@@ -44,7 +44,6 @@ int main() {
 #endif
 	assert(firstFrame.empty() != 1 && "Cannot first frame for bgl");
 	myCarSnukt.LoadBG(firstFrame);
-	cout << "please wait for backgound image built..." << endl;
 #else
 	myCarSnukt.LoadBG();
 #endif

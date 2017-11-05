@@ -53,10 +53,14 @@ typedef       float					Float;
 #define STATIC_IMAGE				0			  
 #define VIDEO						0			  
 #define CAMERA						1 
+#define IP_CAM_NUM					182
 
+
+#if IP_CAM_NUM == 182
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.182/video1"
-#define VIDEO_FILE					"data/1.avi"
+#define VIDEO_FILE					"data/182_170929.avi"
+//#define VIDEO_FILE					"data/1.avi"
 #define DATASET_DIR					"data/182_175_"
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
 #define BG_FILE						"data/bus_bg.jpg"
@@ -92,9 +96,9 @@ Perspective transformation
 //const Point2i ROI_BR(479, 22);
 //const Point2i ROI_TR(479, 269);
 //const Point2i ROI_TL(1, 269);
-const Point2i ROI_BL(1, 22);
-const Point2i ROI_BR(SIZE_HOR - 1, 22);
-const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER-1);
+const Point2i ROI_BL(1, 35);
+const Point2i ROI_BR(SIZE_HOR - 1, 30);
+const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER - 1);
 const Point2i ROI_TL(1, SIZE_VER - 1);
 ///////////////////////////////////////////////////////////////
 //////////	Perspective transform static setup	///////////////
@@ -144,10 +148,11 @@ CarSnukt detector
 #define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
 #define CHECK_INSIDE_ROI			0
+#define pixel2Gps					1
 
 //sola
 #define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
-#define SEND_DATA					0
+#define SEND_DATA					1
 
 
 // Thresholds and gains
@@ -207,14 +212,14 @@ CarSnukt detector
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
-#define DEBUG_NONZ_SEG_TWICE		1
+#define DEBUG_NONZ_SEG_TWICE		0
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
 
 //sola
-#define DEBUG_SUB					1
+#define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
@@ -227,5 +232,6 @@ CarSnukt detector
 #define EXCLUDE_SMALL_MVOS_IN_TRK	1		//in tracking process, don't consider small MVOs
 
 #define PERS_VIEW					0
+#endif
 
 #endif // !_COMMON_H_
