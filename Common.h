@@ -28,10 +28,9 @@
 #include <opencv2/ml/ml.hpp>
 #include <opencv2/video/tracking.hpp>
 
-//send data
-#include "camToCar.h"
-//time stamp
-#include "timeStamp.h"
+#include "camToCar.h"	//send data
+#include "timeStamp.h"	//time stamp 
+#include "pixel2Gps.h"	//gps
 
 using namespace cv;
 using namespace std;
@@ -75,8 +74,6 @@ typedef       float					Float;
 //#define SIZE_HOR					480
 //#define SIZE_VER					270
 
-
-
 /*
 ROI
 */
@@ -92,10 +89,6 @@ Perspective transformation
 //////////			ROI static setup			///////////////
 ///////////////////////////////////////////////////////////////
 
-//const Point2i ROI_BL(1, 22);
-//const Point2i ROI_BR(479, 22);
-//const Point2i ROI_TR(479, 269);
-//const Point2i ROI_TL(1, 269);
 const Point2i ROI_BL(1, 35);
 const Point2i ROI_BR(SIZE_HOR - 1, 30);
 const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER - 1);
@@ -109,6 +102,12 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+
+const Point2f pixel0(575, 380);
+const Point2f pixel1(486, 223);
+const Point2f pixel2(786, 232);
+const Point2f pixel3(1164, 301);
+
 
 #endif
 const uint32_t Trans_W = 500;
@@ -148,7 +147,7 @@ CarSnukt detector
 #define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
 #define CHECK_INSIDE_ROI			0
-#define pixel2Gps					1
+#define PIXEL2GPS					1
 
 //sola
 #define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.

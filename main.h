@@ -25,7 +25,7 @@ bool isTimeOver = false;
 double process_start;
 
 
-#if STATIC_IMAGE
+#if STATIC_IMAGEf
 inline Mat  ReadImage(int ImgIdx);
 #elif VIDEO || CAMERA
 inline Mat ReadImage(VideoCapture &cap);
