@@ -28,7 +28,7 @@ pixel2Gps::pixel2Gps(
 		//			cout << "lonOffset ,latOffset: " << lonOffset << ", " << latOffset << endl;
 		lonFloat = lonInt - lonOffset;
 		latFloat = latInt - latOffset;
-		cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
+		//cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
 		gpsFloat[i] = Point2f(lonFloat, latFloat);
 		//			cout << "gpsFloat[i] : " << gpsFloat[i] << endl;
 	}
@@ -63,7 +63,7 @@ void pixel2Gps::setGps(
 		//			cout << "lonOffset ,latOffset: " << lonOffset << ", " << latOffset << endl;
 		lonFloat = lonInt - lonOffset;
 		latFloat = latInt - latOffset;
-		cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
+		//cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
 		gpsFloat[i] = Point2f(lonFloat, latFloat);
 		//			cout << "gpsFloat[i] : " << gpsFloat[i] << endl;
 	}
@@ -88,7 +88,7 @@ void pixel2Gps::getTargetGpsDouble(const Point2f targetPixel, Point2d &targetGPS
 	targetGPSDouble.x = targetGpsInt.x / (double)pow(10, latPrecision);
 	targetGPSDouble.y = targetGpsInt.y / (double)pow(10, lonPrecision);
 	cout.precision(10);
-	cout << "targetGPSDouble : " << targetGPSDouble << endl;
+	//cout << "targetGPSDouble : " << targetGPSDouble << endl;
 
 }
 
