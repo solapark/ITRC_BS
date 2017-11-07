@@ -127,6 +127,12 @@ CarSnukt detector
 #define MOV_VIRTUAL_ID_END					2999
 
 //For GPS transforamtion
+#define LAT_SAME_DIGIT						3
+#define LON_SAME_DIGIT						4
+#define LAT_WHOLE_DIGIT						9
+#define LON_WHOLE_DIGIT						10
+#define LAT_PRECISION						7
+#define LON_PRECISION						7
 #define LON_OFFSET					(int64_t) 1278700000
 #define LAT_OFFSET					(int64_t) 369720000
 

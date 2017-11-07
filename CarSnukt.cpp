@@ -2307,7 +2307,7 @@ Void CarSnukt::updateT(const SYSTEMTIME &t) {
 	time.updateT(t);
 }
 
-inline Void CarSnukt::setGps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
+Void CarSnukt::setGps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
 	const int latSameDigit, const int lonSameDigit,
 	const int latWholeDigit, const int lonWholeDigit,
 	const int latPrecision, const int lonPrecision)
