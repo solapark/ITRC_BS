@@ -88,7 +88,7 @@ private:
 
 	timeStamp time;
 	pixel2Gps pixel2gps;
-
+	gps2Pixel gps2pixel;
 	// ============================================
 	// ================	Functions  ================
 	// ============================================
@@ -291,10 +291,17 @@ public:
 	//time stamp
 	Void updateT(const SYSTEMTIME &t);
 
-	Void setGps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
+	Void setPixel2Gps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
 		const int latSameDigit, const int lonSameDigit,
 		const int latWholeDigit, const int lonWholeDigit,
 		const int latPrecision, const int lonPrecision);
+
+	Void setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
+		const int latSameDigit, const int lonSameDigit,
+		const int latWholeDigit, const int lonWholeDigit,
+		const int latPrecision, const int lonPrecision);
+
+	Void getTargetPixel(Point2l& gps, Point2f& targetPixel);
 };
 #endif
 

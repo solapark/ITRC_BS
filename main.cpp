@@ -92,7 +92,11 @@ int main() {
 #if PIXEL2GPS
 			Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
 			Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
-			myCarSnukt.setGps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+			myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#if DEBUG_GPS
+			myCarSnukt.setGps2Pixel(gps,pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#endif
+
 #endif
 #else
 			myCarSnukt.InputROIandPersMap(tmpI);
@@ -110,6 +114,7 @@ int main() {
 		else{
 			III = II; II = I; I = tmpI;
 		}
+
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
@@ -197,6 +202,11 @@ int main() {
 #endif 
 
 #if SEND_DATA
+#if DEBUG_GPS
+		Mat IforGPS = I;
+		Point2f targetPixel;
+
+#endif
 #if	WAIT_BGM_BUILD
 		if (numberOfSkip == 1) {
 			cout << "Waiting for backgound image built...." << endl;
@@ -208,17 +218,25 @@ int main() {
 			for (size_t i = 0; i < numOfObj; i++) {
 				cout << "ID : " << dataToSend[i].id
 					<< "   TimeStamp : " << dataToSend[i].tStmp
-					<< "   long, lat : " << dataToSend[i].longitude << ", " << dataToSend[i].latitude
+					<< "   lat, lon: " << dataToSend[i].latitude << ", " << dataToSend[i].longitude
 					<< "   Vx, Vy : " << dataToSend[i].vx << ", " << dataToSend[i].vy
 					<< "   Heading, width, length  : " << dataToSend[i].heading
 					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
+#if DEBUG_GPS
+				myCarSnukt.getTargetPixel(Point2l(dataToSend[i].latitude, dataToSend[i].longitude), targetPixel);
+				circle(IforGPS, targetPixel, 1, Scalar(0, 255, 0), 3);
+#endif
 			}
 			cout << "********************************************" << endl;
+#if DEBUG_GPS
+			imshow("gpsTest", IforGPS);
+			waitKey(1);
+#endif
 		}
+#if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
 		cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
-
-
+#endif
 #else
 		vector<camToCar> dataToSend;
 		size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);

@@ -31,6 +31,7 @@
 #include "camToCar.h"	//send data
 #include "timeStamp.h"	//time stamp 
 #include "pixel2Gps.h"	//gps
+#include "gps2Pixel.h"	//gps
 
 using namespace cv;
 using namespace std;
@@ -232,7 +233,8 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			1
+#define DEBUG_RUNNING_TIME			0
+#define DEBUG_GPS					0
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173

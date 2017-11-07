@@ -2269,7 +2269,8 @@ inline Void CarSnukt::prepareSendData() {
 			Point2l gps(0, 0);
 			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, gps);
 			pCamToCar->latitude = gps.x;
-			pCamToCar->longitude = gps.y;				
+			pCamToCar->longitude = gps.y;
+
 			//vx, vy
 			pCamToCar->vx = 0;
 			pCamToCar->vy = 0;
@@ -2308,10 +2309,23 @@ Void CarSnukt::updateT(const SYSTEMTIME &t) {
 	time.updateT(t);
 }
 
-Void CarSnukt::setGps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
+Void CarSnukt::setPixel2Gps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
 	const int latSameDigit, const int lonSameDigit,
 	const int latWholeDigit, const int lonWholeDigit,
 	const int latPrecision, const int lonPrecision)
 {
 	pixel2gps.setGps(pixel, gps, latSameDigit, lonSameDigit, latWholeDigit, lonWholeDigit, latPrecision, lonPrecision);
+}
+
+Void CarSnukt::setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
+	const int latSameDigit, const int lonSameDigit,
+	const int latWholeDigit, const int lonWholeDigit,
+	const int latPrecision, const int lonPrecision)
+{
+	gps2pixel.setGps2Pixel(gps, pixel, latSameDigit, lonSameDigit, latWholeDigit, lonWholeDigit, latPrecision, lonPrecision);
+}
+
+Void CarSnukt::getTargetPixel(Point2l& gps, Point2f& targetPixel) 
+{
+	gps2pixel.getTargetPixel(gps, targetPixel);
 }
