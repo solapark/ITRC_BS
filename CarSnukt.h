@@ -87,6 +87,7 @@ private:
 	Mat TransMat;
 
 	timeStamp time;
+	pixel2Gps pixel2gps;
 
 	// ============================================
 	// ================	Functions  ================
@@ -289,6 +290,11 @@ public:
 
 	//time stamp
 	Void updateT(const SYSTEMTIME &t);
-};
+
+	Void setGps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
+		const int latSameDigit, const int lonSameDigit,
+		const int latWholeDigit, const int lonWholeDigit,
+		const int latPrecision, const int lonPrecision);
+
 #endif
 

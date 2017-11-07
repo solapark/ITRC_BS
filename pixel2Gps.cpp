@@ -35,6 +35,41 @@ pixel2Gps::pixel2Gps(
 	transMat = getPerspectiveTransform(pixel, gpsFloat);
 }
 
+void pixel2Gps::setGps(
+	const Point2f(&pixel)[4], const Point2d(&gps)[4],
+	const int latSameDigit, const int lonSameDigit,
+	const int latWholeDigit, const int lonWholeDigit,
+	const int latPrecision, const int lonPrecision)
+{
+	this->latPrecision = latPrecision;
+	this->lonPrecision = lonPrecision;
+
+	A = Mat(1, 1, CV_32FC2);
+	B = Mat(1, 1, CV_32FC2);
+	assert(lonWholeDigit - lonSameDigit <= 6 && latWholeDigit - latSameDigit <= 6 && "MUST wholeDigit-sameDigit <= 6");
+
+	Point2f gpsFloat[4];
+	uint64_t latInt, lonInt;
+	float latFloat, lonFloat;
+
+	for (int i = 0; i < 4; i++) {
+		latInt = gps[i].x * pow(10, latWholeDigit - 2);
+		lonInt = gps[i].y * pow(10, lonWholeDigit - 3);
+		//			cout << "lonInt ,latInt : " << lonInt << ", " << latInt << endl;
+		lonOffset = lonInt / pow(10, lonWholeDigit - lonSameDigit);
+		lonOffset *= pow(10, lonWholeDigit - lonSameDigit);
+		latOffset = latInt / pow(10, latWholeDigit - latSameDigit);
+		latOffset *= pow(10, latWholeDigit - latSameDigit);
+		//			cout << "lonOffset ,latOffset: " << lonOffset << ", " << latOffset << endl;
+		lonFloat = lonInt - lonOffset;
+		latFloat = latInt - latOffset;
+		cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
+		gpsFloat[i] = Point2f(lonFloat, latFloat);
+		//			cout << "gpsFloat[i] : " << gpsFloat[i] << endl;
+	}
+	transMat = getPerspectiveTransform(pixel, gpsFloat);
+}
+
 void pixel2Gps::getTargetGps64INT(const Point2f targetPixel, Point2l &targetGPSInt)
 {
 	Point2f targetGpsFloat;

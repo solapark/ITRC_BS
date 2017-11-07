@@ -89,6 +89,11 @@ int main() {
 #if IS_USE_PER_TRANS
 			myCarSnukt.FormTransBGM(tmpI, Trans_BL, Trans_BR, Trans_TR, Trans_TL, Trans_W, Trans_H);
 #endif
+#if PIXEL2GPS
+			Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
+			Point2f gps[4] = { gps0, gps1, gps2, gps3 };
+			myCarSnukt.set
+#endif
 #else
 			myCarSnukt.InputROIandPersMap(tmpI);
 #endif		
