@@ -2261,14 +2261,15 @@ inline Void CarSnukt::prepareSendData() {
 			camToCar* pCamToCar = & TrackObj[ID].dataCamToCar;
 			//id
 			pCamToCar->id = TrackObj[ID].vID;
+
 			//timestamp
 			pCamToCar->tStmp = t;
-			//long, lat
-			pCamToCar->longitude = TrackObj[ID].CenterImgPlane.x;
-			pCamToCar->latitude = TrackObj[ID].CenterImgPlane.y;
-//			pCamToCar->latitude = TrackObj[ID].CenterTrans.x + LON_OFFSET;
-//			pCamToCar->longitude = TrackObj[ID].CenterTrans.y + LAT_OFFSET;
 
+			//lat, lon
+			Point2l gps(0, 0);
+			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, gps);
+			pCamToCar->latitude = gps.x;
+			pCamToCar->longitude = gps.y;				
 			//vx, vy
 			pCamToCar->vx = 0;
 			pCamToCar->vy = 0;

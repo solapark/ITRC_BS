@@ -103,15 +103,15 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
 
-const Point2f pixel0(575, 380);
-const Point2f pixel1(486, 223);
-const Point2f pixel2(786, 232);
-const Point2f pixel3(1164, 301);
+const Point2f pixel0(547, 234);
+const Point2f pixel1(497, 117);
+const Point2f pixel2(83, 165);
+const Point2f pixel3(31, 342);
 
-const Point2d mapDouble0(36.9667088, 127.8716052);
-const Point2d mapDouble1(36.9665775, 127.8715658);
-const Point2d mapDouble2(36.9666157, 127.8714914);
-const Point2d mapDouble3(36.9667029, 127.8714487);
+const Point2d mapDouble0(36.9670609, 127.8717418);
+const Point2d mapDouble1(36.9673035, 127.8717672);
+const Point2d mapDouble2(36.9671451, 127.8715260);
+const Point2d mapDouble3(36.9669830, 127.8716165);
 
 
 #endif
@@ -232,7 +232,7 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			0
+#define DEBUG_RUNNING_TIME			1
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173

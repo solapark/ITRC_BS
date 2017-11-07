@@ -92,8 +92,6 @@ int main() {
 #if PIXEL2GPS
 			Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
 			Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
-			//Point2f pixel[4] = { Point2f(0, 0),};
-			//Point2d gps[4] = { Point2d(0, 0),};
 			myCarSnukt.setGps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
 #endif
 #else
@@ -216,8 +214,11 @@ int main() {
 					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
 			}
 			cout << "********************************************" << endl;
-
 		}
+		t_arr[i++] = clock();
+		cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
+
+
 #else
 		vector<camToCar> dataToSend;
 		size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
