@@ -91,8 +91,8 @@ int main() {
 #endif
 #if PIXEL2GPS
 			Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
-			Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
-			myCarSnukt.setGps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+			Point2f gps[4] = { gps0, gps1, gps2, gps3 };
+			myCarSnukt.set
 #endif
 #else
 			myCarSnukt.InputROIandPersMap(tmpI);
