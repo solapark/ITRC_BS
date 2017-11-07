@@ -108,6 +108,11 @@ const Point2f pixel1(486, 223);
 const Point2f pixel2(786, 232);
 const Point2f pixel3(1164, 301);
 
+const Point2d mapDouble0(36.9667088, 127.8716052);
+const Point2d mapDouble1(36.9665775, 127.8715658);
+const Point2d mapDouble2(36.9666157, 127.8714914);
+const Point2d mapDouble3(36.9667029, 127.8714487);
+
 
 #endif
 const uint32_t Trans_W = 500;
