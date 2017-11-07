@@ -16,13 +16,8 @@ public:
 		const int latWholeDigit, const int lonWholeDigit,
 		const int latPrecision, const int lonPrecision);
 
-	void setGps(
-		const Point2f(&pixel)[4], const Point2d(&gps)[4],
-		const int latSameDigit, const int lonSameDigit,
-		const int latWholeDigit, const int lonWholeDigit,
-		const int latPrecision, const int lonPrecision);
-
 	void getTargetGps64INT(const Point2f targetPixel, Point2l &targetGPSInt);
+
 	void getTargetGpsDouble(const Point2f targetPixel, Point2d &targetGPSDouble);
 
 private:
