@@ -14,7 +14,6 @@ private:
 	// ============================================
 	// ================	Variables  ================
 	// ============================================
-
 	Mat S[BGM_N];						// Statistic BGM candidates
 	uint8_t S_Idx;						// The index of the static BGM candidates
 	uint8_t S_U_Idx;					// The index of the oldest BGM candidate
@@ -221,7 +220,7 @@ public:
 	TrackedObject TrackObj[LIVE_OBJECT_SIZE];		// The structs that store all priciple information of tracked large MVOs
 	Mat LiveObjList;								// The indices of current live tracking objects
 	vector<Mat> SmallObjectROI;						// The bounding boxes of the samll objects
-	
+
 	// ============================================
 	// ================	Functions  ================
 	// ============================================
@@ -241,7 +240,7 @@ public:
 		*/
 	Void LoadBG(Mat firstFrame);
 	Void LoadBG(void);
-	bool isBGLoaded(void){ return isBLoaded; }
+	bool isBGLoaded(void) { return isBLoaded; }
 
 	/*
 		@Brief: Update the background model
@@ -295,6 +294,7 @@ public:
 		const int latSameDigit, const int lonSameDigit,
 		const int latWholeDigit, const int lonWholeDigit,
 		const int latPrecision, const int lonPrecision);
+}
 
 #endif
 
