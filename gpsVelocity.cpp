@@ -55,10 +55,10 @@ void gpsVelocity::getVelocity(const uint64_t timeMs, const int32_t curLatInt, co
 		//lonVelInt = lonDist / (timeMs / 1000) * velFactor;
 		cout << "latVelInt, latVelInt: " << latDist / abs(((double)30 / 1000) * velFactor) << " m/s, " << abs(((double)30 / 1000) * velFactor) << " m/s" << endl;
 		//assert(abs(latDist / ((double)30 / 1000) * velFactor) < INT16_MAX && abs(lonDist / ((double)30 / 1000) * velFactor) < INT16_MAX && "velocity overflow");
-		if (latDist / abs(((double)30 / 1000) * velFactor) > INT16_MAX || lonDist / abs(((double)30 / 1000) * velFactor) > INT16_MAX)
+		if (abs(latDist / ((double)30 / 1000) * velFactor) > INT16_MAX || abs(lonDist / ((double)30 / 1000) * velFactor) > INT16_MAX)
 		{
-			latVelInt = 32700;
-			lonVelInt = 32700;
+			latVelInt = INT16_MAX;
+			lonVelInt = INT16_MAX;
 		}
 		else
 		{
