@@ -28,10 +28,11 @@
 #include <opencv2/ml/ml.hpp>
 #include <opencv2/video/tracking.hpp>
 
-#include "camToCar.h"	//send data
-#include "timeStamp.h"	//time stamp 
-#include "pixel2Gps.h"	//gps
-#include "gps2Pixel.h"	//gps
+#include "camToCar.h"		//send data
+#include "timeStamp.h"		//time stamp 
+#include "pixel2Gps.h"		//gps
+#include "gps2Pixel.h"		//gps
+#include "gpsDistance.h"	//velocity
 
 using namespace cv;
 using namespace std;
