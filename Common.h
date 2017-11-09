@@ -32,7 +32,7 @@
 #include "timeStamp.h"		//time stamp 
 #include "pixel2Gps.h"		//gps
 #include "gps2Pixel.h"		//gps
-#include "gpsDistance.h"	//velocity
+#include "gpsVelocity.h"	//velocity
 
 using namespace cv;
 using namespace std;
@@ -52,8 +52,8 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						0			  
-#define CAMERA						1 
+#define VIDEO						1			  
+#define CAMERA						0 
 #define IP_CAM_NUM					182
 
 // Image size
@@ -112,9 +112,9 @@ CarSnukt detector
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
-#define DEBUG_GPS					0
+#define DEBUG_GPS					1
 
-#define DEBUG_IMG_IDX				0
+#define DEBUG_IMG_IDX				1
 #define TARGET_IMG_IDX				173
 
 #define SAVE_NEW_BG					0
@@ -193,8 +193,9 @@ const Point2d mapDouble3(36.9669830, 127.8716165);
 #define LAT_PRECISION						7
 #define LON_PRECISION						7
 #endif
-
 #endif
+
+#define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
 

@@ -59,6 +59,10 @@ int main() {
 	while (!isStop)
 #endif
 	{
+#if DEBUG_IMG_IDX
+		cout << "ImgIdx : "<<ImgIdx << endl;
+#endif
+
 #if DEBUG_RUNNING_TIME
 		clock_t t_arr[100];
 		int i = 0;
@@ -224,11 +228,22 @@ int main() {
 					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
 #if DEBUG_GPS
 				myCarSnukt.getTargetPixel(Point2l(dataToSend[i].latitude, dataToSend[i].longitude), targetPixel);
+				myCarSnukt.TrackObj[i].CenterImgPlane;
 				circle(IforGPS, targetPixel, 1, Scalar(0, 255, 0), 3);
 #endif
 			}
 			cout << "********************************************" << endl;
 #if DEBUG_GPS
+			if (countNonZero(myCarSnukt.LiveObjList) > 0)
+			{
+				vector<Point2i> NonZ;
+				findNonZero(myCarSnukt.LiveObjList, NonZ);
+				for (size_t i = 0; i < NonZ.size(); i++)
+				{
+					uint8_t ID = NonZ.at(i).x;
+					circle(IforGPS, myCarSnukt.TrackObj[ID].CenterImgPlane, 1.5, Scalar(0, 0, 255), 3); //red
+				}
+			}
 			imshow("gpsTest", IforGPS);
 			waitKey(1);
 #endif

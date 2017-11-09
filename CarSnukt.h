@@ -80,6 +80,8 @@ private:
 		uint32_t NumOfHisPt;
 
 		camToCar dataCamToCar;
+		gpsVelocity gpsVel;
+
 	};
 
 
@@ -302,6 +304,7 @@ public:
 		const int latPrecision, const int lonPrecision);
 
 	Void getTargetPixel(Point2l& gps, Point2f& targetPixel);
+
 };
 #endif
 

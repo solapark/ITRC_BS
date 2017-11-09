@@ -41,6 +41,11 @@ CarSnukt::CarSnukt()
 	LiveObjList = Mat::zeros(1, LIVE_OBJECT_SIZE, CV_8UC1);
 	NewTrackObj = 0;
 	vID = MVO_VIRTUAL_ID_START;
+
+	for (int i = 0; i < LIVE_OBJECT_SIZE; i++) {
+		TrackObj[i].gpsVel.setPrecision(LAT_PRECISION, LON_PRECISION, VEL_PRECISION);
+	}
+
 }
 
 //need to study -sola
@@ -1265,6 +1270,10 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 	// update the center in the image plane
 	TrackObj[NewTrackObj].CenterImgPlane = TrackObj[NewTrackObj].HisPos[HIS_POS_SIZE - 1];
 
+	// to calculate the gps Velocity
+	TrackObj[NewTrackObj].gpsVel.resetIsFirstMoment();
+
+
 #if IS_USE_PER_TRANS && TRANSFORM_CENTER_POINT
 	// The center for the transformed p
 	TrackObj[NewTrackObj].CenterTrans = TransformPoint(TrackObj[NewTrackObj].CenterImgPlane);
@@ -1332,6 +1341,7 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 			//assert(NewIDFindIter <= LIVE_OBJECT_SIZE && "Cant not find a new ID");
 		}
 	}
+
 }
 
 inline Void CarSnukt::SmallROIRefine(vector<bool> &isLargeObject, vector<Mat> &MVO_ROI, vector<Mat> &SmallObjectROI)
@@ -2244,14 +2254,15 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
-	waitKey(1);
+	waitKey(0);
 }
 
 inline Void CarSnukt::prepareSendData() {
 	int numOfObj = countNonZero(LiveObjList);
 	uint64_t t, intervalT;
 	time.getCurT(t);
-	time.getCurT(intervalT);
+	time.getTDiff(intervalT);
+	Point2l curGps(0, 0);
 
 	if (numOfObj > 0) {
 		Mat NonZ;
@@ -2266,16 +2277,16 @@ inline Void CarSnukt::prepareSendData() {
 			pCamToCar->tStmp = t;
 
 			//lat, lon
-			Point2l gps(0, 0);
-			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, gps);
-			pCamToCar->latitude = gps.x;
-			pCamToCar->longitude = gps.y;
+			int32_t pastLat, pastLon;
+			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, curGps);
+			pastLat = pCamToCar->latitude;
+			pastLon = pCamToCar->longitude;
+			pCamToCar->latitude = curGps.x;
+			pCamToCar->longitude = curGps.y;
 
 			//vx, vy
-			pCamToCar->vx = 0;
-			pCamToCar->vy = 0;
-//			pCamToCar->vx = (TrackObj[ID].CenterImgPlane.x - TrackObj[ID].HisPos->x) / intervalT * (0.1/0.001);
-//			pCamToCar->vy = (TrackObj[ID].CenterImgPlane.y - TrackObj[ID].HisPos->y) / intervalT * (0.1 / 0.001);
+			TrackObj[ID].gpsVel.getVelocity(intervalT, pCamToCar->latitude, pCamToCar->longitude, pCamToCar->vx, pCamToCar->vy);
+
 		}
 	}
 }
