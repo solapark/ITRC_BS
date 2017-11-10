@@ -192,6 +192,10 @@ const Point2d mapDouble3(36.9669830, 127.8716165);
 #define LON_WHOLE_DIGIT						10
 #define LAT_PRECISION						7
 #define LON_PRECISION						7
+
+//to calculate velocity
+#define VELOCITY_LIMIT						5500			
+
 #endif
 #endif
 

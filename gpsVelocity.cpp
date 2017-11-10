@@ -15,10 +15,12 @@ gpsVelocity::gpsVelocity(const int latPrcsn, const int lonPrcsn, const int velPr
 
 }
 
-void gpsVelocity::setPrecision(const int latPrcsn, const int lonPrcsn, const int velPrcsn) {
+void gpsVelocity::setGpsVelocity(const int latPrcsn, const int lonPrcsn, const int velPrcsn, const int16_t velLimit) {
 	latDivider = pow(10, latPrcsn);
 	lonDivider = pow(10, lonPrcsn);
 	velFactor = pow(10, velPrcsn);
+	this->velLimit = velLimit;
+	
 	//cout << "latDiver : " << latDivider << endl;
 	//cout << "lonDiver : " << lonDivider << endl;
 	//cout << "velFoctor: " << velFactor << endl;
@@ -27,15 +29,18 @@ void gpsVelocity::setPrecision(const int latPrcsn, const int lonPrcsn, const int
 void gpsVelocity::resetIsFirstMoment()
 {
 	isFirstMoment = true;
+	wholeTime = 0;
 }
 
 void gpsVelocity::getVelocity(const uint64_t timeMs, const int32_t curLatInt, const int32_t curLonInt, int16_t &latVelInt, int16_t &lonVelInt) {
 	if (isFirstMoment) {
 //		cout << "isFirstMoment "<< endl;
-		latVelInt = 0;
-		lonVelInt = 0;
+		latVelInt16 = latVelInt = 0;
+		lonVelInt16 = lonVelInt = 0;
 		pastLat = curLatInt / latDivider;
 		pastLon = curLonInt / lonDivider;
+		//wholeTime += timeMs;
+		wholeTime += 30;
 		isFirstMoment = false;
 	}
 	else {
@@ -51,27 +56,41 @@ void gpsVelocity::getVelocity(const uint64_t timeMs, const int32_t curLatInt, co
 		//cout << "timeMs : " << timeMs << endl;
 		cout.precision(11);
 		cout << "latDist , lonDist : " << latDist << " m, " << lonDist << " m"<< endl;
-		//latVelInt = latDist / (timeMs / 1000) * velFactor;
-		//lonVelInt = lonDist / (timeMs / 1000) * velFactor;
-		cout << "latVelInt, latVelInt: " << latDist / abs(((double)30 / 1000) * velFactor) << " m/s, " << abs(((double)30 / 1000) * velFactor) << " m/s" << endl;
-		//assert(abs(latDist / ((double)30 / 1000) * velFactor) < INT16_MAX && abs(lonDist / ((double)30 / 1000) * velFactor) < INT16_MAX && "velocity overflow");
-		if (abs(latDist / ((double)30 / 1000) * velFactor) > INT16_MAX || abs(lonDist / ((double)30 / 1000) * velFactor) > INT16_MAX)
-		{
-			latVelInt = INT16_MAX;
-			lonVelInt = INT16_MAX;
+	
+		//wholeTime += timeMs;
+		wholeTime += 30;
+
+		if (latDist == 0 && lonDist == 0) {
+			latVelInt = latVelInt16;
+			lonVelInt = lonVelInt16;
 		}
-		else
-		{
-			latVelInt = latDist / ((double)30 / 1000) * velFactor;
-			lonVelInt = lonDist / ((double)30 / 1000) * velFactor;
+		else {
+			latVelInt32 = latDist / ((double)wholeTime / 1000)*velFactor;
+			lonVelInt32 = lonDist / ((double)wholeTime / 1000)*velFactor;
+			if (abs(latVelInt32) > velLimit || abs(lonVelInt32) > velLimit)
+			{
+				latVelInt16 = latVelInt = INT16_MAX;
+				lonVelInt16 = lonVelInt = INT16_MAX;
+			}
+			else
+			{
+				latVelInt16 = latVelInt = latVelInt32;
+				lonVelInt16 = lonVelInt = lonVelInt32;
+			}
+			wholeTime = 0;
 		}
-		//cout << "latVelInt, lonDist : " << latVelInt << " 10^-2 m/s, " << lonVelInt << " 10^-2 m/s" << endl;
-		cout << "latVelInt, lonDist : " << latVelInt << " m/s, " << lonVelInt << " m/s" << endl;
+		cout << "latVelInt, lonVelInt : " << latVelInt << " m/s, " << lonVelInt << " m/s" << endl;
 		pastLat = curLat;
 		pastLon = curLon;
 	}
 
 }
+
+void gpsVelocity::getVelocity(int16_t &latVelInt, int16_t &lonVelInt) {
+	latVelInt = latVelInt16;
+	lonVelInt = lonVelInt16;
+}
+
 
 /**
 * Returns the distance between two points on the Earth.

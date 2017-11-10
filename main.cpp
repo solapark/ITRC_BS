@@ -209,7 +209,6 @@ int main() {
 #if DEBUG_GPS
 		Mat IforGPS = I;
 		Point2f targetPixel;
-
 #endif
 #if	WAIT_BGM_BUILD
 		if (numberOfSkip == 1) {
@@ -230,6 +229,8 @@ int main() {
 				myCarSnukt.getTargetPixel(Point2l(dataToSend[i].latitude, dataToSend[i].longitude), targetPixel);
 				myCarSnukt.TrackObj[i].CenterImgPlane;
 				circle(IforGPS, targetPixel, 1, Scalar(0, 255, 0), 3);
+				String vel = to_string(dataToSend[i].vx) + " " + to_string(dataToSend[i].vy);
+ 				putText(IforGPS, vel, Point(targetPixel.x-10, targetPixel.y+10), 1, 1, Scalar(0, 255, 0), 2); //red
 #endif
 			}
 			cout << "********************************************" << endl;

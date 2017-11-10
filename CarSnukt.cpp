@@ -43,7 +43,7 @@ CarSnukt::CarSnukt()
 	vID = MVO_VIRTUAL_ID_START;
 
 	for (int i = 0; i < LIVE_OBJECT_SIZE; i++) {
-		TrackObj[i].gpsVel.setPrecision(LAT_PRECISION, LON_PRECISION, VEL_PRECISION);
+		TrackObj[i].gpsVel.setGpsVelocity(LAT_PRECISION, LON_PRECISION, VEL_PRECISION, VELOCITY_LIMIT);
 	}
 
 }

@@ -14,9 +14,10 @@ class gpsVelocity {
 public:
 	gpsVelocity();
 	gpsVelocity(const int latPrcsn, const int lonPrcsn, const int velPrcsn);
-	void setPrecision(const int latPrcsn, const int lonPrcsn, const int velPrcsn);
+	void setGpsVelocity(const int latPrcsn, const int lonPrcsn, const int velPrcsn, const int16_t velLimit);
 	void resetIsFirstMoment();
 	void getVelocity(const uint64_t timeMs, const int32_t lat2Int, const int32_t lon2Int, int16_t &latVelInt, int16_t &lonVelInt);
+	void getVelocity(int16_t &latVelInt, int16_t &lonVelInt);
 
 private:
 	bool isFirstMoment;
@@ -24,6 +25,10 @@ private:
 	double latDivider, lonDivider;
 	int velFactor;
 	int velFactorWs;
+	int32_t latVelInt32, lonVelInt32;
+	int16_t latVelInt16, lonVelInt16;
+	uint64_t wholeTime;
+	int16_t velLimit;
 
 	double gpsDist(const double lat1d, const double lon1d, double const lat2d, double const lon2d);
 	double deg2rad(const double deg);
