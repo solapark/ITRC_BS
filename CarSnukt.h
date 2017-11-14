@@ -303,7 +303,7 @@ public:
 		const int latWholeDigit, const int lonWholeDigit,
 		const int latPrecision, const int lonPrecision);
 
-	Void getTargetPixel(Point2l& gps, Point2f& targetPixel);
+	Void getTargetPixel(Point2l& gps, Point2d& targetPixel);
 
 };
 #endif

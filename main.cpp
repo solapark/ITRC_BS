@@ -205,10 +205,10 @@ int main() {
 		}
 #endif 
 
-#if SEND_DATA
+#if DEBUG_SEND_DATA
 #if DEBUG_GPS
 		Mat IforGPS = I;
-		Point2f targetPixel;
+		Point2d targetPixel;
 #endif
 #if	WAIT_BGM_BUILD
 		if (numberOfSkip == 1) {

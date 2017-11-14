@@ -29,59 +29,84 @@ void gpsVelocity::setGpsVelocity(const int latPrcsn, const int lonPrcsn, const i
 void gpsVelocity::resetIsFirstMoment()
 {
 	isFirstMoment = true;
-	wholeTime = 0;
+	latWholeTime = 0;
+	lonWholeTime = 0;
 }
 
 void gpsVelocity::getVelocity(const uint64_t timeMs, const int32_t curLatInt, const int32_t curLonInt, int16_t &latVelInt, int16_t &lonVelInt) {
 	if (isFirstMoment) {
-//		cout << "isFirstMoment "<< endl;
 		latVelInt16 = latVelInt = 0;
 		lonVelInt16 = lonVelInt = 0;
 		pastLat = curLatInt / latDivider;
 		pastLon = curLonInt / lonDivider;
-		//wholeTime += timeMs;
-		wholeTime += 30;
+		//latWholeTime += 30;
+		//lonWholeTime += 30;
+		//latWholeTime += timeMs;
+		//lonWholeTime += timeMs;
 		isFirstMoment = false;
 	}
 	else {
 		curLat = curLatInt / latDivider;
 		curLon = curLonInt / lonDivider;
 		cout.precision(10);
-		cout << "***************" << endl;
-		//cout << "timeMs : "<< timeMs << endl;
-		cout << "pastLat, pastLon : " << pastLat << ", " << pastLon << endl;
-		cout << "curLat, curLon : " << curLat << ", " << curLon << endl;
 		double latDist = gpsDist(pastLat, 0, curLat, 0);
 		double lonDist = gpsDist(0, pastLon, 0, curLon);
-		//cout << "timeMs : " << timeMs << endl;
-		cout.precision(11);
-		cout << "latDist , lonDist : " << latDist << " m, " << lonDist << " m"<< endl;
-	
-		//wholeTime += timeMs;
-		wholeTime += 30;
 
-		if (latDist == 0 && lonDist == 0) {
-			latVelInt = latVelInt16;
-			lonVelInt = lonVelInt16;
+		//latWholeTime += timeMs;
+		//lonWholeTime += timeMs;
+		latWholeTime = timeMs;
+		lonWholeTime = timeMs;
+		//latWholeTime = 30;
+		//lonWholeTime = 30;
+		latVelInt32 = latDist / ((double)latWholeTime / 1000)*velFactor;
+		lonVelInt32 = lonDist / ((double)lonWholeTime / 1000)*velFactor;
+
+		if (abs(latVelInt32) > velLimit || abs(lonVelInt32) > velLimit) {
+			//	//cout << "error" << endl;
+			latVelInt16 = latVelInt = 0;
+			lonVelInt16 = lonVelInt = 0;
+			isFirstMoment = true;
 		}
 		else {
-			latVelInt32 = latDist / ((double)wholeTime / 1000)*velFactor;
-			lonVelInt32 = lonDist / ((double)wholeTime / 1000)*velFactor;
-			if (abs(latVelInt32) > velLimit || abs(lonVelInt32) > velLimit)
-			{
-				latVelInt16 = latVelInt = INT16_MAX;
-				lonVelInt16 = lonVelInt = INT16_MAX;
-			}
-			else
-			{
-				latVelInt16 = latVelInt = latVelInt32;
-				lonVelInt16 = lonVelInt = lonVelInt32;
-			}
-			wholeTime = 0;
+			latVelInt16 = latVelInt = latVelInt32;
+			lonVelInt16 = lonVelInt = lonVelInt32;
+			pastLat = curLat;
+			pastLon = curLon;
 		}
-		cout << "latVelInt, lonVelInt : " << latVelInt << " m/s, " << lonVelInt << " m/s" << endl;
-		pastLat = curLat;
-		pastLon = curLon;
+
+		//if (abs(latVelInt32) > velLimit || abs(lonVelInt32) > velLimit ) {
+		//	//cout << "error" << endl;
+		//	latVelInt16 = latVelInt = 0;
+		//	lonVelInt16 = lonVelInt = 0;
+		//	latWholeTime = 0;
+		//	lonWholeTime = 0;
+		//}
+		//else 
+		//{
+		//	if (latVelInt32 == 0 && lonVelInt32 == 0) {//use past velocity
+		//		latVelInt = latVelInt16;
+		//		lonVelInt = lonVelInt16;
+		//	}
+		//	else if (latVelInt32 == 0) {
+		//		latVelInt = latVelInt16;
+		//		lonVelInt16 = lonVelInt = lonVelInt32;
+		//		lonWholeTime = 0;
+		//	}
+		//	else if (lonVelInt32 == 0) {
+		//		lonVelInt = lonVelInt16;
+		//		latVelInt16 = latVelInt = latVelInt32;
+		//		latWholeTime = 0;
+		//	}
+		//	else
+		//	{
+		//		latVelInt16 = latVelInt = latVelInt32;
+		//		lonVelInt16 = lonVelInt = lonVelInt32;
+		//		latWholeTime = 0;
+		//		lonWholeTime = 0;
+		//	}
+		//}
+
+		//cout << "latVelInt, lonVelInt : " << latVelInt << " m/s, " << lonVelInt << " m/s" << endl;
 	}
 
 }

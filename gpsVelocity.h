@@ -27,7 +27,7 @@ private:
 	int velFactorWs;
 	int32_t latVelInt32, lonVelInt32;
 	int16_t latVelInt16, lonVelInt16;
-	uint64_t wholeTime;
+	uint64_t latWholeTime, lonWholeTime;
 	int16_t velLimit;
 
 	double gpsDist(const double lat1d, const double lon1d, double const lat2d, double const lon2d);

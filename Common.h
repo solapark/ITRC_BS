@@ -52,8 +52,8 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						1			  
-#define CAMERA						0 
+#define VIDEO						0			  
+#define CAMERA						1 
 #define IP_CAM_NUM					182
 
 // Image size
@@ -106,6 +106,7 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
+#define DEBUG_SEND_DATA				1
 
 //sola
 #define DEBUG_SUB					0
@@ -114,7 +115,7 @@ CarSnukt detector
 #define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					1
 
-#define DEBUG_IMG_IDX				1
+#define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
 
 #define SAVE_NEW_BG					0

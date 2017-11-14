@@ -2254,7 +2254,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
-	waitKey(0);
+	waitKey(1);
 }
 
 inline Void CarSnukt::prepareSendData() {
@@ -2336,7 +2336,7 @@ Void CarSnukt::setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
 	gps2pixel.setGps2Pixel(gps, pixel, latSameDigit, lonSameDigit, latWholeDigit, lonWholeDigit, latPrecision, lonPrecision);
 }
 
-Void CarSnukt::getTargetPixel(Point2l& gps, Point2f& targetPixel) 
+Void CarSnukt::getTargetPixel(Point2l& gps, Point2d& targetPixel) 
 {
 	gps2pixel.getTargetPixel(gps, targetPixel);
 }

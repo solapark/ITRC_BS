@@ -1,5 +1,3 @@
-#include "stdafx.h"
-#pragma once
 #ifndef _PIXEL2GPS_H
 #define _PIXEL2GPS_H
 #include <opencv2/imgproc/imgproc.hpp>
@@ -28,8 +26,9 @@ public:
 
 private:
 	Mat A, B, transMat;
+	double transArr[3][3];
 	uint64_t lonOffset, latOffset;
 	int lonPrecision, latPrecision;
-	void calcTargetGps(const Point2f targetPixel, Point2f &targetGPS);
+	void calcTargetGps(const Point2f targetPixel, Point2d &targetGPS);
 };
 #endif // !_PIXEL2GPS_H

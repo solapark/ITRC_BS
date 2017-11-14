@@ -11,6 +11,8 @@ pixel2Gps::pixel2Gps(
 {
 	A = Mat(1, 1, CV_32FC2);
 	B = Mat(1, 1, CV_32FC2);
+	transMat = Mat(3, 3, CV_64F);
+
 	assert(lonWholeDigit - lonSameDigit <= 6 && latWholeDigit - latSameDigit <= 6 && "MUST wholeDigit-sameDigit <= 6");
 
 	Point2f gpsFloat[4];
@@ -29,10 +31,17 @@ pixel2Gps::pixel2Gps(
 		lonFloat = lonInt - lonOffset;
 		latFloat = latInt - latOffset;
 		//cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
-		gpsFloat[i] = Point2f(lonFloat, latFloat);
+		gpsFloat[i] = Point2f(latFloat, lonFloat);
 		//			cout << "gpsFloat[i] : " << gpsFloat[i] << endl;
 	}
 	transMat = getPerspectiveTransform(pixel, gpsFloat);
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			transArr[i][j] = transMat.at<double>(i, j);
+			//			cout << transArr[i][j] << endl;
+		}
+	}
+
 }
 
 void pixel2Gps::setGps(
@@ -46,6 +55,7 @@ void pixel2Gps::setGps(
 
 	A = Mat(1, 1, CV_32FC2);
 	B = Mat(1, 1, CV_32FC2);
+	transMat = Mat(3, 3, CV_64F);
 	assert(lonWholeDigit - lonSameDigit <= 6 && latWholeDigit - latSameDigit <= 6 && "MUST wholeDigit-sameDigit <= 6");
 
 	Point2f gpsFloat[4];
@@ -64,20 +74,27 @@ void pixel2Gps::setGps(
 		lonFloat = lonInt - lonOffset;
 		latFloat = latInt - latOffset;
 		//cout << "lonFloat ,latFloat: " << lonFloat << ", " << latFloat << endl;
-		gpsFloat[i] = Point2f(lonFloat, latFloat);
+		gpsFloat[i] = Point2f(latFloat, lonFloat);
 		//			cout << "gpsFloat[i] : " << gpsFloat[i] << endl;
 	}
 	transMat = getPerspectiveTransform(pixel, gpsFloat);
+	//	cout << "transMat : " << transMat << endl;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			transArr[i][j] = transMat.at<double>(i, j);
+			//			cout << transArr[i][j] << endl;
+		}
+	}
 }
 
 
 void pixel2Gps::getTargetGps64INT(const Point2f targetPixel, Point2l &targetGPSInt)
 {
-	Point2f targetGpsFloat;
-	calcTargetGps(targetPixel, targetGpsFloat);
+	Point2d targetGpsDouble;
+	calcTargetGps(targetPixel, targetGpsDouble);
 	//		cout << "targetGpsFloat : " << targetGpsFloat << endl;
-	targetGPSInt.x = targetGpsFloat.y + latOffset;
-	targetGPSInt.y = targetGpsFloat.x + lonOffset;
+	targetGPSInt.x = targetGpsDouble.x + latOffset;
+	targetGPSInt.y = targetGpsDouble.y + lonOffset;
 	//cout << "targetGPSInt : " << targetGPSInt << endl;
 }
 
@@ -88,12 +105,19 @@ void pixel2Gps::getTargetGpsDouble(const Point2f targetPixel, Point2d &targetGPS
 	targetGPSDouble.x = targetGpsInt.x / (double)pow(10, latPrecision);
 	targetGPSDouble.y = targetGpsInt.y / (double)pow(10, lonPrecision);
 	cout.precision(10);
-	//cout << "targetGPSDouble : " << targetGPSDouble << endl;
+	cout << "targetGPSDouble : " << targetGPSDouble << endl;
 
 }
 
-void pixel2Gps::calcTargetGps(const Point2f targetPixel, Point2f &targetGPS) {
-	A.at<Point2f>(0) = targetPixel;
-	perspectiveTransform(A, B, transMat);
-	targetGPS = (Point2f)B.at<Point2f>(0);
+void pixel2Gps::calcTargetGps(const Point2f targetPixel, Point2d &targetGPS) {
+	float xOrg = targetPixel.x;
+	float yOrg = targetPixel.y;
+
+	double w = transArr[2][0] * xOrg + transArr[2][1] * yOrg + transArr[2][2];
+
+	double xp = round((transArr[0][0] * xOrg + transArr[0][1] * yOrg + transArr[0][2]) / w);
+	double yp = round((transArr[1][0] * xOrg + transArr[1][1] * yOrg + transArr[1][2]) / w);
+	//cout << "xp : " << xp << ", " << "yp : " << yp << endl;
+	targetGPS.x = xp;
+	targetGPS.y = yp;
 }
