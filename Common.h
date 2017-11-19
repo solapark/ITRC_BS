@@ -34,6 +34,9 @@
 #include "gps2Pixel.h"		//gps
 #include "gpsVelocity.h"	//velocity
 
+//autoCar Detection
+#include "yolo_v2_class.hpp"
+
 using namespace cv;
 using namespace std;
 using namespace ml;
