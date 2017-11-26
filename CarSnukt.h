@@ -56,6 +56,9 @@ private:
 	int NewTrackObj;					// New track object ID
 	int32_t	vID;						//virtual MVO ID for ITRC project
 
+	int NewAutoTrackObj;				//New Auto Car track ID
+	int32_t autoVID;					//virtual Auto car ID for ITRC project
+
 	// ============================================
 	// ================= Structs  =================
 	// ============================================
@@ -84,6 +87,15 @@ private:
 
 	};
 
+	struct AutoCar				// The structs that store all principle information of tracked large-MVOs
+	{
+		Point2i CenterImgPlane;
+		uint8_t SoftID;
+		int32_t vID;
+
+		camToCar dataCamToCar;
+		gpsVelocity gpsVel;
+	};
 
 	Mat TransBGM;
 	Mat TransMat;
@@ -223,7 +235,10 @@ public:
 	TrackedObject TrackObj[LIVE_OBJECT_SIZE];		// The structs that store all priciple information of tracked large MVOs
 	Mat LiveObjList;								// The indices of current live tracking objects
 	vector<Mat> SmallObjectROI;						// The bounding boxes of the samll objects
-	
+	AutoCar autoCar[LIVE_AUTO_CAR_SIZE];
+	Mat LiveAutoCarjList;							// The indices of current live tracking objects
+
+
 	// ============================================
 	// ================	Functions  ================
 	// ============================================

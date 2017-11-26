@@ -37,8 +37,9 @@ CarSnukt::CarSnukt()
 	S_Idx = 0;
 	S_U_Idx = 0;
 
-	// Tracking
+	// MVO Tracking
 	LiveObjList = Mat::zeros(1, LIVE_OBJECT_SIZE, CV_8UC1);
+
 	NewTrackObj = 0;
 	vID = MVO_VIRTUAL_ID_START;
 
@@ -46,6 +47,14 @@ CarSnukt::CarSnukt()
 		TrackObj[i].gpsVel.setGpsVelocity(LAT_PRECISION, LON_PRECISION, VEL_PRECISION, VELOCITY_LIMIT);
 	}
 
+	// Auto Car Tracking
+	LiveAutoCarjList = Mat::zeros(1, LIVE_AUTO_CAR_SIZE, CV_8UC1);
+	
+	NewAutoTrackObj = 0;
+	autoVID = AUTO_CAR_VIRTUAL_ID_START;
+	for (int i = 0; i < LIVE_AUTO_CAR_SIZE; i++) {
+		autoCar[i].gpsVel.setGpsVelocity(LAT_PRECISION, LON_PRECISION, VEL_PRECISION, VELOCITY_LIMIT);
+	}
 }
 
 //need to study -sola

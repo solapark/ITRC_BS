@@ -35,7 +35,7 @@
 #include "gpsVelocity.h"	//velocity
 
 //autoCar Detection
-#include "yolo_v2_class.hpp"
+//#include "yolo_v2_class.hpp"
 
 using namespace cv;
 using namespace std;
@@ -55,8 +55,8 @@ typedef       float					Float;
 
 // Type of input (enable for an input only)
 #define STATIC_IMAGE				0			  
-#define VIDEO						0			  
-#define CAMERA						1 
+#define VIDEO						1			  
+#define CAMERA						0 
 #define IP_CAM_NUM					182
 
 // Image size
@@ -74,8 +74,10 @@ Perspective transformation
 /*
 CarSnukt detector
 */
-#define MVO_VIRTUAL_ID_START				2000 //autoBus = 1000~1999, MVO = 2000~2999
+#define MVO_VIRTUAL_ID_START				2000 //autoCar = 1000~1999, MVO = 2000~2999
 #define MOV_VIRTUAL_ID_END					2999
+#define AUTO_CAR_VIRTUAL_ID_START			1000
+#define AUTO_CAR_VIRTUAL_ID_END				1999
 
 // Flags
 #define BGM_FIRST_BUILD				1					// use the 1st frame for background. 
@@ -255,9 +257,10 @@ const uint32_t Trans_H = 450;
 #define STORE_MVO					0				 
 #define TRAIN_MODEL					0
 
-// Tracking for MVO
+// Tracking for MVO & autoCar
 #define HIS_POS_SIZE				15
 #define LIVE_OBJECT_SIZE			100
+#define LIVE_AUTO_CAR_SIZE			1
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
