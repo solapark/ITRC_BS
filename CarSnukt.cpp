@@ -2299,34 +2299,38 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	//1. crop roi
 	Mat roiImg = img(Range(curROI.at<int>(2), curROI.at<int>(3) + 1),
 		Range(curROI.at<int>(0), curROI.at<int>(1) + 1));
+#if DEBUG_AUTO_CAR_DETECTION
 	namedWindow("roiImg", WINDOW_NORMAL);
 	resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
 	imshow("roiImg", roiImg);
 	waitKey();
-
+#endif
 	//2. color detection
 	Mat thrImg;
 	colDet.getThrImg(roiImg, thrImg);
+#if DEBUG_AUTO_CAR_DETECTION
 	namedWindow("thrImg", WINDOW_NORMAL);
 	resizeWindow("thrImg", thrImg.cols*1.5, thrImg.rows * 1.5);
 	imshow("thrImg", thrImg);
 	waitKey();
 
-//	colDet.showResult();
 	namedWindow("curSEG", WINDOW_NORMAL);
 	resizeWindow("curSEG", curSEG.cols*1.5, curSEG.rows * 1.5);
 	imshow("curSEG", curSEG);
 	waitKey();
+#endif
 
 	//3. find intersection of SEG & COLOR
 	Mat interSec;
 	cv::bitwise_and(curSEG, thrImg, interSec);
+#if DEBUG_AUTO_CAR_DETECTION
 	namedWindow("interSec", WINDOW_NORMAL);
 	resizeWindow("interSec", interSec.cols*1.5, interSec.rows * 1.5);
 	imshow("interSec", interSec);
 	waitKey();
 
 	destroyAllWindows();
+#endif
 
 	//4. count intersection pixel.
 	int interSecCnt = countNonZero(interSec);

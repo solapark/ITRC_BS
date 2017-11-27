@@ -37,7 +37,7 @@ int main() {
 #if STATIC_IMAGE
 	char ImgName[100];
 	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
-	//cout << ImgName << endl;
+	cout << ImgName << endl;
 	firstFrame = imread(ImgName);
 #elif VIDEO||CAMERA
 	cap >> firstFrame;

@@ -120,6 +120,7 @@ CarSnukt detector
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					0
+#define	DEBUG_AUTO_CAR_DETECTION	0
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
@@ -148,12 +149,12 @@ CarSnukt detector
 #define CAM_ID						"rtsp://admin:1234@222.116.156.177/video1"
 #define VIDEO_FILE					"data/182_170929.avi"
 //#define VIDEO_FILE					"data/1.avi"
-#define DATASET_DIR					"data/177/177_20171123104137"
+#define DATASET_DIR					"data/177/177_20171123104137_"
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
 #define BG_FILE						"data/bus_bg.jpg"
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
-#define FIRST_IMG_IDX				376
+#define FIRST_IMG_IDX				0
 #define LAST_IMG_IDX				998
 
 #if STATIC_ROI
