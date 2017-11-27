@@ -103,6 +103,7 @@ private:
 	timeStamp time;
 	pixel2Gps pixel2gps;
 	gps2Pixel gps2pixel;
+	colorDetector colDet;
 	// ============================================
 	// ================	Functions  ================
 	// ============================================
@@ -224,6 +225,9 @@ private:
 
 	inline Void prepareSendData();
 
+	inline bool isAutoCar(const Mat &img, const Mat& curSEG, const Mat &curROI, int &colCnt);
+
+
 
 protected:
 public:
@@ -319,6 +323,8 @@ public:
 		const int latPrecision, const int lonPrecision);
 
 	Void getTargetPixel(Point2l& gps, Point2d& targetPixel);
+
+	Void detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const vector<Mat> &mvoRoi, vector<bool> &isLargeObj, vector<bool> &isAutoCarVec);
 
 };
 #endif

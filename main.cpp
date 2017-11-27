@@ -36,7 +36,7 @@ int main() {
 	Mat firstFrame;
 #if STATIC_IMAGE
 	char ImgName[100];
-	sprintf(ImgName, "%s%0.4d%s", DATASET_DIR, ImgIdx, FILE_EXT);
+	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
 	//cout << ImgName << endl;
 	firstFrame = imread(ImgName);
 #elif VIDEO||CAMERA

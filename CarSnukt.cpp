@@ -27,7 +27,7 @@ Void CallBackFunc(int event, int x, int y, int flags, void *userdata)
 	}
 }
 
-CarSnukt::CarSnukt()
+CarSnukt::CarSnukt() : colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE)
 {
 	// BGM
 	isBsAvai = false;
@@ -2053,7 +2053,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		// Initialize the masks	and needed variables		
 		vector<Mat> MVO_ROI;
 		vector<Mat> MVO_SEG;
-		vector<bool> isLargeObject;
+		vector<bool> isLargeObject, isAutoCar;
 		vector<bool> isInROI;
 		vector<int> hardIdCode;
 		vector<vector<Point2i> > CriticPntsVec;
@@ -2094,15 +2094,10 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 		// Detect the large MVOs (cars, trucs, etc.)
 		LargeMVODetection(I, MVO_SEG, MVO_ROI, isLargeObject);
-		//cout << "LargeMVODetection done" << endl;
-		//for (int i = 0; i < MVO_SEG.size(); i++) {
-		//	imshow("MOV_SEG", MVO_SEG[i]);
-		//	waitKey();
 
-		//	imshow("MOV_ROI", MVO_ROI[i]);
-		//	waitKey();
-		//}
-		// Tracking for the detected large MVO
+		detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
+
+
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
 		//cout << "LargeMVOTracking done" << endl;
 #if SEND_DATA
@@ -2300,6 +2295,50 @@ inline Void CarSnukt::prepareSendData() {
 	}
 }
 
+inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &curROI, int &colCnt) {
+	//1. crop roi
+	Mat roiImg = img(Range(curROI.at<int>(2), curROI.at<int>(3) + 1),
+		Range(curROI.at<int>(0), curROI.at<int>(1) + 1));
+	namedWindow("roiImg", WINDOW_NORMAL);
+	resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
+	imshow("roiImg", roiImg);
+	waitKey();
+
+	//2. color detection
+	Mat thrImg;
+	colDet.getThrImg(roiImg, thrImg);
+	namedWindow("thrImg", WINDOW_NORMAL);
+	resizeWindow("thrImg", thrImg.cols*1.5, thrImg.rows * 1.5);
+	imshow("thrImg", thrImg);
+	waitKey();
+
+//	colDet.showResult();
+	namedWindow("curSEG", WINDOW_NORMAL);
+	resizeWindow("curSEG", curSEG.cols*1.5, curSEG.rows * 1.5);
+	imshow("curSEG", curSEG);
+	waitKey();
+
+	//3. find intersection of SEG & COLOR
+	Mat interSec;
+	cv::bitwise_and(curSEG, thrImg, interSec);
+	namedWindow("interSec", WINDOW_NORMAL);
+	resizeWindow("interSec", interSec.cols*1.5, interSec.rows * 1.5);
+	imshow("interSec", interSec);
+	waitKey();
+
+	destroyAllWindows();
+
+	//4. count intersection pixel.
+	int interSecCnt = countNonZero(interSec);
+	if (interSecCnt> NUM_COLOR_PIXEL_THR) {
+		colCnt = interSecCnt;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 Void CarSnukt::changeToPers(Mat &I) {
 	warpPerspective(I, I, TransMat, Size(Trans_W, Trans_H));
 	B = TransBGM;
@@ -2348,4 +2387,43 @@ Void CarSnukt::setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
 Void CarSnukt::getTargetPixel(Point2l& gps, Point2d& targetPixel) 
 {
 	gps2pixel.getTargetPixel(gps, targetPixel);
+}
+
+Void CarSnukt::detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const vector<Mat> &mvoRoi, vector<bool> &isLargeObj, vector<bool> &isAutoCarVec) {
+	bool isThereAutoCar = false; 
+	int maxColCnt;
+	int colCnt;
+	int autoCarCandIdx = -1;
+
+	//imshow("detectAutoCar Img", img);
+	//waitKey();
+	for (int i = 0; i < isLargeObj.size(); i++) {
+		//1. check if it's large obejct and auto car.
+		if (isLargeObj[i] && isAutoCar(img, mvoSeg[i], mvoRoi[i], colCnt))
+		{
+			//2. If there has been no Auto Car, or current MVO is more like autoCar,
+			if ((!isThereAutoCar) || (isThereAutoCar && (colCnt > maxColCnt))) {
+				//3. change auto Car info.
+				maxColCnt = colCnt;
+				autoCarCandIdx = i;
+				isThereAutoCar = true;
+			}
+		}
+	}
+
+	//4. Erase isLagreObj info for MVO tracking. 
+	if (isThereAutoCar) {
+		isLargeObj[autoCarCandIdx] = false;
+	}
+
+	//5. update  isAutoCar vector
+	for (int i = 0; i < isLargeObj.size(); i++) {
+		if (i == autoCarCandIdx) {
+			isAutoCarVec.push_back(true);
+		}
+		else {
+			isAutoCarVec.push_back(false);
+		}
+	}
+
 }

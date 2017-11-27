@@ -33,6 +33,7 @@
 #include "pixel2Gps.h"		//gps
 #include "gps2Pixel.h"		//gps
 #include "gpsVelocity.h"	//velocity
+#include "colorDetector.h"	//color detection for auto car
 
 //autoCar Detection
 //#include "yolo_v2_class.hpp"
@@ -54,10 +55,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0			  
-#define VIDEO						1			  
+#define STATIC_IMAGE				1			  
+#define VIDEO						0			  
 #define CAMERA						0 
-#define IP_CAM_NUM					182
+#define IP_CAM_NUM					177
 
 // Image size
 #define SIZE_HOR					640
@@ -118,7 +119,7 @@ CarSnukt detector
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
-#define DEBUG_GPS					1
+#define DEBUG_GPS					0
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
@@ -143,6 +144,141 @@ CarSnukt detector
 #endif
 
 #if IP_CAM_NUM == 177
+// Dataset configurations
+#define CAM_ID						"rtsp://admin:1234@222.116.156.177/video1"
+#define VIDEO_FILE					"data/182_170929.avi"
+//#define VIDEO_FILE					"data/1.avi"
+#define DATASET_DIR					"data/177/177_20171123104137"
+//#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
+#define BG_FILE						"data/bus_bg.jpg"
+#define FILE_FORMAT					"%s%d%s"
+#define FILE_EXT					".jpg"
+#define FIRST_IMG_IDX				376
+#define LAST_IMG_IDX				998
+
+#if STATIC_ROI
+///////////////////////////////////////////////////////////////
+//////////			ROI static setup			///////////////
+///////////////////////////////////////////////////////////////
+
+const Point2i ROI_BL(1, 35);
+const Point2i ROI_BR(SIZE_HOR - 1, 30);
+const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER - 1);
+const Point2i ROI_TL(1, SIZE_VER - 1);
+///////////////////////////////////////////////////////////////
+//////////	Perspective transform static setup	///////////////
+///////////////////////////////////////////////////////////////
+
+// Test sequence 1 (real serveillance camera)
+//const Point2f Trans_BL(298, 58);
+//const Point2f Trans_BR(399, 75);
+//const Point2f Trans_TR(300, 265);
+//const Point2f Trans_TL(2, 150);
+
+#if PIXEL2GPS
+const Point2f pixel0(547, 234);
+const Point2f pixel1(497, 117);
+const Point2f pixel2(83, 165);
+const Point2f pixel3(31, 342);
+
+const Point2d mapDouble0(36.9670609, 127.8717418);
+const Point2d mapDouble1(36.9673035, 127.8717672);
+const Point2d mapDouble2(36.9671451, 127.8715260);
+const Point2d mapDouble3(36.9669830, 127.8716165);
+
+//For GPS transforamtion
+#define LAT_SAME_DIGIT						3
+#define LON_SAME_DIGIT						4
+#define LAT_WHOLE_DIGIT						9
+#define LON_WHOLE_DIGIT						10
+#define LAT_PRECISION						7
+#define LON_PRECISION						7
+
+//to calculate velocity
+#define VELOCITY_LIMIT						5500			
+
+#endif
+#endif
+
+#define VEL_PRECISION						2
+const uint32_t Trans_W = 500;
+const uint32_t Trans_H = 450;
+
+// For background update algorithm
+#define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
+#define BGM_WB						1.5				// The weight for the update of the current background model 
+#define BGM_N						3				// The number of background image candidates
+#define BGM_DT						150				// The BGM update interval (frames)
+#define INITAIL_BGM_DT				10				// The BGM update interval (frames)
+#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_STABLE_CNT				BGM_N + 3		
+
+// Thresholds and gains
+#define TL_MIN						0.05				  // suppression noise level threshold after the background subtraction step (min)
+//#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
+#define TL_MAX						3.00              // suppression noise level threshold after the background subtraction step (max)
+#define ALPHA						0.4               // the low threshold for detecting shadow as presented in the paper
+#define BETA						1.0               // the high threshold for detecting shadow as presented in the paper
+#define SHT							550               // the minimum salient property needed for an object before applying the shadow suppression step
+#define OT							30                // the threshold non - zero pixels for an object
+
+//***
+#define SAL							25				  // the object should be large enough for MVO and GHOST detection
+//#define SAL							30				  // the object should be large enough for MVO and GHOST detection
+#define SIZE						5				  // the minimum size of the segmented object
+
+//***
+#define LARGE_OBJ_DENS				25				  // the minimum pixel density which indicates a large object
+#define LARGE_OBJECT_SIZE			5				  // the minimum size in both horizontal and vertical directions of a large object
+
+#define MVT_MIN						0.002			  // the threshold to differentiate the immediate MV from noise (min)
+#define MVT_MAX						3.00			  // the threshold to differentiate the immediate MV from noise (max)
+
+#define BBMIN						4                 // the minimum size of the bounding box
+#define SEGMIN						3                // the minimum distance between two separated segments
+//#define SEGMIN						7                // the minimum distance between two separated segments
+
+#define GFTHR_LOW					220				  // the lower bound after applying a Gaussian filter for shadow objects
+#define GFTHR_HIGH					255				  // the upper bound after applying a Gaussian filter for shadow objects
+#define ROI_VEC						5				  // outer-inner ROI gap
+#define VECTOR_UNIT_LENGTH			30
+#define MOVING_THRESH				5
+
+// Moving object classification
+#define ANN							0
+#define RANTREE						0
+#define SIZE_SALIENCY				1
+
+#define STORE_MVO					0				 
+#define TRAIN_MODEL					0
+
+//detecting autoCar
+//#define LOW_H						25
+//#define HIGH_H						70
+//#define LOW_S						26
+//#define HIGH_S						255
+//#define LOW_V						0
+//#define HIGH_V						255
+#define LOW_H						0
+#define HIGH_H						160
+#define LOW_S						0
+#define HIGH_S						255
+#define LOW_V						0
+#define HIGH_V						255
+#define REFINE						0
+#define NUM_COLOR_PIXEL_THR			1			
+
+
+// Tracking for MVO & autoCar
+#define HIS_POS_SIZE				15
+#define LIVE_OBJECT_SIZE			100
+#define LIVE_AUTO_CAR_SIZE			1
+#define HISTOGRAM_BIN_SIZE			256
+#define UNKNOW_HARD_ID				111
+
+#define DISTANCE_THRES				200
+#define SIZE_THRES					200
+#define HISTOGRAM_THRES				200
 #endif
 
 #if IP_CAM_NUM == 181
@@ -256,6 +392,23 @@ const uint32_t Trans_H = 450;
 
 #define STORE_MVO					0				 
 #define TRAIN_MODEL					0
+
+//detecting autoCar
+//#define LOW_H						25
+//#define HIGH_H						70
+//#define LOW_S						26
+//#define HIGH_S						255
+//#define LOW_V						0
+//#define HIGH_V						255
+#define LOW_H						0
+#define HIGH_H						160
+#define LOW_S						0
+#define HIGH_S						255
+#define LOW_V						0
+#define HIGH_V						255
+#define REFINE						0
+#define NUM_COLOR_PIXEL_THR			1			
+
 
 // Tracking for MVO & autoCar
 #define HIS_POS_SIZE				15
