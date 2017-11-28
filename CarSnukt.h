@@ -240,7 +240,7 @@ public:
 	Mat LiveObjList;								// The indices of current live tracking objects
 	vector<Mat> SmallObjectROI;						// The bounding boxes of the samll objects
 	AutoCar autoCar[LIVE_AUTO_CAR_SIZE];
-	Mat LiveAutoCarjList;							// The indices of current live tracking objects
+	Mat LiveAutoCarList;							// The indices of current live tracking objects
 
 
 	// ============================================
@@ -326,6 +326,7 @@ public:
 
 	Void detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const vector<Mat> &mvoRoi, vector<bool> &isLargeObj, vector<bool> &isAutoCarVec);
 
+	void trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar);
 };
 #endif
 

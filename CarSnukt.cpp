@@ -48,7 +48,7 @@ CarSnukt::CarSnukt() : colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFIN
 	}
 
 	// Auto Car Tracking
-	LiveAutoCarjList = Mat::zeros(1, LIVE_AUTO_CAR_SIZE, CV_8UC1);
+	LiveAutoCarList = Mat::zeros(1, LIVE_AUTO_CAR_SIZE, CV_8UC1);
 	
 	NewAutoTrackObj = 0;
 	autoVID = AUTO_CAR_VIRTUAL_ID_START;
@@ -2097,6 +2097,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 		detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
 
+		trackAutoCar(MVO_ROI, isAutoCar);
 
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
 		//cout << "LargeMVOTracking done" << endl;
@@ -2436,6 +2437,60 @@ Void CarSnukt::detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const ve
 		}
 		else {
 			isAutoCarVec.push_back(false);
+		}
+	}
+
+}
+
+void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
+{
+	// 1. if there are new auto car
+	if (countNonZero(LiveAutoCarList) == 0)
+	{
+		for (size_t i = 0; i < MVO_ROI.size(); i++)
+		{
+			if (isAutoCar.at(i))
+			{
+				// 1) LiveAutoCarList update
+				LiveAutoCarList.at<uint8_t>(0, NewAutoTrackObj) = 1;
+				// 2) set soft id, update vid
+				autoCar[NewAutoTrackObj].SoftID = NewAutoTrackObj;
+				if (autoVID > AUTO_CAR_VIRTUAL_ID_END) {
+					autoVID = AUTO_CAR_VIRTUAL_ID_START;
+				}
+				autoCar[NewAutoTrackObj].vID = autoVID++;
+				// 3) resetGps
+				autoCar[NewAutoTrackObj].gpsVel.resetIsFirstMoment();
+				// 4) newAutoTrackObj++ % LIVE_TRACK_OBJECT_SIZE
+				NewAutoTrackObj++;
+				NewAutoTrackObj = NewAutoTrackObj% LIVE_AUTO_CAR_SIZE;
+			}
+		}
+	}else //2. track the current existing live objects		
+	{
+		bool isThereMatchAutoCar = false;
+		for (size_t i = 0; i < MVO_ROI.size(); i++)
+		{
+			if (isAutoCar.at(i))
+			{
+				//if there is match car, update the info.
+				Mat curROI = MVO_ROI.at(i);
+				///update the centerimag from ROI
+				Point2i CurPos = Point2i((curROI.at<int>(0) + curROI.at<int>(1)) >> 1,
+					(curROI.at<int>(2) + curROI.at<int>(3)) >> 1);
+				autoCar[NewAutoTrackObj].CenterImgPlane =  CurPos;
+				isThereMatchAutoCar = true;
+			}
+		}
+
+		if (!isThereMatchAutoCar) {// if there is no match car
+			Mat NonZIdx;
+			findNonZero(LiveObjList, NonZIdx);
+			for (int i = 0; i < NonZIdx.total(); i++) {
+				int TrackObjIdx = NonZIdx.at<Point2i>(i).x;
+				LiveAutoCarList.at<uint8_t>(0, TrackObjIdx) = 0;
+			}
+
 		}
 	}
 
