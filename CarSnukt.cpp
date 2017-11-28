@@ -2227,6 +2227,81 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		}
 	}
 
+	if (countNonZero(LiveAutoCarList) > 0)
+	{
+		Mat NonZ;
+		findNonZero(LiveAutoCarList, NonZ);
+		for (uint8_t i = 0; i < NonZ.total(); i++)
+		{
+			uint8_t ID = NonZ.at<Point2i>(i).x;
+
+			// Draw the bounding boxes in the image plane
+			Mat CurROI = autoCar[ID].ROI;
+			Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
+				MAX(CurROI.at<int>(2) - 2, 0),
+				MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
+				MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
+			);
+			rectangle(tmpI, rect, Scalar(255, 0, 0), 1);
+
+			// Draw the object center in the image plane
+			//circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+
+#if DETECT_DIRECTION
+			// Draw the object head-tail in the image plane
+			circle(tmpI, autoCar[ID].Head, 3, Scalar(0, 255, 0), 2, 4, 0);
+			circle(tmpI, autoCar[ID].Tail, 3, Scalar(255, 0, 0), 2, 4, 0);
+			line(tmpI, autoCar[ID].Head, autoCar[ID].Tail, Scalar(255, 255, 0), 2, 4, 0);
+#endif
+
+			// Draw the object IDs
+			char str[200];
+#if SEND_DATA
+			sprintf(str, "%d", autoCar[ID].dataCamToCar.id);
+#else
+			sprintf(str, "%d", autoCar[ID].SoftID);
+#endif
+			putText(tmpI, str, Point2i(CurROI.at<int>(0), CurROI.at<int>(2)), FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 2);
+
+#if TRANSFORM_CRITICAL_POINT			
+			// Draw the critical points in the image plane
+			vector<Point2i> tmpCriPnts = autoCar[ID].CriticPntsVec;
+			for (uint8_t j = 0; j < tmpCriPnts.size(); j++)
+			{
+				circle(tmpI, tmpCriPnts.at(j), 1, Scalar(0, 255, 255), 2, 4, 0);
+			}
+
+			// Draw the object direction in the transformed plane
+			circle(tmpI, autoCar[ID].Direction, 3, Scalar(0, 255, 255), 2, 4, 0);
+
+			// Draw the object direction in the image plane
+			line(tmpI, autoCar[ID].CenterImgPlane, autoCar[ID].Direction, Scalar(0, 255, 0), 2, 4, 0);
+			Mat CurTransROI = autoCar[ID].TransROI;
+			Rect rectTrans(MAX(CurTransROI.at<int>(0) - 2, 0),
+				MAX(CurTransROI.at<int>(2) - 2, 0),
+				MIN(CurTransROI.at<int>(1) - CurTransROI.at<int>(0) + 4, tmpBGMTrans.cols - 1),
+				MIN(CurTransROI.at<int>(3) - CurTransROI.at<int>(2) + 4, tmpBGMTrans.rows - 1)
+			);
+			rectangle(tmpBGMTrans, rectTrans, Scalar(0, 0, 255), 1);
+
+			// Draw the object moving state
+			if (autoCar[ID].isMoving)
+			{
+				sprintf(str, "Move");
+			}
+			else
+			{
+				sprintf(str, "Stop");
+			}
+			putText(tmpI, str, Point2i(CurROI.at<int>(0), CurROI.at<int>(3)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
+
+			//line(tmpBGMTrans, TrackObj[ID].CenterTrans, TrackObj[ID].DirectionTrans, Scalar(255, 0, 255), 2, 4, 0);
+			// transformed centroid	and direction					
+			circle(tmpBGMTrans, autoCar[ID].CenterTrans, 1, Scalar(0, 255, 255), 2, 4, 0);
+#endif
+		}
+	}
+
 #if	EXCLUDE_SMALL_MVOS_IN_TRK
 #else
 	// display small objects' information in the 2D image
@@ -2496,6 +2571,15 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 					autoVID = AUTO_CAR_VIRTUAL_ID_START;
 				}
 				autoCar[NewAutoTrackObj].vID = autoVID++;
+				
+				//3) set ROI;
+				Mat curROI = MVO_ROI.at(i);
+				autoCar[NewAutoTrackObj].ROI = curROI;
+				///update the centerimag from ROI
+				Point2i CurPos = Point2i((curROI.at<int>(0) + curROI.at<int>(1)) >> 1,
+					(curROI.at<int>(2) + curROI.at<int>(3)) >> 1);
+				autoCar[NewAutoTrackObj].CenterImgPlane = CurPos;
+
 				// 3) resetGps
 				autoCar[NewAutoTrackObj].gpsVel.resetIsFirstMoment();
 				// 4) newAutoTrackObj++ % LIVE_TRACK_OBJECT_SIZE
@@ -2512,6 +2596,7 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 			{
 				//if there is match car, update the info.
 				Mat curROI = MVO_ROI.at(i);
+				autoCar[NewAutoTrackObj].ROI = curROI;
 				///update the centerimag from ROI
 				Point2i CurPos = Point2i((curROI.at<int>(0) + curROI.at<int>(1)) >> 1,
 					(curROI.at<int>(2) + curROI.at<int>(3)) >> 1);

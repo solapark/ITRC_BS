@@ -89,6 +89,7 @@ private:
 
 	struct AutoCar				// The structs that store all principle information of tracked large-MVOs
 	{
+		Mat ROI;
 		Point2i CenterImgPlane;
 		uint8_t SoftID;
 		int32_t vID;

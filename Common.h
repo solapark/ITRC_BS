@@ -155,7 +155,7 @@ CarSnukt detector
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-#define FIRST_IMG_IDX				406
+#define FIRST_IMG_IDX				0
 #define LAST_IMG_IDX				998
 
 #if STATIC_ROI
