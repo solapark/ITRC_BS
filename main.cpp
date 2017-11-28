@@ -223,8 +223,9 @@ int main() {
 					<< "   TimeStamp : " << dataToSend[i].tStmp
 					<< "   lat, lon: " << dataToSend[i].latitude << ", " << dataToSend[i].longitude
 					<< "   Vx, Vy : " << dataToSend[i].vx << ", " << dataToSend[i].vy
-					<< "   Heading, width, length  : " << dataToSend[i].heading
-					<< ", " << dataToSend[i].width << ", " << dataToSend[i].length << endl;
+					//<< "   Heading, width, length  : " << dataToSend[i].heading
+					//<< ", " << dataToSend[i].width << ", " << dataToSend[i].length 
+					<< endl;
 #if DEBUG_GPS
 				myCarSnukt.getTargetPixel(Point2l(dataToSend[i].latitude, dataToSend[i].longitude), targetPixel);
 				myCarSnukt.TrackObj[i].CenterImgPlane;

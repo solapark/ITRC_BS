@@ -2522,7 +2522,7 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 
 		if (!isThereMatchAutoCar) {// if there is no match car
 			Mat NonZIdx;
-			findNonZero(LiveObjList, NonZIdx);
+			findNonZero(LiveAutoCarList, NonZIdx);
 			for (int i = 0; i < NonZIdx.total(); i++) {
 				int TrackObjIdx = NonZIdx.at<Point2i>(i).x;
 				LiveAutoCarList.at<uint8_t>(0, TrackObjIdx) = 0;
