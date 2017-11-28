@@ -9,6 +9,14 @@ colorDetector::colorDetector(const int lowH, const int highH, const int lowS, co
 void colorDetector::getThrImg(const Mat &imgOrg, Mat & imgThr) {
 	imgOrg.copyTo(imgOriginal);
 	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+	//std::vector<Mat> hsvChannels;
+	//split(imgHSV, hsvChannels);
+	//double minHue, maxHue, minSat, maxSat, minVal, maxVal;
+	//cv::minMaxIdx(hsvChannels[0], &minHue, &maxHue, 0, 0);
+	//cv::minMaxIdx(hsvChannels[1], &minSat, &maxSat, 0, 0);
+	//cv::minMaxIdx(hsvChannels[2], &minVal, &maxVal, 0, 0);
+	//std::cout <<"minHue : "<< minHue << " maxHue : "<<maxHue << " minSat : " << minSat << " maxSat : " << maxSat << " minVal : " << minVal << " maxVal : " << maxVal << std::endl;
+	//std::cout<<imgHSV.type()<< std::endl;
 	inRange(imgHSV, Scalar(lowH, lowS, lowV), Scalar(highH, highS, highV), imgThr); //Threshold the image
 
 	if (isRefine) {
@@ -20,7 +28,10 @@ void colorDetector::getThrImg(const Mat &imgOrg, Mat & imgThr) {
 		dilate(imgThr, imgThr, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
 		erode(imgThr, imgThr, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
 	}
-
+	//std::cout << "lowH : " << lowH << " lowS : " << lowS << " lowV : " << lowV << " highH : " << highH << " highS : " << highS << " highV : " << highV << std::endl;
+	//imshow("Original", imgOrg); //show the original image
+	//imshow("Thresholded Image", imgThr); //show the thresholded image
+	//waitKey();
 }
 
 void colorDetector::showResult() {

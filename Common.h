@@ -112,7 +112,7 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				1
+#define DEBUG_SEND_DATA				0
 
 //sola
 #define DEBUG_SUB					0
@@ -154,7 +154,8 @@ CarSnukt detector
 #define BG_FILE						"data/bus_bg.jpg"
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
-#define FIRST_IMG_IDX				0
+
+#define FIRST_IMG_IDX				406
 #define LAST_IMG_IDX				998
 
 #if STATIC_ROI
@@ -254,20 +255,20 @@ const uint32_t Trans_H = 450;
 #define TRAIN_MODEL					0
 
 //detecting autoCar
-//#define LOW_H						25
-//#define HIGH_H						70
-//#define LOW_S						26
+#define LOW_H						12		/179.0*360.0
+#define HIGH_H						61		/179.0*360.0
+#define LOW_S						59		/255.0
+#define HIGH_S						255		/255.0
+#define LOW_V						0		/255.0
+#define HIGH_V						255		/255.0
+//#define LOW_H						0
+//#define HIGH_H						160
+//#define LOW_S						0
 //#define HIGH_S						255
 //#define LOW_V						0
 //#define HIGH_V						255
-#define LOW_H						0
-#define HIGH_H						160
-#define LOW_S						0
-#define HIGH_S						255
-#define LOW_V						0
-#define HIGH_V						255
 #define REFINE						0
-#define NUM_COLOR_PIXEL_THR			1			
+#define NUM_COLOR_PIXEL_THR			2500			
 
 
 // Tracking for MVO & autoCar

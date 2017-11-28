@@ -8,7 +8,7 @@
 Mat				I, II, III;
 uint32_t		FirstImgIdx = 0;
 uint32_t		LastImgIdx = 0;
-uint32_t		ImgIdx = 0;
+uint32_t		ImgIdx = FIRST_IMG_IDX;
 Int				BGM_update_cnt = 0;
 CarSnukt		myCarSnukt;
 SYSTEMTIME		now;

@@ -2304,20 +2304,26 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
 	imshow("roiImg", roiImg);
 	waitKey();
+	destroyWindow("roiImg");
+
 #endif
+
 	//2. color detection
 	Mat thrImg;
+
 	colDet.getThrImg(roiImg, thrImg);
 #if DEBUG_AUTO_CAR_DETECTION
 	namedWindow("thrImg", WINDOW_NORMAL);
 	resizeWindow("thrImg", thrImg.cols*1.5, thrImg.rows * 1.5);
 	imshow("thrImg", thrImg);
 	waitKey();
+	destroyWindow("thrImg");
 
 	namedWindow("curSEG", WINDOW_NORMAL);
 	resizeWindow("curSEG", curSEG.cols*1.5, curSEG.rows * 1.5);
 	imshow("curSEG", curSEG);
 	waitKey();
+	destroyWindow("curSEG");
 #endif
 
 	//3. find intersection of SEG & COLOR
@@ -2328,12 +2334,14 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	resizeWindow("interSec", interSec.cols*1.5, interSec.rows * 1.5);
 	imshow("interSec", interSec);
 	waitKey();
-
-	destroyAllWindows();
+	destroyWindow("interSec");
 #endif
 
 	//4. count intersection pixel.
 	int interSecCnt = countNonZero(interSec);
+#if DEBUG_AUTO_CAR_DETECTION
+	cout << "interSecCnt : " << interSecCnt << endl;
+#endif
 	if (interSecCnt> NUM_COLOR_PIXEL_THR) {
 		colCnt = interSecCnt;
 		return true;
@@ -2418,6 +2426,7 @@ Void CarSnukt::detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const ve
 	//4. Erase isLagreObj info for MVO tracking. 
 	if (isThereAutoCar) {
 		isLargeObj[autoCarCandIdx] = false;
+		//cout << "isLargeObj["<<autoCarCandIdx<<"] : "<<isLargeObj[autoCarCandIdx] << endl;
 	}
 
 	//5. update  isAutoCar vector
