@@ -2264,6 +2264,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 
 inline Void CarSnukt::prepareSendData() {
 	int numOfObj = countNonZero(LiveObjList);
+	int numOfAutoCar = countNonZero(LiveAutoCarList);
 	uint64_t t, intervalT;
 	time.getCurT(t);
 	time.getTDiff(intervalT);
@@ -2291,6 +2292,32 @@ inline Void CarSnukt::prepareSendData() {
 
 			//vx, vy
 			TrackObj[ID].gpsVel.getVelocity(intervalT, pCamToCar->latitude, pCamToCar->longitude, pCamToCar->vx, pCamToCar->vy);
+
+		}
+	}
+
+	if (numOfAutoCar > 0) {
+		Mat NonZ;
+		findNonZero(LiveAutoCarList, NonZ);
+		for (size_t i = 0; i < NonZ.total(); i++) {
+			uint8_t ID = NonZ.at<Point2i>(i).x;
+			camToCar* pCamToCar = &autoCar[ID].dataCamToCar;
+			//id
+			pCamToCar->id = autoCar[ID].vID;
+
+			//timestamp
+			pCamToCar->tStmp = t;
+
+			//lat, lon
+			int32_t pastLat, pastLon;
+			pixel2gps.getTargetGps64INT(autoCar[ID].CenterImgPlane, curGps);
+			pastLat = pCamToCar->latitude;
+			pastLon = pCamToCar->longitude;
+			pCamToCar->latitude = curGps.x;
+			pCamToCar->longitude = curGps.y;
+
+			//vx, vy
+			autoCar[ID].gpsVel.getVelocity(intervalT, pCamToCar->latitude, pCamToCar->longitude, pCamToCar->vx, pCamToCar->vy);
 
 		}
 	}
@@ -2374,7 +2401,17 @@ Int CarSnukt::getDataToSend(vector<camToCar> & vecCamToCar) const
 		}
 	}
 
-	return numOfObj;
+	int numOfAutoCar = countNonZero(LiveAutoCarList);
+	if (numOfAutoCar> 0) {
+		Mat NonZ;
+		findNonZero(LiveAutoCarList, NonZ);
+		for (size_t i = 0; i < NonZ.total(); i++) {
+			uint8_t ID = NonZ.at<Point2i>(i).x;
+			vecCamToCar.push_back(autoCar[ID].dataCamToCar);
+		}
+	}
+
+	return numOfObj+numOfAutoCar;
 }
 
 Void CarSnukt::updateT(const SYSTEMTIME &t) {

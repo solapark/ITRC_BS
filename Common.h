@@ -112,7 +112,7 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				0
+#define DEBUG_SEND_DATA				1
 
 //sola
 #define DEBUG_SUB					0
