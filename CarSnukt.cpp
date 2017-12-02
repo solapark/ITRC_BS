@@ -27,7 +27,10 @@ Void CallBackFunc(int event, int x, int y, int flags, void *userdata)
 	}
 }
 
-CarSnukt::CarSnukt() : colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE)
+CarSnukt::CarSnukt() 
+#if AUTO_CAR_DETECTION
+	: colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE)
+#endif
 {
 	// BGM
 	isBsAvai = false;
@@ -47,6 +50,7 @@ CarSnukt::CarSnukt() : colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFIN
 		TrackObj[i].gpsVel.setGpsVelocity(LAT_PRECISION, LON_PRECISION, VEL_PRECISION, VELOCITY_LIMIT);
 	}
 
+#if AUTO_CAR_DETECTION
 	// Auto Car Tracking
 	LiveAutoCarList = Mat::zeros(1, LIVE_AUTO_CAR_SIZE, CV_8UC1);
 	
@@ -55,6 +59,7 @@ CarSnukt::CarSnukt() : colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFIN
 	for (int i = 0; i < LIVE_AUTO_CAR_SIZE; i++) {
 		autoCar[i].gpsVel.setGpsVelocity(LAT_PRECISION, LON_PRECISION, VEL_PRECISION, VELOCITY_LIMIT);
 	}
+#endif
 }
 
 //need to study -sola
@@ -2053,10 +2058,13 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		// Initialize the masks	and needed variables		
 		vector<Mat> MVO_ROI;
 		vector<Mat> MVO_SEG;
-		vector<bool> isLargeObject, isAutoCar;
+		vector<bool> isLargeObject;
 		vector<bool> isInROI;
 		vector<int> hardIdCode;
 		vector<vector<Point2i> > CriticPntsVec;
+#if AUTO_CAR_DETECTION
+		vector<bool> isAutoCar;
+#endif
 
 		// Background suppression then filter it through the ROI mask
 #if PERS_VIEW
@@ -2095,10 +2103,11 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		// Detect the large MVOs (cars, trucs, etc.)
 		LargeMVODetection(I, MVO_SEG, MVO_ROI, isLargeObject);
 
+#if AUTO_CAR_DETECTION
+
 		detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
-
 		trackAutoCar(MVO_ROI, isAutoCar);
-
+#endif
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
 		//cout << "LargeMVOTracking done" << endl;
 #if SEND_DATA
@@ -2226,7 +2235,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 #endif
 		}
 	}
-
+#if AUTO_CAR_DETECTION
 	if (countNonZero(LiveAutoCarList) > 0)
 	{
 		Mat NonZ;
@@ -2301,6 +2310,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 #endif
 		}
 	}
+#endif
 
 #if	EXCLUDE_SMALL_MVOS_IN_TRK
 #else
@@ -2339,7 +2349,6 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 
 inline Void CarSnukt::prepareSendData() {
 	int numOfObj = countNonZero(LiveObjList);
-	int numOfAutoCar = countNonZero(LiveAutoCarList);
 	uint64_t t, intervalT;
 	time.getCurT(t);
 	time.getTDiff(intervalT);
@@ -2370,7 +2379,8 @@ inline Void CarSnukt::prepareSendData() {
 
 		}
 	}
-
+#if AUTO_CAR_DETECTION
+	int numOfAutoCar = countNonZero(LiveAutoCarList);
 	if (numOfAutoCar > 0) {
 		Mat NonZ;
 		findNonZero(LiveAutoCarList, NonZ);
@@ -2396,6 +2406,7 @@ inline Void CarSnukt::prepareSendData() {
 
 		}
 	}
+#endif
 }
 
 inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &curROI, int &colCnt) {
