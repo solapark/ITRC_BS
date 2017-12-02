@@ -3,7 +3,10 @@
 
 colorDetector::colorDetector() {}
 
-colorDetector::colorDetector(const int lowH, const int highH, const int lowS, const int highS, const int lowV, const int highV, const bool isRefine)
+colorDetector::colorDetector(const float lowH, const float highH,
+	const float lowS, const float highS,
+	const float lowV, const float highV,
+	const bool isRefine)
 	:lowH(lowH), highH(highH), lowS(lowS), highS(highS), lowV(lowV), highV(highV), isRefine(isRefine) {}
 
 void colorDetector::getThrImg(const Mat &imgOrg, Mat & imgThr) {

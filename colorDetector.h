@@ -10,16 +10,16 @@ public:
 	colorDetector();
 	
 	colorDetector(
-		const int lowH, const int highH, 
-		const int lowS, const int highS, 
-		const int lowV, const int highV, 
+		const float lowH, const float highH,
+		const float lowS, const float highS,
+		const float lowV, const float highV,
 		const bool isRefine);
 	
 	void getThrImg(const Mat &imgOrg, Mat & mgThr);
 	void showResult();
 
 private:
-	int lowH, highH, lowS, highS, lowV, highV;
+	float lowH, highH, lowS, highS, lowV, highV;
 	bool isRefine;
 	Mat imgOriginal, imgHSV, imgThresholded;
 };
