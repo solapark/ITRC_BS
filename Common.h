@@ -55,10 +55,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0			  
+#define STATIC_IMAGE				1			  
 #define VIDEO						0			  
-#define CAMERA						1
-#define IP_CAM_NUM					177
+#define CAMERA						0
+#define IP_CAM_NUM					174
 
 // Image size
 #define SIZE_HOR					640
@@ -84,7 +84,7 @@ CarSnukt detector
 #define BGM_FIRST_BUILD				1					// use the 1st frame for background. 
 #define WAIT_BGM_BUILD				1					// wait until bgm is built.
 #define BGM_BUILD_WATITING_FRAME	INITAIL_BGM_DT*5	//waiting time for bgm built.
-#define SHADOW_REMOVAL				0
+#define SHADOW_REMOVAL				1
 #define TRANSFORM_CENTER_POINT		0
 #define TRANSFORM_CRITICAL_POINT	0
 #define DETECT_HARD_ID				0
@@ -96,7 +96,7 @@ CarSnukt detector
 #define PIXEL2GPS					1
 
 //sola
-#define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
+#define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
 #define PREDICTIVE_TRACK			0
@@ -112,13 +112,13 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				1
+#define DEBUG_SEND_DATA				0
 
 //sola
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			0
+#define DEBUG_RUNNING_TIME			1
 #define DEBUG_GPS					0
 #define	DEBUG_AUTO_CAR_DETECTION	0
 
@@ -209,9 +209,9 @@ const uint32_t Trans_H = 450;
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
 #define BGM_WB						1.1				// The weight for the update of the current background model 
 #define BGM_N						3				// The number of background image candidates
-#define BGM_DT						100				// The BGM update interval (frames)
+#define BGM_DT						300				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -289,8 +289,8 @@ const uint32_t Trans_H = 450;
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
 //#define DATASET_DIR					"data/174/1/174_2017111715310_"
-#define DATASET_DIR					"data/174/2/174_2017112310576_"
-//#define DATASET_DIR					"data/174/3/174_20171123104048_"
+//#define DATASET_DIR					"data/174/2/174_2017112310576_"
+#define DATASET_DIR					"data/174/3/174_20171123104048_"
 //#define DATASET_DIR					"data/174/4/174_20171123105146_"
 
 
@@ -301,10 +301,10 @@ const uint32_t Trans_H = 450;
 
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				171
-#define FIRST_IMG_IDX				0
-#define LAST_IMG_IDX				909
 //#define FIRST_IMG_IDX				0
-//#define LAST_IMG_IDX				697
+//#define LAST_IMG_IDX				909
+#define FIRST_IMG_IDX				0
+#define LAST_IMG_IDX				697
 //#define FIRST_IMG_IDX				727
 //#define LAST_IMG_IDX				1636
 

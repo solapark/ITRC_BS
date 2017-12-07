@@ -623,9 +623,9 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 #if SHADOW_REMOVAL
 				if (MVOSH_nonZPixl.at(segIdx) > SHT && ((curSeg.cols > (SIZE << 1)) || (curSeg.rows > (SIZE << 1))))
 				{
-					int xMinI = curROI.at<int>(0); assert(xMinI > 0);
+					int xMinI = curROI.at<int>(0); printf("%d\n", xMinI); assert(xMinI > 0 || xMinI == 0);
 					int xMaxI = curROI.at<int>(1); assert(xMaxI > xMinI); assert(xMaxI < I.cols);
-					int yMinI = curROI.at<int>(2); assert(yMinI > 0);
+					int yMinI = curROI.at<int>(2); assert(yMinI > 0 || yMinI == 0);
 					int yMaxI = curROI.at<int>(3); assert(yMaxI > yMinI); assert(yMaxI < I.rows);
 					Mat tmpSH = Mat::zeros(curSeg.rows, curSeg.cols, CV_32FC1);
 					Mat segI_RGB = I(Range(yMinI, yMaxI + 1), Range(xMinI, xMaxI + 1));
