@@ -623,7 +623,7 @@ inline Void CarSnukt::ShadowDet(Mat &I, Mat &B, Mat &MVOSH, vector<Mat> &MVO_ROI
 #if SHADOW_REMOVAL
 				if (MVOSH_nonZPixl.at(segIdx) > SHT && ((curSeg.cols > (SIZE << 1)) || (curSeg.rows > (SIZE << 1))))
 				{
-					int xMinI = curROI.at<int>(0); printf("%d\n", xMinI); assert(xMinI > 0 || xMinI == 0);
+					int xMinI = curROI.at<int>(0); assert(xMinI > 0 || xMinI == 0);
 					int xMaxI = curROI.at<int>(1); assert(xMaxI > xMinI); assert(xMaxI < I.cols);
 					int yMinI = curROI.at<int>(2); assert(yMinI > 0 || yMinI == 0);
 					int yMaxI = curROI.at<int>(3); assert(yMaxI > yMinI); assert(yMaxI < I.rows);
@@ -1545,7 +1545,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			}
 #if DEBUG_TRACKING	
 			else {
-				cout << "LargeMVOTracking () : Min_Diff < THR ;" << Min_Diff_Hist << " " << Min_Diff_Pos << " " << Min_Diff_Size << endl;
+				cout << "LargeMVOTracking () : Min_Diff < THR ; HIST: " << Min_Diff_Hist << " POS: " << Min_Diff_Pos << " SIZE: " << Min_Diff_Size << endl;
 			}
 #endif
 
@@ -2344,7 +2344,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
-	waitKey(1);
+	waitKey(0);
 }
 
 inline Void CarSnukt::prepareSendData() {
@@ -2413,6 +2413,8 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	//1. crop roi
 	Mat roiImg = img(Range(curROI.at<int>(2), curROI.at<int>(3) + 1),
 		Range(curROI.at<int>(0), curROI.at<int>(1) + 1));
+	//Mat roiImg = Mat::ones(curROI.at<int>(3) + 1- curROI.at<int>(2)+1, curROI.at<int>(1) + 1 - curROI.at<int>(0)+1, CV_8UC1);
+
 #if DEBUG_AUTO_CAR_DETECTION
 	//namedWindow("roiImg", WINDOW_NORMAL);
 	//resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
@@ -2442,7 +2444,7 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 
 	//3. find intersection of SEG & COLOR
 	Mat interSec;
-	cv::bitwise_and(curSEG, thrImg, interSec);
+	//cv::bitwise_and(curSEG, thrImg, interSec);
 #if DEBUG_AUTO_CAR_DETECTION
 	//namedWindow("interSec", WINDOW_NORMAL);
 	//resizeWindow("interSec", interSec.cols*1.5, interSec.rows * 1.5);
@@ -2452,7 +2454,8 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 #endif
 
 	//4. count intersection pixel.
-	int interSecCnt = countNonZero(interSec);
+	//int interSecCnt = countNonZero(interSec);
+	int interSecCnt = countNonZero(thrImg);
 #if DEBUG_AUTO_CAR_DETECTION
 	cout << "interSecCnt : " << interSecCnt << endl;
 #endif

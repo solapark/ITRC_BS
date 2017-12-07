@@ -105,7 +105,7 @@ CarSnukt detector
 // Debug
 #define DEBUG_FINAL					1
 #define DEBUG_CRITICAL_POINT		0
-#define DEBUG_TRACKING				0
+#define DEBUG_TRACKING				1
 #define DEBUG_NONZ_SEG				0
 #define DEBUG_NONZ_SEG_TWICE		0
 #define DEBUG_SHADOW_DET			0
@@ -115,10 +115,10 @@ CarSnukt detector
 #define DEBUG_SEND_DATA				0
 
 //sola
-#define DEBUG_SUB					0
+#define DEBUG_SUB					1
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			1
+#define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					0
 #define	DEBUG_AUTO_CAR_DETECTION	0
 
@@ -215,10 +215,10 @@ const uint32_t Trans_H = 450;
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
-#define TL_MIN						0.05				  // suppression noise level threshold after the background subtraction step (min)
+#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
 //#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
 #define TL_MAX						3.00              // suppression noise level threshold after the background subtraction step (max)
-#define ALPHA						0.4               // the low threshold for detecting shadow as presented in the paper
+#define ALPHA						0.5               // the low threshold for detecting shadow as presented in the paper
 #define BETA						1.0               // the high threshold for detecting shadow as presented in the paper
 #define SHT							550               // the minimum salient property needed for an object before applying the shadow suppression step
 #define OT							30                // the threshold non - zero pixels for an object
@@ -278,7 +278,7 @@ const uint32_t Trans_H = 450;
 #define UNKNOW_HARD_ID				111
 
 #define DISTANCE_THRES				200
-#define SIZE_THRES					200
+#define SIZE_THRES					1000
 #define HISTOGRAM_THRES				200
 
 #endif
