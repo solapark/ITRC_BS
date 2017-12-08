@@ -55,10 +55,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				1			  
-#define VIDEO						0			  
-#define CAMERA						0
-#define IP_CAM_NUM					174
+#define STATIC_IMAGE				0			  
+#define VIDEO						0	  
+#define CAMERA						1
+#define IP_CAM_NUM					182
 
 // Image size
 #define SIZE_HOR					640
@@ -112,14 +112,14 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				0
+#define DEBUG_SEND_DATA				1
 
 //sola
 #define DEBUG_SUB					1
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
-#define DEBUG_GPS					0
+#define DEBUG_GPS					1
 #define	DEBUG_AUTO_CAR_DETECTION	0
 
 #define DEBUG_IMG_IDX				0
@@ -177,10 +177,10 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 #endif
 
 #if PIXEL2GPS
-const Point2f pixel0(718, 545);
-const Point2f pixel1(329, 415);
-const Point2f pixel2(506, 181);
-const Point2f pixel3(706, 140);
+const Point2f pixel0(363, 281);
+const Point2f pixel1(165, 215);
+const Point2f pixel2(257, 99);
+const Point2f pixel3(355, 78);
 
 const Point2d mapDouble0(36.9691973, 127.8717136);
 const Point2d mapDouble1(36.9691541, 127.8717977);
@@ -328,10 +328,10 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(285, 528);
-const Point2f pixel1(595, 207);
-const Point2f pixel2(585, 332);
-const Point2f pixel3(405, 350);
+const Point2f pixel0(144, 265);
+const Point2f pixel1(299, 106);
+const Point2f pixel2(293, 168);
+const Point2f pixel3(204, 177);
 
 const Point2d mapDouble0(36.9696571, 127.8717345);
 const Point2d mapDouble1(36.9704718, 127.8719885);
@@ -443,7 +443,9 @@ const uint32_t Trans_H = 450;
 //#define VIDEO_FILE					"data/1.avi"
 //#define DATASET_DIR					"data/175/1/175_2017112310359_"
 //#define DATASET_DIR					"data/175/2/175_20171123105121_"
-#define DATASET_DIR					"data/175/3/175_20171123105740_"
+//#define DATASET_DIR					"data/175/3/175_20171123105740_"
+#define DATASET_DIR					"data/175_gps_test_2/"
+
 
 
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
@@ -455,8 +457,10 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				351
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				415
-#define FIRST_IMG_IDX				825
-#define LAST_IMG_IDX				1359
+//#define FIRST_IMG_IDX				825
+//#define LAST_IMG_IDX				1359
+#define FIRST_IMG_IDX				1
+#define LAST_IMG_IDX				72
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -478,10 +482,10 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(596, 444);
-const Point2f pixel1(330, 573);
-const Point2f pixel2(816, 149);
-const Point2f pixel3(963, 517);
+const Point2f pixel0(298, 222);
+const Point2f pixel1(165, 286);
+const Point2f pixel2(408, 74);
+const Point2f pixel3(481, 258);
 
 const Point2d mapDouble0(36.9718700, 127.8712666);
 const Point2d mapDouble1(36.9719497, 127.8711135);
@@ -630,10 +634,10 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(440, 547);
-const Point2f pixel1(408, 478);
-const Point2f pixel2(874, 386);
-const Point2f pixel3(1101, 576);
+const Point2f pixel0(218, 276);
+const Point2f pixel1(204, 238);
+const Point2f pixel2(438, 194);
+const Point2f pixel3(554, 287);
 
 const Point2d mapDouble0(36.9722769, 127.8704997);
 const Point2d mapDouble1(36.9723460, 127.8704575);
@@ -809,11 +813,11 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
-#define TL_MIN						0.05				  // suppression noise level threshold after the background subtraction step (min)
+#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
 //#define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
 #define TL_MAX						3.00              // suppression noise level threshold after the background subtraction step (max)
 #define ALPHA						0.4               // the low threshold for detecting shadow as presented in the paper
@@ -875,8 +879,8 @@ const uint32_t Trans_H = 450;
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
-#define DISTANCE_THRES				200
-#define SIZE_THRES					200
+#define DISTANCE_THRES				5000
+#define SIZE_THRES					5000
 #define HISTOGRAM_THRES				200
 #endif
 
@@ -1053,13 +1057,13 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(547, 234);
-const Point2f pixel1(265, 204);
-const Point2f pixel2(84, 166);
-const Point2f pixel3(34, 344);
+const Point2f pixel0(550, 232);
+const Point2f pixel1(497, 115);
+const Point2f pixel2(82, 164);
+const Point2f pixel3(37, 340);
 
 const Point2d mapDouble0(36.9670609, 127.8717418);
-const Point2d mapDouble1(36.9670859, 127.8716417);
+const Point2d mapDouble1(36.9673035, 127.8717672);
 const Point2d mapDouble2(36.9671451, 127.8715260);
 const Point2d mapDouble3(36.9669830, 127.8716165);
 
