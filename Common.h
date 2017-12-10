@@ -58,7 +58,7 @@ typedef       float					Float;
 #define STATIC_IMAGE				0		  
 #define VIDEO						0	  
 #define CAMERA						1
-#define IP_CAM_NUM					176
+#define IP_CAM_NUM					177
 
 // Image size
 #define SIZE_HOR					640
@@ -84,7 +84,7 @@ CarSnukt detector
 #define BGM_FIRST_BUILD				1					// use the 1st frame for background. 
 #define WAIT_BGM_BUILD				1					// wait until bgm is built.
 #define BGM_BUILD_WATITING_FRAME	INITAIL_BGM_DT*5	//waiting time for bgm built.
-#define SHADOW_REMOVAL				0
+#define SHADOW_REMOVAL				1
 #define TRANSFORM_CENTER_POINT		0
 #define TRANSFORM_CRITICAL_POINT	0
 #define DETECT_HARD_ID				0
@@ -96,7 +96,7 @@ CarSnukt detector
 #define PIXEL2GPS					1
 
 //sola
-#define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
+#define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
 #define PREDICTIVE_TRACK			0
@@ -211,7 +211,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						300				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -364,7 +364,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -441,10 +441,10 @@ const uint32_t Trans_H = 450;
 #define CAM_ID						"rtsp://admin:1234@222.116.156.175/video1"
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
-//#define DATASET_DIR					"data/175/1/175_2017112310359_"
+#define DATASET_DIR					"data/175/1/175_2017112310359_"
 //#define DATASET_DIR					"data/175/2/175_20171123105121_"
 //#define DATASET_DIR					"data/175/3/175_20171123105740_"
-#define DATASET_DIR					"data/175_gps_test_2/"
+//#define DATASET_DIR					"data/175_gps_test_2/"
 
 
 
@@ -453,14 +453,14 @@ const uint32_t Trans_H = 450;
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-//#define FIRST_IMG_IDX				0
-//#define LAST_IMG_IDX				351
+#define FIRST_IMG_IDX				0
+#define LAST_IMG_IDX				351
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				415
 //#define FIRST_IMG_IDX				825
 //#define LAST_IMG_IDX				1359
-#define FIRST_IMG_IDX				1
-#define LAST_IMG_IDX				72
+//#define FIRST_IMG_IDX				1
+//#define LAST_IMG_IDX				72
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -518,7 +518,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -670,7 +670,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -813,7 +813,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -953,7 +953,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						150				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -1093,7 +1093,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						150				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
