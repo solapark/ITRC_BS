@@ -55,10 +55,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0			  
+#define STATIC_IMAGE				0		  
 #define VIDEO						0	  
 #define CAMERA						1
-#define IP_CAM_NUM					182
+#define IP_CAM_NUM					176
 
 // Image size
 #define SIZE_HOR					640
@@ -84,7 +84,7 @@ CarSnukt detector
 #define BGM_FIRST_BUILD				1					// use the 1st frame for background. 
 #define WAIT_BGM_BUILD				1					// wait until bgm is built.
 #define BGM_BUILD_WATITING_FRAME	INITAIL_BGM_DT*5	//waiting time for bgm built.
-#define SHADOW_REMOVAL				1
+#define SHADOW_REMOVAL				0
 #define TRANSFORM_CENTER_POINT		0
 #define TRANSFORM_CRITICAL_POINT	0
 #define DETECT_HARD_ID				0
@@ -96,7 +96,7 @@ CarSnukt detector
 #define PIXEL2GPS					1
 
 //sola
-#define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
+#define GHOST_REMOVE				0				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
 #define PREDICTIVE_TRACK			0
@@ -105,21 +105,21 @@ CarSnukt detector
 // Debug
 #define DEBUG_FINAL					1
 #define DEBUG_CRITICAL_POINT		0
-#define DEBUG_TRACKING				1
+#define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
 #define DEBUG_NONZ_SEG_TWICE		0
 #define DEBUG_SHADOW_DET			0
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				1
+#define DEBUG_SEND_DATA				0
 
 //sola
-#define DEBUG_SUB					1
+#define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
-#define DEBUG_GPS					1
+#define DEBUG_GPS					0
 #define	DEBUG_AUTO_CAR_DETECTION	0
 
 #define DEBUG_IMG_IDX				0
@@ -211,7 +211,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						300				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -777,15 +777,15 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(531, 558);
-const Point2f pixel1(846, 321);
-const Point2f pixel2(940, 448);
-const Point2f pixel3(1215, 392);
+const Point2f pixel0(264, 279);
+const Point2f pixel1(357, 166);
+const Point2f pixel2(123, 200);
+const Point2f pixel3(394, 332);
 
-const Point2d mapDouble0(36.9682701, 127.8715543);
-const Point2d mapDouble1(36.9683786, 127.8713520);
-const Point2d mapDouble2(36.9683281, 127.8715161);
-const Point2d mapDouble3(36.9684011, 127.8714794);
+const Point2d mapDouble0(36.9682695, 127.8715538);
+const Point2d mapDouble1(36.9683374, 127.8713895);
+const Point2d mapDouble2(36.9682452, 127.8714586);
+const Point2d mapDouble3(36.9682820, 127.8715888);
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -813,7 +813,7 @@ const uint32_t Trans_H = 450;
 #define BGM_N						3				// The number of background image candidates
 #define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
-#define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
+#define BGM_KNOWLEDGE				0				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
 
 // Thresholds and gains
@@ -917,15 +917,15 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_TL(2, 150);
 
 #if PIXEL2GPS
-const Point2f pixel0(575, 380);
-const Point2f pixel1(486, 223);
-const Point2f pixel2(786, 232);
-const Point2f pixel3(1164, 301);
+const Point2f pixel0(285, 190);
+const Point2f pixel1(555, 283);
+const Point2f pixel2(104, 108);
+const Point2f pixel3(383, 87);
 
-const Point2d mapDouble0(36.9667088, 127.8716052);
-const Point2d mapDouble1(36.9665775, 127.8715658);
-const Point2d mapDouble2(36.9666157, 127.8714914);
-const Point2d mapDouble3(36.9667029, 127.8714487);
+const Point2d mapDouble0(36.9667083, 127.8716054);
+const Point2d mapDouble1(36.9667942, 127.8715796);
+const Point2d mapDouble2(36.9665292, 127.8716415);
+const Point2d mapDouble3(36.9665292, 127.8714353);
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3

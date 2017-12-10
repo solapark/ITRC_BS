@@ -2344,7 +2344,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
-	waitKey(0);
+	waitKey(1);
 }
 
 inline Void CarSnukt::prepareSendData() {

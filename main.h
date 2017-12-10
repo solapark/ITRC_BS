@@ -43,7 +43,7 @@ inline Mat ReadImage(VideoCapture &cap)
 #if STATIC_IMAGE
 	char ImgName[100];
 	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
-	cout << ImgName << endl;
+	//cout << ImgName << endl;
 	I = imread(ImgName);
 #elif VIDEO || CAMERA
 	cap >> I;	
@@ -51,7 +51,36 @@ inline Mat ReadImage(VideoCapture &cap)
 #if SEND_DATA
 	GetLocalTime(&now);
 #endif
-	assert(I.empty() != 1 && "Cannot read imagel");
+	//assert(I.empty() != 1 && "Cannot read imagel");
+#if CAMERA
+	while (I.empty()  && "Cannot read imagel") {
+		cap.release();
+		if (!cap.open(CAM_ID)) {
+			std::cout << "Error opening video stream or file" << std::endl;
+			continue;
+		}
+		cap >> I;
+#if SEND_DATA
+		GetLocalTime(&now);
+#endif
+	}
+#endif
+
+	//assert(I.empty() != 1 && "Cannot read imagel");
+#if CAMERA
+	while (I.empty() && "Cannot read imagel") {
+		cap.release();
+		if (!cap.open(CAM_ID)) {
+			std::cout << "Error opening video stream or file" << std::endl;
+			continue;
+		}
+		cap >> I;
+#if SEND_DATA
+		GetLocalTime(&now);
+#endif
+	}
+#endif
+
 
 #if CAMERA
 #if REOPEN_CAM_WHEN_TIME_OVER
