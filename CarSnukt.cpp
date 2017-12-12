@@ -2339,6 +2339,10 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	line(tmpI, ROI_iTR, ROI_iTL, Scalar(255, 0, 0), 2, 4, 0);
 	line(tmpI, ROI_iTL, ROI_iBL, Scalar(255, 0, 0), 2, 4, 0);
 	
+#if FULL_SCREEN
+	namedWindow("Annotation", CV_WINDOW_NORMAL);
+	cvSetWindowProperty("Annotation", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+#endif
 	imshow("Annotation", tmpI);
 #if IS_USE_PER_TRANS
 	imshow("Top-down perspective mapping", tmpBGMTrans);

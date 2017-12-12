@@ -104,6 +104,7 @@ CarSnukt detector
 
 // Debug
 #define DEBUG_FINAL					1
+#define FULL_SCREEN					0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
