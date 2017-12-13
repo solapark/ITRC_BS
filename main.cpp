@@ -6,6 +6,7 @@
 #include "main.h"
 #include <time.h>
 
+//using namespace std;
 int main() {
 	
 	// assertions 
@@ -52,6 +53,10 @@ int main() {
 	int numberOfSkip = 0;
 #endif
 
+#if DEBUG_RUNNING_TIME
+	int frameCount = 0;
+	clock_t t_arr[100];
+#endif
 #if STATIC_IMAGE
 	for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
 #elif VIDEO || CAMERA
@@ -63,10 +68,11 @@ int main() {
 		cout << "ImgIdx : "<<ImgIdx << endl;
 #endif
 
+
 #if DEBUG_RUNNING_TIME
-		clock_t t_arr[100];
+		frameCount++;
 		int i = 0;
-		t_arr[i++] = clock();
+		t_arr[i++] += clock();
 #endif
 #if STATIC_IMAGE
 		Mat tmpI = ReadImage(tmpImgIdx);
@@ -79,9 +85,15 @@ int main() {
 #if SEND_DATA
 		myCarSnukt.updateT(now);
 #endif
+
 #if DEBUG_RUNNING_TIME
-		t_arr[i++] = clock();
-		cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		frameCount++;
+		t_arr[i++] += clock();
+		if (frameCount % 30 == 0) {
+			printf("ReadImage : ");
+			printf("%f\n", (t_arr[i - 1] - t_arr[i - 2]) / (float)frameCount);
+		}
+		//cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
 #endif
 		// Initilization once
 		if (isFirstFrame){
@@ -120,8 +132,12 @@ int main() {
 		}
 
 #if DEBUG_RUNNING_TIME
-		t_arr[i++] = clock();
-		cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		t_arr[i++] += clock();
+		if (frameCount % 30 == 0) {
+			printf("Update history images : ");
+			printf("%f\n", (t_arr[i - 1] - t_arr[i - 2]) / (float)frameCount);
+			//cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 #if DEBUG_IMG_IDX
 		char str[200];
@@ -156,8 +172,11 @@ int main() {
 
 
 #if DEBUG_RUNNING_TIME
-		t_arr[i++] = clock();
-		cout << "BGM update " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		t_arr[i++] += clock();
+		if (frameCount % 30 == 0) {
+			printf("BGM update : ");
+			printf("%f\n", (t_arr[i - 1] - t_arr[i - 2]) / (float)frameCount);
+		}
 #endif
 
 #if DEBUG_IMG_IDX
@@ -182,8 +201,11 @@ int main() {
 		myCarSnukt.CarSnuktDet(I, III);
 #endif
 #if DEBUG_RUNNING_TIME
-		t_arr[i++] = clock();
-		cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		t_arr[i++] += clock();
+		if (frameCount % 30 == 0) {
+			printf("CarSnukt Detector : ");
+			printf("%f\n", (t_arr[i - 1] - t_arr[i - 2]) / (float)frameCount);
+		}
 #endif
 #else 
 
@@ -282,9 +304,16 @@ int main() {
 #endif
 
 #if DEBUG_RUNNING_TIME
-		t_arr[i++] = clock();
-		cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
-		cout << "********************************************" << endl;
+		t_arr[i++] += clock();
+		if (frameCount % 30 == 0) {
+			printf("Whole : ");
+			printf("%f\n", (t_arr[i - 1] - t_arr[0]) / (float)frameCount);
+			printf("********************************************\n");
+			for (int j = 0; j < i; j++) {
+				t_arr[j] = 0;
+			}
+			frameCount = 0;
+		}
 #endif
 
 #if CAMERA

@@ -2326,7 +2326,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		rectangle(tmpI, rect, Scalar(0, 255, 0), 1);
 	}
 #endif
-
+	
 	// Draw the outer ROI
 	line(tmpI, ROI_BL, ROI_BR, Scalar(255, 0, 255), 2, 4, 0);
 	line(tmpI, ROI_BR, ROI_TR, Scalar(255, 0, 255), 2, 4, 0);
@@ -2348,7 +2348,11 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
+#if PAUSE
+	waitKey(0);
+#else
 	waitKey(1);
+#endif
 }
 
 inline Void CarSnukt::prepareSendData() {

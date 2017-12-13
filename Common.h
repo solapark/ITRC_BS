@@ -58,7 +58,7 @@ typedef       float					Float;
 #define STATIC_IMAGE				0		  
 #define VIDEO						0	  
 #define CAMERA						1
-#define IP_CAM_NUM					177
+#define IP_CAM_NUM					176
 
 // Image size
 #define SIZE_HOR					640
@@ -105,6 +105,7 @@ CarSnukt detector
 // Debug
 #define DEBUG_FINAL					1
 #define FULL_SCREEN					0
+#define PAUSE						0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
@@ -119,7 +120,7 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			0
+#define DEBUG_RUNNING_TIME			1
 #define DEBUG_GPS					0
 #define	DEBUG_AUTO_CAR_DETECTION	0
 
@@ -442,11 +443,11 @@ const uint32_t Trans_H = 450;
 #define CAM_ID						"rtsp://admin:1234@222.116.156.175/video1"
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
-#define DATASET_DIR					"data/175/1/175_2017112310359_"
+//#define DATASET_DIR					"data/175/1/175_2017112310359_"
 //#define DATASET_DIR					"data/175/2/175_20171123105121_"
 //#define DATASET_DIR					"data/175/3/175_20171123105740_"
 //#define DATASET_DIR					"data/175_gps_test_2/"
-
+#define DATASET_DIR					"data/175_gps_test_1/"
 
 
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
@@ -454,14 +455,16 @@ const uint32_t Trans_H = 450;
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-#define FIRST_IMG_IDX				0
-#define LAST_IMG_IDX				351
+//#define FIRST_IMG_IDX				0
+//#define LAST_IMG_IDX				351
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				415
 //#define FIRST_IMG_IDX				825
 //#define LAST_IMG_IDX				1359
 //#define FIRST_IMG_IDX				1
 //#define LAST_IMG_IDX				72
+#define FIRST_IMG_IDX				1
+#define LAST_IMG_IDX				60
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
