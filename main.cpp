@@ -93,7 +93,7 @@ int main() {
 #if IS_USE_PER_TRANS
 			myCarSnukt.FormTransBGM(tmpI, Trans_BL, Trans_BR, Trans_TR, Trans_TL, Trans_W, Trans_H);
 #endif
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 			Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
 			Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
 			myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
@@ -101,6 +101,10 @@ int main() {
 			myCarSnukt.setGps2Pixel(gps,pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
 #endif
 
+#endif
+
+#if PIXEL2GPS_TABLE
+			myCarSnukt.setPixel2GpsTable(GPS_TABLE_NAME, SIZE_VER, SIZE_HOR);
 #endif
 #else
 			myCarSnukt.InputROIandPersMap(tmpI);

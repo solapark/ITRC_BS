@@ -2179,7 +2179,8 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			rectangle(tmpI, rect, Scalar(0, 0, 255), 1);
 
 			// Draw the object center in the image plane
-			//circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+			circle(tmpI, Point(639, 0), 3, Scalar(0, 0, 255), 2, 4, 0);
 
 #if DETECT_DIRECTION
 			// Draw the object head-tail in the image plane
@@ -2235,7 +2236,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 #endif
 		}
 	}
-#if AUTO_CAR_DETECTION
+#if DEBUG_AUTO_CAR_DETECTION
 	if (countNonZero(LiveAutoCarList) > 0)
 	{
 		Mat NonZ;
@@ -2338,13 +2339,41 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	line(tmpI, ROI_iBR, ROI_iTR, Scalar(255, 0, 0), 2, 4, 0);
 	line(tmpI, ROI_iTR, ROI_iTL, Scalar(255, 0, 0), 2, 4, 0);
 	line(tmpI, ROI_iTL, ROI_iBL, Scalar(255, 0, 0), 2, 4, 0);
-	
+
+#if FULL_SCREEN	
+	namedWindow("Annotation", CV_WINDOW_NORMAL);
+	cvSetWindowProperty("Annotation", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+#endif
 	imshow("Annotation", tmpI);
+
 #if IS_USE_PER_TRANS
 	imshow("Top-down perspective mapping", tmpBGMTrans);
 #endif
 
-	waitKey(1);
+
+#if DEBUG_VELOCITY
+	Mat IforGps;
+	I.copyTo(IforGps);
+
+	if (countNonZero(LiveObjList) > 0)
+	{
+		Mat NonZ;
+		findNonZero(LiveObjList, NonZ);
+		for (uint8_t i = 0; i < NonZ.total(); i++)
+		{
+			uint8_t ID = NonZ.at<Point2i>(i).x;
+
+			// Draw the object center in the image plane
+			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+			string velocity = TrackObj[ID].dataCamToCar.vx + ", " + TrackObj[ID].dataCamToCar.vy;
+			putText(IforGps, velocity, TrackObj[ID].CenterImgPlane, FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 1);
+			
+		}
+	}
+	imshow("velocity", IforGps);
+
+#endif
+	waitKey(0);
 }
 
 inline Void CarSnukt::prepareSendData() {
@@ -2368,7 +2397,12 @@ inline Void CarSnukt::prepareSendData() {
 
 			//lat, lon
 			int32_t pastLat, pastLon;
+#if PIXEL2GPS_HOMOGRAPHY
 			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, curGps);
+#elif PIXEL2GPS_TABLE
+			cout << TrackObj[ID].CenterImgPlane << endl;
+			gpsT.getGps64INT(TrackObj[ID].CenterImgPlane, curGps);
+#endif
 			pastLat = pCamToCar->latitude;
 			pastLon = pCamToCar->longitude;
 			pCamToCar->latitude = curGps.x;
@@ -2457,7 +2491,7 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	//int interSecCnt = countNonZero(interSec);
 	int interSecCnt = countNonZero(thrImg);
 #if DEBUG_AUTO_CAR_DETECTION
-	cout << "interSecCnt : " << interSecCnt << endl;
+	//cout << "interSecCnt : " << interSecCnt << endl;
 #endif
 	if (interSecCnt> NUM_COLOR_PIXEL_THR) {
 		colCnt = interSecCnt;
@@ -2514,6 +2548,11 @@ Void CarSnukt::setPixel2Gps(const Point2f(&pixel)[4], const Point2d(&gps)[4],
 {
 	pixel2gps.setGps(pixel, gps, latSameDigit, lonSameDigit, latWholeDigit, lonWholeDigit, latPrecision, lonPrecision);
 }
+
+Void CarSnukt::setPixel2GpsTable(const char* gpsTName, const int col, const int row) {
+	gpsT.setGpsTable(gpsTName, col, row);
+}
+
 
 Void CarSnukt::setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
 	const int latSameDigit, const int lonSameDigit,

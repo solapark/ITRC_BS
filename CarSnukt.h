@@ -103,6 +103,7 @@ private:
 
 	timeStamp time;
 	pixel2Gps pixel2gps;
+	gpsTable gpsT;
 	gps2Pixel gps2pixel;
 	colorDetector colDet;
 	// ============================================
@@ -317,6 +318,8 @@ public:
 		const int latSameDigit, const int lonSameDigit,
 		const int latWholeDigit, const int lonWholeDigit,
 		const int latPrecision, const int lonPrecision);
+
+	Void setPixel2GpsTable(const char* gpsTName, const int col, const int row);
 
 	Void setGps2Pixel(const Point2d(&gps)[4], const Point2f(&pixel)[4],
 		const int latSameDigit, const int lonSameDigit,

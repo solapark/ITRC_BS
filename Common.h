@@ -34,6 +34,7 @@
 #include "gps2Pixel.h"		//gps
 #include "gpsVelocity.h"	//velocity
 #include "colorDetector.h"	//color detection for auto car
+#include "gpsTable.h"		//gpsTable
 
 //autoCar Detection
 //#include "yolo_v2_class.hpp"
@@ -55,10 +56,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0		  
+#define STATIC_IMAGE				1		  
 #define VIDEO						0	  
-#define CAMERA						1
-#define IP_CAM_NUM					177
+#define CAMERA						0
+#define IP_CAM_NUM					173
 
 // Image size
 #define SIZE_HOR					640
@@ -93,7 +94,8 @@ CarSnukt detector
 #define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
 #define CHECK_INSIDE_ROI			0
-#define PIXEL2GPS					1
+#define PIXEL2GPS_HOMOGRAPHY		0
+#define PIXEL2GPS_TABLE				1
 
 //sola
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
@@ -104,6 +106,7 @@ CarSnukt detector
 
 // Debug
 #define DEBUG_FINAL					1
+#define FULL_SCREEN					0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
 #define DEBUG_NONZ_SEG				0
@@ -112,7 +115,7 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				0
+#define DEBUG_SEND_DATA				1
 
 //sola
 #define DEBUG_SUB					0
@@ -120,12 +123,13 @@ CarSnukt detector
 #define DEBUG_TRACK_DIFF			0
 #define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					0
-#define	DEBUG_AUTO_CAR_DETECTION	0
+#define DEBUG_VELOCITY				0
+#define	DEBUG_AUTO_CAR_DETECTION	1
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
 
-#define SAVE_NEW_BG					0
+#define SAVE_NEW_BG					1
 
 #define EXCLUDE_SMALL_MVOS_IN_TRK	1		//in tracking process, don't consider small MVOs
 
@@ -143,7 +147,7 @@ CarSnukt detector
 //#define DATASET_DIR					"data/174/4/174_20171123105146_"
 
 
-#define BG_FILE						"data/bus_bg.jpg"
+#define BG_FILE						"data/173/1/bus_bg.jpg"
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
@@ -176,7 +180,7 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 
 #endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(363, 281);
 const Point2f pixel1(165, 215);
 const Point2f pixel2(257, 99);
@@ -186,6 +190,9 @@ const Point2d mapDouble0(36.9691973, 127.8717136);
 const Point2d mapDouble1(36.9691541, 127.8717977);
 const Point2d mapDouble2(36.9688922, 127.8717741);
 const Point2d mapDouble3(36.9687236, 127.8716605);
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_173.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -197,8 +204,6 @@ const Point2d mapDouble3(36.9687236, 127.8716605);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -209,10 +214,13 @@ const uint32_t Trans_H = 450;
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
 #define BGM_WB						1.1				// The weight for the update of the current background model 
 #define BGM_N						3				// The number of background image candidates
-#define BGM_DT						300				// The BGM update interval (frames)
+#define BGM_DT						100				// The BGM update interval (frames)
 #define INITAIL_BGM_DT				10				// The BGM update interval (frames)
 #define BGM_KNOWLEDGE				1				// 1: use the knowledge-base BGM, default 0
 #define BGM_STABLE_CNT				BGM_N + 3		
+
+#define BGM_DYNAMIC_STATIC			0				// 1: a dynamic background model (BGM) -> static
+#define BGM_DYNAMIC_STATIC_CNT		BGM_DT*1		// The BGM update interval (frames)
 
 // Thresholds and gains
 #define TL_MIN						0.03				  // suppression noise level threshold after the background subtraction step (min)
@@ -326,8 +334,9 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+#endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(144, 265);
 const Point2f pixel1(299, 106);
 const Point2f pixel2(293, 168);
@@ -337,6 +346,9 @@ const Point2d mapDouble0(36.9696571, 127.8717345);
 const Point2d mapDouble1(36.9704718, 127.8719885);
 const Point2d mapDouble2(36.9698856, 127.8718563);
 const Point2d mapDouble3(36.9698512, 127.8717732);
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_174.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -348,10 +360,6 @@ const Point2d mapDouble3(36.9698512, 127.8717732);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -480,8 +488,9 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+#endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(298, 222);
 const Point2f pixel1(165, 286);
 const Point2f pixel2(408, 74);
@@ -491,6 +500,10 @@ const Point2d mapDouble0(36.9718700, 127.8712666);
 const Point2d mapDouble1(36.9719497, 127.8711135);
 const Point2d mapDouble2(36.9718047, 127.8718005);
 const Point2d mapDouble3(36.9717033, 127.8712464);
+
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_175.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -502,10 +515,6 @@ const Point2d mapDouble3(36.9717033, 127.8712464);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -595,9 +604,11 @@ const uint32_t Trans_H = 450;
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
 //#define DATASET_DIR					"data/176/1/176_20171123103424_"
-//#define DATASET_DIR					"data/176/2/176_20171123104944_"
+#define DATASET_DIR					"data/176/2/176_20171123104944_"
 //#define DATASET_DIR					"data/176/3/176_20171123105044_"
-#define DATASET_DIR					"data/176/4/176_20171123105829_"
+//#define DATASET_DIR					"data/176/4/176_20171123105829_"
+//#define DATASET_DIR					"data/176/5/176_2017121113478_"
+
 
 
 //#define BG_FILE						"../../../Datasets/intersection/image_3279.jpg"
@@ -607,12 +618,15 @@ const uint32_t Trans_H = 450;
 
 //#define FIRST_IMG_IDX				603
 //#define LAST_IMG_IDX				1170
-//#define FIRST_IMG_IDX				0
-//#define LAST_IMG_IDX				882
+#define FIRST_IMG_IDX				0
+#define LAST_IMG_IDX				882
 //#define FIRST_IMG_IDX				345
 //#define LAST_IMG_IDX				940
-#define FIRST_IMG_IDX				0
-#define LAST_IMG_IDX				652
+//#define FIRST_IMG_IDX				0
+//#define LAST_IMG_IDX				652
+//#define FIRST_IMG_IDX				0
+//#define LAST_IMG_IDX				2156
+
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -632,8 +646,9 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+#endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(218, 276);
 const Point2f pixel1(204, 238);
 const Point2f pixel2(438, 194);
@@ -643,6 +658,9 @@ const Point2d mapDouble0(36.9722769, 127.8704997);
 const Point2d mapDouble1(36.9723460, 127.8704575);
 const Point2d mapDouble2(36.9724826, 127.8707809);
 const Point2d mapDouble3(36.9722611, 127.8708721);
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_176.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -654,10 +672,6 @@ const Point2d mapDouble3(36.9722611, 127.8708721);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -775,8 +789,9 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+#endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(264, 279);
 const Point2f pixel1(357, 166);
 const Point2f pixel2(123, 200);
@@ -786,6 +801,9 @@ const Point2d mapDouble0(36.9682695, 127.8715538);
 const Point2d mapDouble1(36.9683374, 127.8713895);
 const Point2d mapDouble2(36.9682452, 127.8714586);
 const Point2d mapDouble3(36.9682820, 127.8715888);
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_177.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -797,10 +815,6 @@ const Point2d mapDouble3(36.9682820, 127.8715888);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -915,8 +929,9 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
+#endif
 
-#if PIXEL2GPS
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(285, 190);
 const Point2f pixel1(555, 283);
 const Point2f pixel2(104, 108);
@@ -926,6 +941,10 @@ const Point2d mapDouble0(36.9667083, 127.8716054);
 const Point2d mapDouble1(36.9667942, 127.8715796);
 const Point2d mapDouble2(36.9665292, 127.8716415);
 const Point2d mapDouble3(36.9665292, 127.8714353);
+
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_181.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -937,10 +956,6 @@ const Point2d mapDouble3(36.9665292, 127.8714353);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
@@ -1055,8 +1070,8 @@ const Point2i ROI_TL(1, SIZE_VER - 1);
 //const Point2f Trans_BR(399, 75);
 //const Point2f Trans_TR(300, 265);
 //const Point2f Trans_TL(2, 150);
-
-#if PIXEL2GPS
+#endif
+#if PIXEL2GPS_HOMOGRAPHY
 const Point2f pixel0(550, 232);
 const Point2f pixel1(497, 115);
 const Point2f pixel2(82, 164);
@@ -1066,6 +1081,9 @@ const Point2d mapDouble0(36.9670609, 127.8717418);
 const Point2d mapDouble1(36.9673035, 127.8717672);
 const Point2d mapDouble2(36.9671451, 127.8715260);
 const Point2d mapDouble3(36.9669830, 127.8716165);
+#elif PIXEL2GPS_TABLE
+#define GPS_TABLE_NAME				"gpsTable_182.txt"
+#endif
 
 //For GPS transforamtion
 #define LAT_SAME_DIGIT						3
@@ -1077,10 +1095,6 @@ const Point2d mapDouble3(36.9669830, 127.8716165);
 
 //to calculate velocity
 #define VELOCITY_LIMIT						5500			
-
-#endif
-#endif
-
 #define VEL_PRECISION						2
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
