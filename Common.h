@@ -56,9 +56,9 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				1		  
+#define STATIC_IMAGE				0		  
 #define VIDEO						0	  
-#define CAMERA						0
+#define CAMERA						1
 #define IP_CAM_NUM					173
 
 // Image size
@@ -94,8 +94,10 @@ CarSnukt detector
 #define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
 #define CHECK_INSIDE_ROI			0
+
 #define PIXEL2GPS_HOMOGRAPHY		0
 #define PIXEL2GPS_TABLE				1
+
 
 //sola
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
@@ -115,7 +117,7 @@ CarSnukt detector
 #define DEBUG_MVO_CLASSSIFY			0
 #define DEBUG_BKG_UPDATE			0
 #define DEBUG_TARGET_LINE			0
-#define DEBUG_SEND_DATA				1
+#define DEBUG_SEND_DATA				0
 
 //sola
 #define DEBUG_SUB					0
@@ -129,7 +131,7 @@ CarSnukt detector
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
 
-#define SAVE_NEW_BG					1
+#define SAVE_NEW_BG					0
 
 #define EXCLUDE_SMALL_MVOS_IN_TRK	1		//in tracking process, don't consider small MVOs
 

@@ -48,8 +48,8 @@ void gpsTable::setGpsTable(const char* gpsFile, const int tableRow, const int ta
 	{
 		//cout << ++count << endl;
 		fscanf(pFile, "%d\t%d\t%lf\t%lf\n", &pixel.x, &pixel.y, &gps.x, &gps.y);
-		//printf("공백으로 분리 : %d %d %.7f %.7f\n", pixel.x, pixel.y, gps.x, gps.y);
-		//table[80*360+44] = gps;
+//		cout.precision(10);
+//		cout<<"공백으로 분리 : " << pixel.x << " " << pixel.y << " " << gps.x << " " << gps.y<<endl;
 		table[(pixel.y - 1)*tableCol + (pixel.x - 1)] = gps;
 		//table[pixel.x*tableCol + pixel.y] = gps;
 	}
@@ -59,16 +59,16 @@ void gpsTable::setGpsTable(const char* gpsFile, const int tableRow, const int ta
 
 int gpsTable::getGps(const Point2i& pixel, Point2d &gps) const {
 	gps = table[pixel.y * tableCol + pixel.x];
-	//	cout.precision(10);
-	//	cout << "pixel : "<<pixel<<" gps: " <<gps << endl;
+	//cout.precision(10);
+	//cout << "pixel : " << pixel << " gps: " << gps << endl;
 	return 1;
 }
 
 int gpsTable::getGps64INT(const Point2i& pixel, Point2l &gps) const {
 	Point2d gpsD;
 	getGps(pixel, gpsD);
-	gps.x = gpsD.x * (long)10000000;
-	gps.y = gpsD.y * (long)10000000;
+	gps.x = gpsD.x * (double)10000000;
+	gps.y = gpsD.y * (double)10000000;
 	return 1;
 }
 

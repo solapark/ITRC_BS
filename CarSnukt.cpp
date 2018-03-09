@@ -556,6 +556,7 @@ inline Void CarSnukt::BGSuppress(Mat &I, Mat &B, Mat &FG)
 	Mat channels[3];
 	split(DB, channels);
 	FG = channels[0] + channels[1] + channels[2];
+	//imshow("FG bf roi check", FG);
 	FG = FG.mul(ROI);
 	GaussianBlur(FG, FG, cv::Size(5, 5), 0.8);
 	inRange(FG, TL_MIN, TL_MAX, FG);
@@ -2180,7 +2181,6 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 
 			// Draw the object center in the image plane
 			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
-			circle(tmpI, Point(639, 0), 3, Scalar(0, 0, 255), 2, 4, 0);
 
 #if DETECT_DIRECTION
 			// Draw the object head-tail in the image plane
@@ -2373,7 +2373,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("velocity", IforGps);
 
 #endif
-	waitKey(0);
+	waitKey(1);
 }
 
 inline Void CarSnukt::prepareSendData() {
@@ -2400,7 +2400,7 @@ inline Void CarSnukt::prepareSendData() {
 #if PIXEL2GPS_HOMOGRAPHY
 			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, curGps);
 #elif PIXEL2GPS_TABLE
-			cout << TrackObj[ID].CenterImgPlane << endl;
+			//cout << TrackObj[ID].CenterImgPlane << endl;
 			gpsT.getGps64INT(TrackObj[ID].CenterImgPlane, curGps);
 #endif
 			pastLat = pCamToCar->latitude;
