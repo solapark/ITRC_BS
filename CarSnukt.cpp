@@ -32,6 +32,10 @@ CarSnukt::CarSnukt()
 	: colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE)
 #endif
 {
+#if DETECTOR_YOLO
+	pYolo = new Detector(CFG_FILE, WEIGHT_FILE);
+#endif
+
 	// BGM
 	isBsAvai = false;
 	isBAvai = false;
@@ -2049,6 +2053,16 @@ Void CarSnukt::UpdateBGM(Mat &I)
 
 Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 {
+	vector<Mat> MVO_ROI;
+	vector<Mat> MVO_SEG;
+	vector<bool> isLargeObject;
+	vector<int> hardIdCode;
+
+#if AUTO_CAR_DETECTION
+	vector<bool> isAutoCar;
+#endif
+
+#if DETECTOR_BG
 	if (isBsAvai)
 	{
 		// Update the current BG
@@ -2057,15 +2071,8 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		}
 
 		// Initialize the masks	and needed variables		
-		vector<Mat> MVO_ROI;
-		vector<Mat> MVO_SEG;
-		vector<bool> isLargeObject;
 		vector<bool> isInROI;
-		vector<int> hardIdCode;
 		vector<vector<Point2i> > CriticPntsVec;
-#if AUTO_CAR_DETECTION
-		vector<bool> isAutoCar;
-#endif
 
 		// Background suppression then filter it through the ROI mask
 #if PERS_VIEW
@@ -2088,13 +2095,8 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		MVOSH = FG;
 		MVOGSH = FG - MVOSH;
 #endif
-//		imshow("FG", FG);
-//		imshow("MVOSH", MVOSH);
-//		waitKey(0);
-
 		// Shadow detection
 		ShadowDet(I, B, MVOSH, MVO_ROI, MVO_SEG);
-		//cout << "ShadowDet done" << endl;
 
 		// Knowledge-based background model update (having low impacts to the system, optional)
 #if BGM_KNOWLEDGE
@@ -2105,8 +2107,15 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 		LargeMVODetection(I, MVO_SEG, MVO_ROI, isLargeObject);
 
 #if AUTO_CAR_DETECTION
-
 		detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
+#endif
+
+#elif DETECTOR_YOLO
+#define OPENCV
+	vector<bbox_t> yoloResutVec = pYolo -> detect(I, 0.3);
+#endif
+
+#if AUTO_CAR_DETECTION
 		trackAutoCar(MVO_ROI, isAutoCar);
 #endif
 		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);

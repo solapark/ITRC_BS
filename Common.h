@@ -6,6 +6,7 @@
 
 // Platform
 #define WINDOW 1
+#define OPENCV 1
 
 // C/C++
 #include <conio.h>
@@ -35,9 +36,9 @@
 #include "gpsVelocity.h"	//velocity
 #include "colorDetector.h"	//color detection for auto car
 #include "gpsTable.h"		//gpsTable
+#include "gpsTable.h"		//gpsTable
+#include "yolo_v2_class.hpp"//YOLO
 
-//autoCar Detection
-//#include "yolo_v2_class.hpp"
 
 using namespace cv;
 using namespace std;
@@ -98,6 +99,8 @@ CarSnukt detector
 #define PIXEL2GPS_HOMOGRAPHY		0
 #define PIXEL2GPS_TABLE				1
 
+#define DETECTOR_BG					0				//object detection using background subtraction
+#define DETECTOR_YOLO				1				//object detection using YOLO
 
 //sola
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
@@ -161,6 +164,13 @@ CarSnukt detector
 //#define LAST_IMG_IDX				697
 //#define FIRST_IMG_IDX				727
 //#define LAST_IMG_IDX				1636
+
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
+
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
 //////////			ROI static setup			///////////////
@@ -318,6 +328,12 @@ const uint32_t Trans_H = 450;
 //#define FIRST_IMG_IDX				727
 //#define LAST_IMG_IDX				1636
 
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
+
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
 //////////			ROI static setup			///////////////
@@ -471,6 +487,12 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				1359
 //#define FIRST_IMG_IDX				1
 //#define LAST_IMG_IDX				72
+
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -629,6 +651,11 @@ const uint32_t Trans_H = 450;
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				2156
 
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -773,6 +800,12 @@ const uint32_t Trans_H = 450;
 #define FIRST_IMG_IDX				3000
 #define LAST_IMG_IDX				3476
 
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
+
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
 //////////			ROI static setup			///////////////
@@ -912,6 +945,12 @@ const uint32_t Trans_H = 450;
 #define FILE_EXT					".jpg"
 #define FIRST_IMG_IDX				0 
 #define LAST_IMG_IDX				998
+
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
@@ -1053,6 +1092,12 @@ const uint32_t Trans_H = 450;
 #define FILE_EXT					".jpg"
 #define FIRST_IMG_IDX				0 
 #define LAST_IMG_IDX				998
+
+#if DETECTOR_YOLO
+#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
+#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#endif	
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////

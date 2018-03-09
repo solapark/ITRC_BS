@@ -106,6 +106,7 @@ private:
 	gpsTable gpsT;
 	gps2Pixel gps2pixel;
 	colorDetector colDet;
+	Detector* pYolo;
 	// ============================================
 	// ================	Functions  ================
 	// ============================================
