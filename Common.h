@@ -39,10 +39,9 @@
 #include "gpsTable.h"		//gpsTable
 #include "yolo_v2_class.hpp"//YOLO
 
-
-using namespace cv;
 using namespace std;
 using namespace ml;
+using namespace cv;
 
 typedef       void					Void;
 typedef       bool					Bool;
@@ -57,10 +56,10 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0		  
+#define STATIC_IMAGE				1		  
 #define VIDEO						0	  
-#define CAMERA						1
-#define IP_CAM_NUM					173
+#define CAMERA						0
+#define IP_CAM_NUM					176
 
 // Image size
 #define SIZE_HOR					640
@@ -96,8 +95,8 @@ CarSnukt detector
 #define TIME_LIMIT					3000
 #define CHECK_INSIDE_ROI			0
 
-#define PIXEL2GPS_HOMOGRAPHY		0
-#define PIXEL2GPS_TABLE				1
+#define PIXEL2GPS_HOMOGRAPHY		1
+#define PIXEL2GPS_TABLE				0
 
 #define DETECTOR_BG					0				//object detection using background subtraction
 #define DETECTOR_YOLO				1				//object detection using YOLO
@@ -126,7 +125,7 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			0
+#define DEBUG_RUNNING_TIME			1
 #define DEBUG_GPS					0
 #define DEBUG_VELOCITY				0
 #define	DEBUG_AUTO_CAR_DETECTION	0
@@ -652,9 +651,9 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				2156
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
-#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
-#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#define WEIGHT_FILE					"data/yolo/yolo_small2_176_car_4100/yolo-obj-small2_6000.weights"
+#define CFG_FILE					"data/yolo/yolo_small2_176_car_4100/yolo-obj-small2.cfg"
+#define NAME_FILE					"data/yolo/yolo_small2_176_car_4100/obj.names"
 #endif	
 
 #if STATIC_ROI
@@ -705,7 +704,7 @@ const Point2d mapDouble3(36.9722611, 127.8708721);
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
 
-#define AUTO_CAR_DETECTION			1
+#define AUTO_CAR_DETECTION			0
 
 // For background update algorithm
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used

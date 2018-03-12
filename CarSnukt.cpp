@@ -253,9 +253,9 @@ Void CarSnukt::LoadBG()
 	}
 	if (!BG.empty())
 	{
-		imshow("BackGround Img", BG);
-		waitKey();
-		printf("Do you want to load BG image ? y/n \n");
+		cv::imshow("BackGround Img", BG);
+		cv::waitKey();
+		std::printf("Do you want to load BG image ? y/n \n");
 		destroyWindow("BackGround Img");
 		string input = "y";
 		//cin >> input;
@@ -1354,7 +1354,7 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 			NewIDFindIter++;
 			if (NewIDFindIter >= LIVE_OBJECT_SIZE)
 			{
-				printf("There are too many objects\n");
+				std::printf("There are too many objects\n");
 				NewTrackObj = 0;
 			}
 			//assert(NewIDFindIter <= LIVE_OBJECT_SIZE && "Cant not find a new ID");
@@ -1898,12 +1898,12 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 	vector<Point2i> PER_P;
 
 	// ROI setting here (for non-static ROI)
-	namedWindow("ROI_Set", WINDOW_AUTOSIZE);
+	cv::namedWindow("ROI_Set", WINDOW_AUTOSIZE);
 	while (!isSettingDone)
 	{
 		// Bottom-left
 		isSatisfied = false;
-		printf("Chose the Bottom-Left point of the ROI\n");
+		std::printf("Chose the Bottom-Left point of the ROI\n");
 
 		while (!isSatisfied)
 		{
@@ -1912,7 +1912,7 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 			rectangle(sI, rect, Scalar(0, 0, 255), 2);
 			sprintf(str, "Chose the Bottom-Left point of the ROI");
 			putText(sI, str, Point2i((int)(tmpI.cols / 10), (int)(tmpI.rows / 1.5)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-			setMouseCallback("ROI_Set", CallBackFunc, &p);
+			cv::setMouseCallback("ROI_Set", CallBackFunc, &p);
 			if ((p.x < tmpI.cols / 2) && (p.y < tmpI.rows / 2) && (p.x>0) && (p.y>0))
 //			if ((p.x < tmpI.cols) && (p.y < tmpI.rows) && (p.x>0) && (p.y>0))
 			{
@@ -1920,12 +1920,12 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 				ROI_P.push_back(p);
 			}
 			imshow("ROI_Set", sI);
-			waitKey(1);
+			cv::waitKey(1);
 		}
 
 		// Bottom-right
 		isSatisfied = false;
-		printf("Chose the Bottom-Right point of the ROI\n");
+		std::printf("Chose the Bottom-Right point of the ROI\n");
 		while (!isSatisfied)
 		{
 			tmpI.copyTo(sI);
@@ -1933,19 +1933,19 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 			rectangle(sI, rect, Scalar(0, 0, 255), 2);
 			sprintf(str, "Chose the Bottom-Right point of the ROI");
 			putText(sI, str, Point2i((int)(tmpI.cols / 10), (int)(tmpI.rows / 1.5)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-			setMouseCallback("ROI_Set", CallBackFunc, &p);
+			cv::setMouseCallback("ROI_Set", CallBackFunc, &p);
 			if ((p.x < tmpI.cols) && (p.y < tmpI.rows / 2) && (p.x>tmpI.cols / 2) && (p.y>0))
 			{
 				isSatisfied = true;
 				ROI_P.push_back(p);
 			}
 			imshow("ROI_Set", sI);
-			waitKey(1);
+			cv::waitKey(1);
 		}
 
 		// Top-right
 		isSatisfied = false;
-		printf("Chose the Top-Right point of the ROI\n");
+		std::printf("Chose the Top-Right point of the ROI\n");
 		while (!isSatisfied)
 		{
 			tmpI.copyTo(sI);
@@ -1953,19 +1953,19 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 			rectangle(sI, rect, Scalar(0, 0, 255), 2);
 			sprintf(str, "Chose the Top-Right point of the ROI");
 			putText(sI, str, Point2i((int)(tmpI.cols / 10), int(tmpI.rows / 2.5)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-			setMouseCallback("ROI_Set", CallBackFunc, &p);
+			cv::setMouseCallback("ROI_Set", CallBackFunc, &p);
 			if ((p.x < tmpI.cols) && (p.y < tmpI.rows) && (p.x>tmpI.cols / 2) && (p.y>tmpI.rows / 2))
 			{
 				isSatisfied = true;
 				ROI_P.push_back(p);
 			}
 			imshow("ROI_Set", sI);
-			waitKey(1);
+			cv::waitKey(1);
 		}
 
 		// Top-left
 		isSatisfied = false;
-		printf("Chose the Top-Left point of the ROI\n");
+		std::printf("Chose the Top-Left point of the ROI\n");
 		while (!isSatisfied)
 		{
 			tmpI.copyTo(sI);
@@ -1973,14 +1973,14 @@ Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 			rectangle(sI, rect, Scalar(0, 0, 255), 2);
 			sprintf(str, "Chose the Top-Left point of the ROI");
 			putText(sI, str, Point2i((int)(tmpI.cols / 10), (int)(tmpI.rows / 2.5)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-			setMouseCallback("ROI_Set", CallBackFunc, &p);
+			cv::setMouseCallback("ROI_Set", CallBackFunc, &p);
 			if ((p.x < tmpI.cols / 2) && (p.y < tmpI.rows) && (p.x>0) && (p.y>tmpI.rows / 2))
 			{
 				isSatisfied = true;
 				ROI_P.push_back(p);
 			}
 			imshow("ROI_Set", sI);
-			waitKey(1);
+			cv::waitKey(1);
 		}
 		destroyWindow("ROI_Set");
 		isSettingDone = true;
@@ -2137,8 +2137,9 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 #elif DETECTOR_YOLO
 	MOV_ROI.clear();
 	isLargeObject.clear();
-
-	vector<bbox_t> yoloResutVec = pYolo->detect(I, 0.3);
+	
+	vector<bbox_t> yoloResutVec = pYolo->detect(I);
+	cout << "yolo size: "<<yoloResutVec.size() << endl;
 	for (int i = 0; i < yoloResutVec.size(); i++) {
 		// (x1, y1)	.	. 
 		//		.	.	.
@@ -2150,6 +2151,10 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		y1 = yoloResutVec[i].y;
 		y2 = y1 + yoloResutVec[i].h;
 		Mat objRect = (Mat_<int>(1, 4) << x1, x2, y1, y2);
+		MOV_ROI.push_back(objRect);
+		//cout << x1 << " " << x2 << " " << y1 << " " << y2<< endl;
+		Mat objSeg= I(Range(y1, y2), Range(x1, x2));
+		MVO_SEG.push_back(objSeg);
 
 		id = yoloResutVec[i].obj_id;
 		switch (id){
@@ -2414,7 +2419,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("velocity", IforGps);
 
 #endif
-	waitKey(1);
+	cv::waitKey(1);
 }
 
 inline Void CarSnukt::prepareSendData() {

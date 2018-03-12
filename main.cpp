@@ -7,7 +7,7 @@
 #include <time.h>
 
 int main() {
-	
+
 	// assertions 
 	assert((VIDEO + CAMERA + STATIC_IMAGE) == 1 && "Only one type of input should be enable at a time");
 	//assert((ANN + RANTREE + SIZE_SALIENCY) == 1 && "Only one type of classification should be enable at a time");
@@ -30,8 +30,8 @@ int main() {
 #endif	 
 	bool isFirstFrame = true;
 
-
-// read the background image 
+#if DETECTOR_BG
+	// read the background image 
 #if BGM_FIRST_BUILD
 	Mat firstFrame;
 #if STATIC_IMAGE
@@ -60,7 +60,7 @@ int main() {
 #endif
 	{
 #if DEBUG_IMG_IDX
-		cout << "ImgIdx : "<<ImgIdx << endl;
+		cout << "ImgIdx : " << ImgIdx << endl;
 #endif
 
 #if DEBUG_RUNNING_TIME
@@ -84,8 +84,8 @@ int main() {
 		cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
 #endif
 		// Initilization once
-		if (isFirstFrame){
-//			printf("Define the ROI and the image region for the perspective transformation.\n");
+		if (isFirstFrame) {
+			//			printf("Define the ROI and the image region for the perspective transformation.\n");
 			myCarSnukt.Initialize(tmpI.rows, tmpI.cols);
 
 #if STATIC_ROI
@@ -98,7 +98,7 @@ int main() {
 			Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
 			myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
 #if DEBUG_GPS
-			myCarSnukt.setGps2Pixel(gps,pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+			myCarSnukt.setGps2Pixel(gps, pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
 #endif
 
 #endif
@@ -116,10 +116,10 @@ int main() {
 #endif
 
 		// Update history images
-		if (ImgIdx <= 3){
+		if (ImgIdx <= 3) {
 			III = tmpI;	II = tmpI; I = tmpI;
 		}
-		else{
+		else {
 			III = II; II = I; I = tmpI;
 		}
 
@@ -136,16 +136,16 @@ int main() {
 #if BGM_DYNAMIC
 #if WAIT_BGM_BUILD
 		if (!isBgInitEnd) {
-//			cout << "NOT initBgIsOver" << endl;
+			//			cout << "NOT initBgIsOver" << endl;
 			if ((ImgIdx%INITAIL_BGM_DT) == 0) {
 				myCarSnukt.UpdateBGM(I);
 			}
 		}
 		else {
-//			cout << "initBgIsOver" << endl;
+			//			cout << "initBgIsOver" << endl;
 			if ((ImgIdx%BGM_DT) == 0) {
-					myCarSnukt.UpdateBGM(I);
-				}
+				myCarSnukt.UpdateBGM(I);
+			}
 		}
 #else
 		if ((ImgIdx%BGM_DT) == 0) {
@@ -154,7 +154,7 @@ int main() {
 			myCarSnukt.StoreBG();
 		}
 #else
-		}
+	}
 #endif
 #endif
 
@@ -205,7 +205,7 @@ int main() {
 		if (myCarSnukt.GetBGMStatus()) // background formation done
 		{
 			// the main algorithm
-			myCarSnukt.CarSnuktDet(I, III);		
+			myCarSnukt.CarSnuktDet(I, III);
 		}
 #endif 
 
@@ -235,7 +235,7 @@ int main() {
 				myCarSnukt.TrackObj[i].CenterImgPlane;
 				circle(IforGPS, targetPixel, 1, Scalar(0, 255, 0), 3);
 				String vel = to_string(dataToSend[i].vx) + " " + to_string(dataToSend[i].vy);
- 				putText(IforGPS, vel, Point(targetPixel.x-10, targetPixel.y+10), 1, 1, Scalar(0, 255, 0), 2); //red
+				putText(IforGPS, vel, Point(targetPixel.x - 10, targetPixel.y + 10), 1, 1, Scalar(0, 255, 0), 2); //red
 #endif
 			}
 			cout << "********************************************" << endl;
@@ -308,8 +308,160 @@ int main() {
 		}
 #endif
 #endif
-	}
-
-	return(0);
 }
 
+#elif DETECTOR_YOLO
+myCarSnukt.Initialize(SIZE_VER, SIZE_HOR);
+
+#if STATIC_IMAGE
+for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
+#elif VIDEO || CAMERA
+// read images from a video file
+while (!isStop)
+#endif
+{
+#if DEBUG_IMG_IDX
+	cout << "ImgIdx : " << ImgIdx << endl;
+#endif
+
+#if DEBUG_RUNNING_TIME
+	clock_t t_arr[100];
+	int i = 0;
+	t_arr[i++] = clock();
+#endif
+#if STATIC_IMAGE
+	I = ReadImage(tmpImgIdx);
+	ImgIdx = tmpImgIdx - FIRST_IMG_IDX;
+#elif VIDEO || CAMERA
+	// Read images from the video or a camera
+	I= ReadImage(cap);
+#endif
+	//deliver time stamp to myCarSnukt
+#if SEND_DATA
+	myCarSnukt.updateT(now);
+#endif
+#if DEBUG_RUNNING_TIME
+	t_arr[i++] = clock();
+	cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+#endif
+
+	myCarSnukt.FormROI(ROI_BL, ROI_BR, ROI_TR, ROI_TL);
+
+#if PIXEL2GPS_HOMOGRAPHY
+	Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
+	Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
+	myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#if DEBUG_GPS
+	myCarSnukt.setGps2Pixel(gps, pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#endif
+
+#endif
+
+#if PIXEL2GPS_TABLE
+	myCarSnukt.setPixel2GpsTable(GPS_TABLE_NAME, SIZE_VER, SIZE_HOR);
+#endif
+
+#if DEBUG_RUNNING_TIME
+	t_arr[i++] = clock();
+	cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
+#endif
+
+#if DEBUG_IMG_IDX
+	char str[200];
+	sprintf(str, "idx = %d", ImgIdx);
+	putText(I, str, Point2f(1, 10), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
+#endif
+	// CarSnukt algorithm 
+	myCarSnukt.CarSnuktDet(I, III);
+
+#if DEBUG_RUNNING_TIME
+	t_arr[i++] = clock();
+	cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+#endif
+
+
+#if DEBUG_SEND_DATA
+#if DEBUG_GPS
+	Mat IforGPS = I;
+	Point2d targetPixel;
+#endif
+	vector<camToCar> dataToSend;
+	size_t numOfObj = myCarSnukt.getDataToSend(dataToSend);
+	for (size_t i = 0; i < numOfObj; i++) {
+		cout << "ID : " << dataToSend[i].id
+			<< "   TimeStamp : " << dataToSend[i].tStmp
+			<< "   lat, lon: " << dataToSend[i].latitude << ", " << dataToSend[i].longitude
+			<< "   Vx, Vy : " << dataToSend[i].vx << ", " << dataToSend[i].vy
+			//<< "   Heading, width, length  : " << dataToSend[i].heading
+			//<< ", " << dataToSend[i].width << ", " << dataToSend[i].length 
+			<< endl;
+#if DEBUG_GPS
+		myCarSnukt.getTargetPixel(Point2l(dataToSend[i].latitude, dataToSend[i].longitude), targetPixel);
+		myCarSnukt.TrackObj[i].CenterImgPlane;
+		circle(IforGPS, targetPixel, 1, Scalar(0, 255, 0), 3);
+		String vel = to_string(dataToSend[i].vx) + " " + to_string(dataToSend[i].vy);
+		putText(IforGPS, vel, Point(targetPixel.x - 10, targetPixel.y + 10), 1, 1, Scalar(0, 255, 0), 2); //red
+#endif
+	}
+	cout << "********************************************" << endl;
+#if DEBUG_GPS
+	if (countNonZero(myCarSnukt.LiveObjList) > 0)
+	{
+		vector<Point2i> NonZ;
+		findNonZero(myCarSnukt.LiveObjList, NonZ);
+		for (size_t i = 0; i < NonZ.size(); i++)
+		{
+			uint8_t ID = NonZ.at(i).x;
+			circle(IforGPS, myCarSnukt.TrackObj[ID].CenterImgPlane, 1.5, Scalar(0, 0, 255), 3); //red
+		}
+	}
+	imshow("gpsTest", IforGPS);
+	waitKey(1);
+#endif
+
+#if DEBUG_RUNNING_TIME
+	t_arr[i++] = clock();
+	cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
+#endif
+
+#endif
+
+	// Check the termination condition		
+	ImgIdx++;
+#if VIDEO
+	if (ImgIdx > LAST_IMG_IDX)
+	{
+		isStop = true;
+	}
+#endif
+
+#if DEBUG_RUNNING_TIME
+	t_arr[i++] = clock();
+	cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
+	cout << "********************************************" << endl;
+#endif
+
+#if CAMERA
+#if REOPEN_CAM_WHEN_TIME_OVER
+	//waitKey();
+	if (clock() - process_start > TIME_LIMIT) {
+		isTimeOver = true;
+	}
+
+	if (isTimeOver) {
+		cout << "Process exceed time limit. Reopen cam" << endl;
+		cap.release();
+		if (!cap.open(CAM_ID)) {
+			std::cout << "Error opening video stream or file" << std::endl;
+			return -1;
+		}
+	}
+#endif
+#endif
+}
+
+#endif
+
+
+return(0);
+}

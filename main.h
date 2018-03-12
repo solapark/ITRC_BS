@@ -89,8 +89,10 @@ inline Mat ReadImage(VideoCapture &cap)
 #endif
 #endif
 
+#if DETECTOR_BG
 	I.convertTo(I, CV_32FC3, 1 / 255.0);
 	GaussianBlur(I, I, cv::Size(5, 5), 0.3);
+#endif
 	return I;
 }
 
