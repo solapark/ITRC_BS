@@ -306,7 +306,10 @@ public:
 		@Brief: The packed function for CarSnukt-based detector
 		It's output is the structure: CarSnuktOutp that is used for the mapping process.
 		*/
+
 	Void CarSnuktDet(Mat &I, Mat &lastI);
+
+	Void MOVDetector(const Mat& I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_SEG, vector<bool> &isLargeObject);
 
 	Void changeToPers(Mat &I);
 

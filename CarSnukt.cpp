@@ -2056,12 +2056,36 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 	vector<Mat> MVO_ROI;
 	vector<Mat> MVO_SEG;
 	vector<bool> isLargeObject;
-	vector<int> hardIdCode;
+	vector<int> hardIdCode; //redundant 
 
 #if AUTO_CAR_DETECTION
 	vector<bool> isAutoCar;
 #endif
 
+	MOVDetector(I, MVO_ROI, MVO_SEG, isLargeObject);
+
+#if AUTO_CAR_DETECTION
+	trackAutoCar(MVO_ROI, isAutoCar);
+#endif
+
+		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
+		//cout << "LargeMVOTracking done" << endl;
+#if SEND_DATA
+		prepareSendData();
+#endif
+		// Small MVOs refinement
+		SmallROIRefine(isLargeObject, MVO_ROI, SmallObjectROI);
+
+
+
+		// Annotation
+#if DEBUG_FINAL
+		Annotation(I, SmallObjectROI);
+#endif
+	
+}
+
+Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_SEG, vector<bool> &isLargeObject) {
 #if DETECTOR_BG
 	if (isBsAvai)
 	{
@@ -2111,28 +2135,36 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 #endif
 
 #elif DETECTOR_YOLO
-#define OPENCV
-	vector<bbox_t> yoloResutVec = pYolo -> detect(I, 0.3);
-#endif
+	MOV_ROI.clear();
+	isLargeObject.clear();
 
-#if AUTO_CAR_DETECTION
-		trackAutoCar(MVO_ROI, isAutoCar);
-#endif
-		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
-		//cout << "LargeMVOTracking done" << endl;
-#if SEND_DATA
-		prepareSendData();
-#endif
-		// Small MVOs refinement
-		SmallROIRefine(isLargeObject, MVO_ROI, SmallObjectROI);
+	vector<bbox_t> yoloResutVec = pYolo->detect(I, 0.3);
+	for (int i = 0; i < yoloResutVec.size(); i++) {
+		// (x1, y1)	.	. 
+		//		.	.	.
+		//		.	.	(x2, y2)
+		int id, x1, x2, y1, y2;
 
+		x1 = yoloResutVec[i].x;
+		x2 = x1 + yoloResutVec[i].w;
+		y1 = yoloResutVec[i].y;
+		y2 = y1 + yoloResutVec[i].h;
+		Mat objRect = (Mat_<int>(1, 4) << x1, x2, y1, y2);
 
-
-		// Annotation
-#if DEBUG_FINAL
-		Annotation(I, SmallObjectROI);
-#endif
+		id = yoloResutVec[i].obj_id;
+		switch (id){
+		case 0: //car
+			isLargeObject.push_back(1);
+			break;
+		case 1: //pedestrian
+			isLargeObject.push_back(0);
+			break;
+		default:
+			break;
+		}
 	}
+
+#endif
 }
 
 inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)

@@ -129,7 +129,7 @@ CarSnukt detector
 #define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					0
 #define DEBUG_VELOCITY				0
-#define	DEBUG_AUTO_CAR_DETECTION	1
+#define	DEBUG_AUTO_CAR_DETECTION	0
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
