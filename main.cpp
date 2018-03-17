@@ -313,6 +313,23 @@ int main() {
 #elif DETECTOR_YOLO
 myCarSnukt.Initialize(SIZE_VER, SIZE_HOR);
 
+myCarSnukt.FormROI(ROI_BL, ROI_BR, ROI_TR, ROI_TL);
+
+#if PIXEL2GPS_HOMOGRAPHY
+Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
+Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
+myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#if DEBUG_GPS
+myCarSnukt.setGps2Pixel(gps, pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
+#endif
+
+#endif
+
+#if PIXEL2GPS_TABLE
+myCarSnukt.setPixel2GpsTable(GPS_TABLE_NAME, SIZE_VER, SIZE_HOR);
+#endif
+
+
 #if STATIC_IMAGE
 for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
 #elif VIDEO || CAMERA
@@ -343,27 +360,6 @@ while (!isStop)
 #if DEBUG_RUNNING_TIME
 	t_arr[i++] = clock();
 	cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
-#endif
-
-	myCarSnukt.FormROI(ROI_BL, ROI_BR, ROI_TR, ROI_TL);
-
-#if PIXEL2GPS_HOMOGRAPHY
-	Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
-	Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };
-	myCarSnukt.setPixel2Gps(pixel, gps, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
-#if DEBUG_GPS
-	myCarSnukt.setGps2Pixel(gps, pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DIGIT, LON_WHOLE_DIGIT, LAT_PRECISION, LON_PRECISION);
-#endif
-
-#endif
-
-#if PIXEL2GPS_TABLE
-	myCarSnukt.setPixel2GpsTable(GPS_TABLE_NAME, SIZE_VER, SIZE_HOR);
-#endif
-
-#if DEBUG_RUNNING_TIME
-	t_arr[i++] = clock();
-	cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
 #endif
 
 #if DEBUG_IMG_IDX
@@ -417,11 +413,6 @@ while (!isStop)
 	}
 	imshow("gpsTest", IforGPS);
 	waitKey(1);
-#endif
-
-#if DEBUG_RUNNING_TIME
-	t_arr[i++] = clock();
-	cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
 #endif
 
 #endif

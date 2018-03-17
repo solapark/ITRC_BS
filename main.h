@@ -25,12 +25,6 @@ bool isTimeOver = false;
 double process_start;
 
 
-#if STATIC_IMAGEf
-inline Mat  ReadImage(int ImgIdx);
-#elif VIDEO || CAMERA
-inline Mat ReadImage(VideoCapture &cap);
-#endif 
-
 #if STATIC_IMAGE
 inline Mat ReadImage(int ImgIdx)
 #elif VIDEO || CAMERA
@@ -45,8 +39,11 @@ inline Mat ReadImage(VideoCapture &cap)
 	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
 	//cout << ImgName << endl;
 	I = imread(ImgName);
+
 #elif VIDEO || CAMERA
+	clock_t timeStart = clock();
 	cap >> I;	
+cout << "cap >> I L=: " << clock() - timeStart << endl;
 #endif	
 #if SEND_DATA
 	GetLocalTime(&now);
@@ -60,27 +57,8 @@ inline Mat ReadImage(VideoCapture &cap)
 			continue;
 		}
 		cap >> I;
-#if SEND_DATA
-		GetLocalTime(&now);
-#endif
 	}
 #endif
-
-	//assert(I.empty() != 1 && "Cannot read imagel");
-#if CAMERA
-	while (I.empty() && "Cannot read imagel") {
-		cap.release();
-		if (!cap.open(CAM_ID)) {
-			std::cout << "Error opening video stream or file" << std::endl;
-			continue;
-		}
-		cap >> I;
-#if SEND_DATA
-		GetLocalTime(&now);
-#endif
-	}
-#endif
-
 
 #if CAMERA
 #if REOPEN_CAM_WHEN_TIME_OVER

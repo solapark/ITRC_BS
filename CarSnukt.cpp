@@ -2062,27 +2062,35 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 	vector<bool> isAutoCar;
 #endif
 
+	clock_t a = clock();
 	MOVDetector(I, MVO_ROI, MVO_SEG, isLargeObject);
+	cout << "YOLO time " << clock() - a << endl;
 
 #if AUTO_CAR_DETECTION
 	trackAutoCar(MVO_ROI, isAutoCar);
 #endif
 
-		LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
-		//cout << "LargeMVOTracking done" << endl;
+	a = clock();
+	LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
+	cout << "tracking time " << clock() - a << endl;
+
+	a = clock();
 #if SEND_DATA
 		prepareSendData();
 #endif
-		// Small MVOs refinement
+		cout << "prepareSendData " << clock() - a << endl;
+
+		a = clock();
 		SmallROIRefine(isLargeObject, MVO_ROI, SmallObjectROI);
-
-
+		cout << "SmallROIRefine " << clock() - a << endl;
 
 		// Annotation
+		a = clock();
 #if DEBUG_FINAL
 		Annotation(I, SmallObjectROI);
 #endif
-	
+		cout << "annotation" << clock() - a << endl;
+
 }
 
 Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_SEG, vector<bool> &isLargeObject) {
@@ -2093,7 +2101,7 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		if (!isBAvai) {
 			B = Bs;
 		}
-
+	}
 		// Initialize the masks	and needed variables		
 		vector<bool> isInROI;
 		vector<vector<Point2i> > CriticPntsVec;
@@ -2134,22 +2142,23 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
 #endif
 
+
 #elif DETECTOR_YOLO
 	MOV_ROI.clear();
 	isLargeObject.clear();
 	
 	vector<bbox_t> yoloResutVec = pYolo->detect(I);
-	cout << "yolo size: "<<yoloResutVec.size() << endl;
+	//cout << "yolo size: "<<yoloResutVec.size() << endl;
 	for (int i = 0; i < yoloResutVec.size(); i++) {
 		// (x1, y1)	.	. 
 		//		.	.	.
 		//		.	.	(x2, y2)
 		int id, x1, x2, y1, y2;
 
-		x1 = yoloResutVec[i].x;
-		x2 = x1 + yoloResutVec[i].w;
-		y1 = yoloResutVec[i].y;
-		y2 = y1 + yoloResutVec[i].h;
+		x1 = MAX(yoloResutVec[i].x,0);
+		x2 = MIN(x1 + yoloResutVec[i].w, SIZE_HOR-1);
+		y1 = MAX(yoloResutVec[i].y,0);
+		y2 = MIN(y1 + yoloResutVec[i].h, SIZE_VER-1);
 		Mat objRect = (Mat_<int>(1, 4) << x1, x2, y1, y2);
 		MOV_ROI.push_back(objRect);
 		//cout << x1 << " " << x2 << " " << y1 << " " << y2<< endl;
@@ -2175,8 +2184,10 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 {
 	// Important, only coppy
+	//clock_t now = clock();
+
 	Mat tmpI; I.copyTo(tmpI);
-	Mat tmpBGMTrans; TransBGM.copyTo(tmpBGMTrans);
+	Mat tmpBGMTrans; //TransBGM.copyTo(tmpBGMTrans);
 
 #if DEBUG_TARGET_LINE
 #if CAR_0 == 1
@@ -2217,7 +2228,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			uint8_t ID = NonZ.at<Point2i>(i).x;
 
 			// Draw the bounding boxes in the image plane
-			Mat CurROI = TrackObj[ID].ROI;
+			Mat& CurROI = TrackObj[ID].ROI;
 			Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
 				MAX(CurROI.at<int>(2) - 2, 0),
 				MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
@@ -2226,7 +2237,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			rectangle(tmpI, rect, Scalar(0, 0, 255), 1);
 
 			// Draw the object center in the image plane
-			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+			//circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
 
 #if DETECT_DIRECTION
 			// Draw the object head-tail in the image plane
@@ -2243,45 +2254,9 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			sprintf(str, "%d", TrackObj[ID].SoftID);
 #endif
 			putText(tmpI, str, Point2i(CurROI.at<int>(0), CurROI.at<int>(2)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-
-#if TRANSFORM_CRITICAL_POINT			
-			// Draw the critical points in the image plane
-			vector<Point2i> tmpCriPnts = TrackObj[ID].CriticPntsVec;
-			for (uint8_t j = 0; j < tmpCriPnts.size(); j++)
-			{
-				circle(tmpI, tmpCriPnts.at(j), 1, Scalar(0, 255, 255), 2, 4, 0);
-			}
-
-			// Draw the object direction in the transformed plane
-			circle(tmpI, TrackObj[ID].Direction, 3, Scalar(0, 255, 255), 2, 4, 0);
-
-			// Draw the object direction in the image plane
-			line(tmpI, TrackObj[ID].CenterImgPlane, TrackObj[ID].Direction, Scalar(0, 255, 0), 2, 4, 0);
-			Mat CurTransROI = TrackObj[ID].TransROI;
-			Rect rectTrans(MAX(CurTransROI.at<int>(0) - 2, 0),
-				MAX(CurTransROI.at<int>(2) - 2, 0),
-				MIN(CurTransROI.at<int>(1) - CurTransROI.at<int>(0) + 4, tmpBGMTrans.cols - 1),
-				MIN(CurTransROI.at<int>(3) - CurTransROI.at<int>(2) + 4, tmpBGMTrans.rows - 1)
-				);
-			rectangle(tmpBGMTrans, rectTrans, Scalar(0, 0, 255), 1);
-
-			// Draw the object moving state
-			if (TrackObj[ID].isMoving)
-			{
-				sprintf(str, "Move");
-			}
-			else
-			{
-				sprintf(str, "Stop");
-			}
-			putText(tmpI, str, Point2i(CurROI.at<int>(0), CurROI.at<int>(3)), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
-
-			//line(tmpBGMTrans, TrackObj[ID].CenterTrans, TrackObj[ID].DirectionTrans, Scalar(255, 0, 255), 2, 4, 0);
-			// transformed centroid	and direction					
-			circle(tmpBGMTrans, TrackObj[ID].CenterTrans, 1, Scalar(0, 255, 255), 2, 4, 0);
-#endif
 		}
 	}
+
 #if DEBUG_AUTO_CAR_DETECTION
 	if (countNonZero(LiveAutoCarList) > 0)
 	{
@@ -2380,11 +2355,12 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	line(tmpI, ROI_TR, ROI_TL, Scalar(255, 0, 255), 2, 4, 0);
 	line(tmpI, ROI_TL, ROI_BL, Scalar(255, 0, 255), 2, 4, 0);
 
+
 	// Draw the inner ROI
-	line(tmpI, ROI_iBL, ROI_iBR, Scalar(255, 0, 0), 2, 4, 0);
-	line(tmpI, ROI_iBR, ROI_iTR, Scalar(255, 0, 0), 2, 4, 0);
-	line(tmpI, ROI_iTR, ROI_iTL, Scalar(255, 0, 0), 2, 4, 0);
-	line(tmpI, ROI_iTL, ROI_iBL, Scalar(255, 0, 0), 2, 4, 0);
+	//line(tmpI, ROI_iBL, ROI_iBR, Scalar(255, 0, 0), 2, 4, 0);
+	//line(tmpI, ROI_iBR, ROI_iTR, Scalar(255, 0, 0), 2, 4, 0);
+	//line(tmpI, ROI_iTR, ROI_iTL, Scalar(255, 0, 0), 2, 4, 0);
+	//line(tmpI, ROI_iTL, ROI_iBL, Scalar(255, 0, 0), 2, 4, 0);
 
 #if FULL_SCREEN	
 	namedWindow("Annotation", CV_WINDOW_NORMAL);
@@ -2420,6 +2396,8 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 
 #endif
 	cv::waitKey(1);
+	//cout << "line drawing : " << clock() - now << endl;
+
 }
 
 inline Void CarSnukt::prepareSendData() {
