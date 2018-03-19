@@ -315,6 +315,10 @@ myCarSnukt.Initialize(SIZE_VER, SIZE_HOR);
 
 myCarSnukt.FormROI(ROI_BL, ROI_BR, ROI_TR, ROI_TL);
 
+#if NO_NEW_INSIDE_OBJ
+myCarSnukt.FormNewObjROI(NEW_OBJ_PERMITTED_AREA_BL, NEW_OBJ_PERMITTED_AREA_BR, NEW_OBJ_PERMITTED_AREA_TR, NEW_OBJ_PERMITTED_AREA_TL);
+#endif
+
 #if PIXEL2GPS_HOMOGRAPHY
 Point2f pixel[4] = { pixel0, pixel1, pixel2, pixel3 };
 Point2d gps[4] = { mapDouble0, mapDouble1, mapDouble2, mapDouble3 };

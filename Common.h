@@ -105,9 +105,11 @@ CarSnukt detector
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
-#define PREDICTIVE_TRACK			0
-#define KALMAN_TRACK				0
+#define NO_NEW_INSIDE_OBJ			0
 
+#define PREDICTIVE_TRACK			1
+#define KALMAN_TRACK				0
+ 
 // Debug
 #define DEBUG_FINAL					1
 #define FULL_SCREEN					0
@@ -125,7 +127,7 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			0
+#define DEBUG_RUNNING_TIME			1
 #define DEBUG_GPS					0
 #define DEBUG_VELOCITY				0
 #define	DEBUG_AUTO_CAR_DETECTION	0
@@ -625,10 +627,11 @@ const uint32_t Trans_H = 450;
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
 //#define DATASET_DIR					"data/176/1/176_20171123103424_"
-#define DATASET_DIR					"data/176/2/176_20171123104944_"
+//#define DATASET_DIR					"data/176/2/176_20171123104944_"
 //#define DATASET_DIR					"data/176/3/176_20171123105044_"
 //#define DATASET_DIR					"data/176/4/176_20171123105829_"
 //#define DATASET_DIR					"data/176/5/176_2017121113478_"
+#define DATASET_DIR					"data/176_2018318151048/176_2018318151048_"
 
 
 
@@ -639,8 +642,8 @@ const uint32_t Trans_H = 450;
 
 //#define FIRST_IMG_IDX				603
 //#define LAST_IMG_IDX				1170
-#define FIRST_IMG_IDX				0
-#define LAST_IMG_IDX				882
+#define FIRST_IMG_IDX				12000
+#define LAST_IMG_IDX				100000
 //#define FIRST_IMG_IDX				345
 //#define LAST_IMG_IDX				940
 //#define FIRST_IMG_IDX				0
@@ -779,6 +782,10 @@ const uint32_t Trans_H = 450;
 #define SIZE_THRES					200
 #define HISTOGRAM_THRES				200
 
+const Point2i NEW_OBJ_PERMITTED_AREA_BL(ROI_BL.x + 20, ROI_BL.y + 20);
+const Point2i NEW_OBJ_PERMITTED_AREA_BR(ROI_BR.x - 20, ROI_BR.y + 20);
+const Point2i NEW_OBJ_PERMITTED_AREA_TL(ROI_TL.x + 20, ROI_TL.y - 20);
+const Point2i NEW_OBJ_PERMITTED_AREA_TR(ROI_TR.x - 20, ROI_TR.y - 20);
 #endif
 
 #if IP_CAM_NUM == 177

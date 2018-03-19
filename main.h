@@ -37,13 +37,13 @@ inline Mat ReadImage(VideoCapture &cap)
 #if STATIC_IMAGE
 	char ImgName[100];
 	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
-	//cout << ImgName << endl;
+	cout << ImgName << endl;
 	I = imread(ImgName);
 
 #elif VIDEO || CAMERA
-	clock_t timeStart = clock();
+	//clock_t timeStart = clock();
 	cap >> I;	
-cout << "cap >> I L=: " << clock() - timeStart << endl;
+//cout << "cap >> I = " << clock() - timeStart << endl;
 #endif	
 #if SEND_DATA
 	GetLocalTime(&now);

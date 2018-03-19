@@ -58,9 +58,14 @@ void gpsTable::setGpsTable(const char* gpsFile, const int tableRow, const int ta
 }
 
 int gpsTable::getGps(const Point2i& pixel, Point2d &gps) const {
-	gps = table[pixel.y * tableCol + pixel.x];
+	Point2i targetPixel = pixel;
+	gps = table[targetPixel.y * tableCol + targetPixel.x];
 	//cout.precision(10);
 	//cout << "pixel : " << pixel << " gps: " << gps << endl;
+	if (gps.x == 0 && gps.y == 0) {
+		// no data
+		return -1;
+	}
 	return 1;
 }
 
