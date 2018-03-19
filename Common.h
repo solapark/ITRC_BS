@@ -178,9 +178,9 @@ CarSnukt detector
 ///////////////////////////////////////////////////////////////
 
 const Point2i ROI_BL(1, 1);
-const Point2i ROI_BR(450, 1);
-const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER - 1);
-const Point2i ROI_TL(1, SIZE_VER - 1);
+const Point2i ROI_BR(477, 48);
+const Point2i ROI_TR(639, 359);
+const Point2i ROI_TL(1, 359);
 ///////////////////////////////////////////////////////////////
 //////////	Perspective transform static setup	///////////////
 ///////////////////////////////////////////////////////////////
