@@ -56,9 +56,9 @@ typedef       double				Double;
 typedef       float					Float;
 
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				0		  
+#define STATIC_IMAGE				1		  
 #define VIDEO						0	  
-#define CAMERA						1
+#define CAMERA						0
 #define IP_CAM_NUM					176
 
 // Image size
@@ -114,6 +114,7 @@ CarSnukt detector
  
 // Debug
 #define DEBUG_FINAL					1
+#define PAUSE_FRAME					1
 #define FULL_SCREEN					0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
@@ -129,15 +130,41 @@ CarSnukt detector
 #define DEBUG_SUB					0
 #define DEBUG_RAW_SEG_SAL_N_SIZE	0
 #define DEBUG_TRACK_DIFF			0
-#define DEBUG_RUNNING_TIME			1
+#define DEBUG_RUNNING_TIME			0
 #define DEBUG_GPS					0
 #define DEBUG_VELOCITY				0
 #define	DEBUG_AUTO_CAR_DETECTION	0
-#define DEBUG_GATE					0
-#define DEBUG_TRACK_RESULT			0
-#define DEBUG_YOLO_MVO				0
+#define DEBUG_GATE					1
+#define DEBUG_TRACK_RESULT			1
+#define DEBUG_YOLO_MVO				1
 
-#define DEBUG_IMG_IDX				0
+#define DEBUG_IMG_IDX				1
+//#define DEBUG_FINAL					1
+//#define PAUSE_FRAME					0
+//#define FULL_SCREEN					0
+//#define DEBUG_CRITICAL_POINT		0
+//#define DEBUG_TRACKING				0
+//#define DEBUG_NONZ_SEG				0
+//#define DEBUG_NONZ_SEG_TWICE		0
+//#define DEBUG_SHADOW_DET			0
+//#define DEBUG_MVO_CLASSSIFY			0
+//#define DEBUG_BKG_UPDATE			0
+//#define DEBUG_TARGET_LINE			0
+//#define DEBUG_SEND_DATA				0
+//
+////sola
+//#define DEBUG_SUB					0
+//#define DEBUG_RAW_SEG_SAL_N_SIZE	0
+//#define DEBUG_TRACK_DIFF			0
+//#define DEBUG_RUNNING_TIME			0
+//#define DEBUG_GPS					0
+//#define DEBUG_VELOCITY				0
+//#define	DEBUG_AUTO_CAR_DETECTION	0
+//#define DEBUG_GATE					0
+//#define DEBUG_TRACK_RESULT			0
+//#define DEBUG_YOLO_MVO				1
+//
+//#define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
 
 
@@ -631,13 +658,8 @@ const uint32_t Trans_H = 450;
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.176/video1"
 #define VIDEO_FILE					""
-//#define VIDEO_FILE					"data/1.avi"
-//#define DATASET_DIR					"data/176/1/176_20171123103424_"
-//#define DATASET_DIR					"data/176/2/176_20171123104944_"
-//#define DATASET_DIR					"data/176/3/176_20171123105044_"
-//#define DATASET_DIR					"data/176/4/176_20171123105829_"
-//#define DATASET_DIR					"data/176/5/176_2017121113478_"
-#define DATASET_DIR					"data/176_2018318151048/176_2018318151048_"
+//#define DATASET_DIR					"data/176_2018318151048/176_2018318151048_"
+#define DATASET_DIR					"C:/Users/user/Documents/Visual Studio 2015/Projects/imWrite/imWrite/data/176/176_2018322125214_"
 
 
 
@@ -647,7 +669,8 @@ const uint32_t Trans_H = 450;
 #define FILE_EXT					".jpg"
 
 //#define FIRST_IMG_IDX				4098 
-#define FIRST_IMG_IDX				10000
+//#define FIRST_IMG_IDX				10000
+#define FIRST_IMG_IDX				0
 #define LAST_IMG_IDX				100000
 
 #if DETECTOR_YOLO

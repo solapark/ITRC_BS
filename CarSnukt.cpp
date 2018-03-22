@@ -1504,7 +1504,9 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			if (isLargeObject.at(i))
 			{
 				//printf("TrackObjectID = %d is created\n", NewTrackObj);
-				CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
+				if (CheckInsideGate(MVO_ROI.at(i))) {
+					CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
+				}
 			}
 		}
 	}
@@ -2726,7 +2728,11 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("velocity", IforGps);
 
 #endif
+#if PAUSE_FRAME
+	cv::waitKey(0);
+#else
 	cv::waitKey(1);
+#endif
 	//cout << "line drawing : " << clock() - now << endl;
 
 }
