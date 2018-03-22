@@ -53,21 +53,16 @@ private:
 	float ROI_iTR_TL_Param[3];			// The parameter of the line formed by TR and TL points
 	float ROI_iTL_BL_Param[3];			// The parameter of the line formed by TL and BL points
 
-	Mat newObj_ROI;							// ROI mask
-	Point2i newObj_ROI_BL;						// The Bottom-Left point of the ROI mask
-	Point2i newObj_ROI_BR;						// The Bottom-Right point of the ROI mask
-	Point2i newObj_ROI_TR;						// The Top-Right point of the ROI mask
-	Point2i newObj_ROI_TL;						// The Top-Left point of the ROI mask
+	Mat gate_ROI[GATE_NUM];							// ROI mask
+	Point2i gate_ROI_BL[GATE_NUM];						// The Bottom-Left point of the ROI mask
+	Point2i  gate_ROI_BR[GATE_NUM];						// The Bottom-Right point of the ROI mask
+	Point2i  gate_ROI_TR[GATE_NUM];						// The Top-Right point of the ROI mask
+	Point2i  gate_ROI_TL[GATE_NUM];						// The Top-Left point of the ROI mask
 
-	Point2i newObj_ROI_iBL;					// The Bottom-Left point of the inROI mask
-	Point2i newObj_ROI_iBR;					// The Bottom-Right point of the inROI mask
-	Point2i newObj_ROI_iTR;					// The Top-Right point of the inROI mask
-	Point2i newObj_ROI_iTL;					// The Top-Left point of the inROI mask
-
-	float newObj_ROI_iBL_BR_Param[3];			// The parameter of the line formed by BL and BR points
-	float newObj_ROI_iBR_TR_Param[3];			// The parameter of the line formed by BR and TR points
-	float newObj_ROI_iTR_TL_Param[3];			// The parameter of the line formed by TR and TL points
-	float newObj_ROI_iTL_BL_Param[3];			// The parameter of the line formed by TL and BL points
+	float gate_ROI_BL_BR_Param[GATE_NUM][3];			// The parameter of the line formed by BL and BR points
+	float gate_ROI_BR_TR_Param[GATE_NUM][3];			// The parameter of the line formed by BR and TR points
+	float gate_ROI_TR_TL_Param[GATE_NUM][3];			// The parameter of the line formed by TR and TL points
+	float gate_ROI_TL_BL_Param[GATE_NUM][3];			// The parameter of the line formed by TL and BL points
 
 	int NewTrackObj;					// New track object ID
 	int32_t	vID;						//virtual MVO ID for ITRC project
@@ -191,7 +186,7 @@ private:
 		*/
 	inline Bool CheckInsideROI(Mat &MVO_ROI);
 
-	inline Bool CheckOutsideROI(Mat &MVO_ROI);
+	inline Bool CheckInsideGate(Mat &MVO_ROI);
 
 	/*
 		@Brief: 1. Check the MVO is in the ROI or not
@@ -321,8 +316,9 @@ public:
 	@Brief: Form the ROI parameters given by 4 polar points
 	*/
 
-	Void FormNewObjROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL);
+	Void FormGate(Point2i BL, Point2i BR, Point2i TR, Point2i TL, int index);
 
+	Void FormGateList();
 	/*
 		@Brief: Form the top-down perspective background for displaying
 		*/

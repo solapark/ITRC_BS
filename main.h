@@ -37,7 +37,7 @@ inline Mat ReadImage(VideoCapture &cap)
 #if STATIC_IMAGE
 	char ImgName[100];
 	sprintf(ImgName, FILE_FORMAT, DATASET_DIR, ImgIdx, FILE_EXT);
-	cout << ImgName << endl;
+	//cout << ImgName << endl;
 	I = imread(ImgName);
 
 #elif VIDEO || CAMERA

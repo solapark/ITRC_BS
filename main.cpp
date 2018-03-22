@@ -30,6 +30,13 @@ int main() {
 #endif	 
 	bool isFirstFrame = true;
 
+#if DEBUG_RUNNING_TIME
+	clock_t t_arr[100] = { 0, };
+	int i = 0;
+	int clockCnt = 0;
+	int clockPrintPeriod = 60;
+#endif
+
 #if DETECTOR_BG
 	// read the background image 
 #if BGM_FIRST_BUILD
@@ -81,7 +88,9 @@ int main() {
 #endif
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		if (clockCnt % 30 == 0) {
+			cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 		// Initilization once
 		if (isFirstFrame) {
@@ -125,7 +134,9 @@ int main() {
 
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		if (clockCnt % 30 == 0) {
+			cout << "Update history images " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 #if DEBUG_IMG_IDX
 		char str[200];
@@ -161,7 +172,9 @@ int main() {
 
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "BGM update " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		if (clockCnt % 30 == 0) {
+			cout << "BGM update " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 
 #if DEBUG_IMG_IDX
@@ -187,7 +200,9 @@ int main() {
 #endif
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		if (clockCnt % 30 == 0) {
+			cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 #else 
 
@@ -256,7 +271,9 @@ int main() {
 		}
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		if (clockCnt % 30 == 0) {
+			cout << "Send data " << t_arr[i - 1] - t_arr[i - 2] << endl;
+		}
 #endif
 #else
 		vector<camToCar> dataToSend;
@@ -287,8 +304,12 @@ int main() {
 
 #if DEBUG_RUNNING_TIME
 		t_arr[i++] = clock();
-		cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
-		cout << "********************************************" << endl;
+		clockCnt++;
+		if (clockCnt % 30 == 0) {
+			cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
+			cout << "********************************************" << endl;
+			clockCnt = 0;
+		}
 #endif
 
 #if CAMERA
@@ -313,10 +334,15 @@ int main() {
 #elif DETECTOR_YOLO
 myCarSnukt.Initialize(SIZE_VER, SIZE_HOR);
 
+#if STATIC_ROI
 myCarSnukt.FormROI(ROI_BL, ROI_BR, ROI_TR, ROI_TL);
+#else
+Mat tmpI = imread("C:/Users/user/source/repos/ITRC_bus_171004/ITRC_bus_171004/ITRC_BS/ITRC_BS/data/176/1/176_20171123103424_707.jpg");
+myCarSnukt.InputROIandPersMap(tmpI);
+#endif	
 
-#if NO_NEW_INSIDE_OBJ
-myCarSnukt.FormNewObjROI(NEW_OBJ_PERMITTED_AREA_BL, NEW_OBJ_PERMITTED_AREA_BR, NEW_OBJ_PERMITTED_AREA_TR, NEW_OBJ_PERMITTED_AREA_TL);
+#if NO_ID_CHANGE_OUT_GATE
+myCarSnukt.FormGateList();
 #endif
 
 #if PIXEL2GPS_HOMOGRAPHY
@@ -346,10 +372,10 @@ while (!isStop)
 #endif
 
 #if DEBUG_RUNNING_TIME
-	clock_t t_arr[100];
-	int i = 0;
 	t_arr[i++] = clock();
+	//cout << "t_arr[0]  : "<<t_arr[0] << endl;
 #endif
+
 #if STATIC_IMAGE
 	I = ReadImage(tmpImgIdx);
 	ImgIdx = tmpImgIdx - FIRST_IMG_IDX;
@@ -363,7 +389,9 @@ while (!isStop)
 #endif
 #if DEBUG_RUNNING_TIME
 	t_arr[i++] = clock();
-	cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+	if (clockCnt % clockPrintPeriod == 0) {
+		cout << "ReadImage " << t_arr[i - 1] - t_arr[i - 2] << endl;
+	}
 #endif
 
 #if DEBUG_IMG_IDX
@@ -376,7 +404,9 @@ while (!isStop)
 
 #if DEBUG_RUNNING_TIME
 	t_arr[i++] = clock();
-	cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+	if (clockCnt % clockPrintPeriod == 0) {
+		cout << "CarSnukt Detector " << t_arr[i - 1] - t_arr[i - 2] << endl;
+	}
 #endif
 
 
@@ -431,9 +461,15 @@ while (!isStop)
 #endif
 
 #if DEBUG_RUNNING_TIME
-	t_arr[i++] = clock();
-	cout << "Whole " << t_arr[i - 1] - t_arr[0] << endl;
-	cout << "********************************************" << endl;
+	//t_arr[i++] = clock();
+	//cout << t_arr[i - 1] << endl;
+	clockCnt++;
+	i = 0;
+	if (clockCnt % clockPrintPeriod == 0) {
+		cout << "Whole " << clock() - t_arr[0] << endl;
+		cout << "********************************************" << endl;
+		clockCnt = 0;
+	}
 #endif
 
 #if CAMERA

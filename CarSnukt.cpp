@@ -1117,15 +1117,18 @@ inline Bool CarSnukt::CheckInsideROI(Mat &MVO_ROI)
 		((a[1] * x + b[1] * y + c[1]) < 0))		// TL_BL
 		isTLSatisfied = true;
 
+	cout << "ROI : " << isBLSatisfied << ", " << isBRSatisfied << ", " << isTRSatisfied << ", " << isTLSatisfied << endl;
+
 	bool isInsideROI = isBLSatisfied &
 		isBRSatisfied &
 		isTRSatisfied &
 		isTLSatisfied;
 
+
 	return isInsideROI;
 }
 
-inline Bool CarSnukt::CheckOutsideROI(Mat &MVO_ROI)
+inline Bool CarSnukt::CheckInsideGate(Mat &MVO_ROI)
 {
 	// the isInsideROI should be verified more generally when the ROI is 
 	// determined by the representation of 4 points
@@ -1134,74 +1137,88 @@ inline Bool CarSnukt::CheckOutsideROI(Mat &MVO_ROI)
 	Point2f TR((float)MVO_ROI.at<int>(1), (float)MVO_ROI.at<int>(3));	// Object's Top-Right point
 	Point2f TL((float)MVO_ROI.at<int>(0), (float)MVO_ROI.at<int>(3));	// Object's Top-Left point
 
-	bool isBLSatisfied = false;
-	bool isBRSatisfied = false;
-	bool isTRSatisfied = false;
-	bool isTLSatisfied = false;
+	bool isInGate = false;
+
 
 	float a[2], b[2], c[2], x, y;
 
-	// for the BL point of the detected object
-	a[0] = newObj_ROI_iTL_BL_Param[0];
-	b[0] = newObj_ROI_iTL_BL_Param[1];
-	c[0] = newObj_ROI_iTL_BL_Param[2];
-	a[1] = newObj_ROI_iBL_BR_Param[0];
-	b[1] = newObj_ROI_iBL_BR_Param[1];
-	c[1] = newObj_ROI_iBL_BR_Param[2];
+	for (int i = 0; i < GATE_NUM; i++) {
+		bool isBLSatisfied = false;
+		bool isBRSatisfied = false;
+		bool isTRSatisfied = false;
+		bool isTLSatisfied = false;
 
-	x = BL.x;
-	y = BL.y;
+		// for the BL point of the detected object
+		a[0] = gate_ROI_TL_BL_Param[i][0];
+		b[0] = gate_ROI_TL_BL_Param[i][1];
+		c[0] = gate_ROI_TL_BL_Param[i][2];
+		a[1] = gate_ROI_BL_BR_Param[i][0];
+		b[1] = gate_ROI_BL_BR_Param[i][1];
+		c[1] = gate_ROI_BL_BR_Param[i][2];
 
-	if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TL_BL
-		((a[1] * x + b[1] * y + c[1]) > 0))		// BL_BR
-		isBLSatisfied = true;
 
-	// for the BR point of the detected object			
-	a[0] = newObj_ROI_iBL_BR_Param[0];
-	b[0] = newObj_ROI_iBL_BR_Param[1];
-	c[0] = newObj_ROI_iBL_BR_Param[2];
-	a[1] = newObj_ROI_iBR_TR_Param[0];
-	b[1] = newObj_ROI_iBR_TR_Param[1];
-	c[1] = newObj_ROI_iBR_TR_Param[2];
-	x = BR.x;
-	y = BR.y;
-	if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BL_BR
-		((a[1] * x + b[1] * y + c[1]) > 0))		// BR_TR
-		isBRSatisfied = true;
+		x = BL.x;
+		y = BL.y;
 
-	// for the TR point of the detected object			
-	a[0] = newObj_ROI_iBR_TR_Param[0];
-	b[0] = newObj_ROI_iBR_TR_Param[1];
-	c[0] = newObj_ROI_iBR_TR_Param[2];
-	a[1] = newObj_ROI_iTR_TL_Param[0];
-	b[1] = newObj_ROI_iTR_TL_Param[1];
-	c[1] = newObj_ROI_iTR_TL_Param[2];
-	x = TR.x;
-	y = TR.y;
-	if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BR_TR
-		((a[1] * x + b[1] * y + c[1]) < 0))		// TR_TL
-		isTRSatisfied = true;
+		if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TL_BL
+			((a[1] * x + b[1] * y + c[1]) > 0))		// BL_BR
+			isBLSatisfied = true;
 
-	// for the TR point of the detected object			
-	a[0] = newObj_ROI_iTR_TL_Param[0];
-	b[0] = newObj_ROI_iTR_TL_Param[1];
-	c[0] = newObj_ROI_iTR_TL_Param[2];
-	a[1] = newObj_ROI_iTL_BL_Param[0];
-	b[1] = newObj_ROI_iTL_BL_Param[1];
-	c[1] = newObj_ROI_iTL_BL_Param[2];
-	x = TL.x;
-	y = TL.y;
-	if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TR_TL
-		((a[1] * x + b[1] * y + c[1]) < 0))		// TL_BL
-		isTLSatisfied = true;
+		// for the BR point of the detected object			
+		a[0] = gate_ROI_BL_BR_Param[i][0];
+		b[0] = gate_ROI_BL_BR_Param[i][1];
+		c[0] = gate_ROI_BL_BR_Param[i][2];
+		a[1] = gate_ROI_BR_TR_Param[i][0];
+		b[1] = gate_ROI_BR_TR_Param[i][1];
+		c[1] = gate_ROI_BR_TR_Param[i][2];
 
-	bool isInsideROI = isBLSatisfied &
-		isBRSatisfied &
-		isTRSatisfied &
-		isTLSatisfied;
+		x = BR.x;
+		y = BR.y;
+		if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BL_BR
+			((a[1] * x + b[1] * y + c[1]) > 0))		// BR_TR
+			isBRSatisfied = true;
 
-	return (!isInsideROI);
+		// for the TR point of the detected object			
+		a[0] = gate_ROI_BR_TR_Param[i][0];
+		b[0] = gate_ROI_BR_TR_Param[i][1];
+		c[0] = gate_ROI_BR_TR_Param[i][2];
+		a[1] = gate_ROI_TR_TL_Param[i][0];
+		b[1] = gate_ROI_TR_TL_Param[i][1];
+		c[1] = gate_ROI_TR_TL_Param[i][2];
+		x = TR.x;
+		y = TR.y;
+		if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BR_TR
+			((a[1] * x + b[1] * y + c[1]) < 0))		// TR_TL
+			isTRSatisfied = true;
+
+		// for the TR point of the detected object			
+		a[0] = gate_ROI_TR_TL_Param[i][0];
+		b[0] = gate_ROI_TR_TL_Param[i][1];
+		c[0] = gate_ROI_TR_TL_Param[i][2];
+		a[1] = gate_ROI_TL_BL_Param[i][0];
+		b[1] = gate_ROI_TL_BL_Param[i][1];
+		c[1] = gate_ROI_TL_BL_Param[i][2];
+		x = TL.x;
+		y = TL.y;
+		if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TR_TL
+			((a[1] * x + b[1] * y + c[1]) < 0))		// TL_BL
+			isTLSatisfied = true;
+
+		//cout << "isBLSatisfied isBRSatisfied isTRSatisfied isTLSatisfied  : "<<	isBLSatisfied <<", "<< isBRSatisfied << ", " << isTRSatisfied << ", " << isTLSatisfied << endl;
+		isInGate = isBLSatisfied &
+			isBRSatisfied &
+			isTRSatisfied &
+			isTLSatisfied;
+		if (isInGate) {
+			return true;
+		}
+	}
+
+	return false;
 }
+
+
+
 
 inline Void CarSnukt::LargeMVODetection(Mat &I, vector<Mat> &MVO_SEG, vector<Mat> &MVO_ROI, vector<bool> &isLargeObject)
 {
@@ -1276,22 +1293,28 @@ inline Void CarSnukt::UpdateHisPos(Point2i HisPos[HIS_POS_SIZE], Point2i NewPoin
 inline Void CarSnukt::MVOCalColorHistogram(Mat &MVO, Mat &b_hist, Mat &g_hist, Mat &r_hist)
 {
 	/// Separate the image in 3 places ( B, G and R )
+	//vector<Mat> bgr_planes;
 	Mat bgr_planes[3];
 	split(MVO, bgr_planes);
 	/// Establish the number of bins
 	int histSize = HISTOGRAM_BIN_SIZE;
 	/// Set the ranges ( for B,G,R) )
-	float range[] = { 0, 1 };
+	float range[] = { 0, 255 };
 	const float* histRange = { range };
 	bool uniform = true; bool accumulate = false;
 	/// Compute the histograms:
 	calcHist(&bgr_planes[0], 1, 0, Mat(), b_hist, 1, &histSize, &histRange, uniform, accumulate);
 	calcHist(&bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate);
 	calcHist(&bgr_planes[2], 1, 0, Mat(), r_hist, 1, &histSize, &histRange, uniform, accumulate);
+	//cout << bgr_planes[0] << endl;
+	//cout << b_hist<< endl;
 	/// Normalize the result to [ 0, 1 ]
 	normalize(b_hist, b_hist, 0, 1, NORM_MINMAX, -1, Mat());
 	normalize(g_hist, g_hist, 0, 1, NORM_MINMAX, -1, Mat());
 	normalize(r_hist, r_hist, 0, 1, NORM_MINMAX, -1, Mat());
+	//cout.precision(10);
+	//cout << b_hist << endl;
+	//cout << 0.0000000000000000000000000001 << endl;
 }
 
 inline Void CarSnukt::TransformCriticalPoints(vector<Point2i> &CriticPntsVec, Mat &TransROI)
@@ -1457,6 +1480,22 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 	vector<bool> &isLargeObject,
 	vector<int> &hardIdCode)
 {
+	//cout << "MVO size : " << MVO_ROI.size() << endl;
+#if DEBUG_YOLO_MVO
+	Mat tmpI = I;
+	for (int i = 0; i < MVO_ROI.size(); i++) {
+		Mat CurROI = MVO_ROI[i];
+		Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
+			MAX(CurROI.at<int>(2) - 2, 0),
+			MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
+			MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
+		);
+		rectangle(tmpI, rect, Scalar(0, 255, 0), 1);
+	}
+	imshow("MVO", tmpI);
+	waitKey(1);
+#endif
+
 	// create new track objects if currently there is no live trackObject				
 	if (countNonZero(LiveObjList) == 0)
 	{
@@ -1554,10 +1593,23 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				}
 			}
 
-			if (Min_Diff_Hist < HISTOGRAM_THRES && Min_Diff_Pos < DISTANCE_THRES && Min_Diff_Size < SIZE_THRES) // tracking sucessfull
+#if NO_ID_CHANGE_OUT_GATE
+			//cout << "Min_Diff_Pos : " << Min_Diff_Pos << endl;
+			//cout << "CheckInsideGate(TrackObj[TrackObjIdx].ROI) : " << CheckInsideGate(TrackObj[TrackObjIdx].ROI) << endl;
+			if (Min_Diff_Pos > DISTANCE_THRES && CheckInsideGate(TrackObj[TrackObjIdx].ROI)) {
+#if DEBUG_TRACK_RESULT
+				printf("TrackObjIdx %d is Disapeared\n", TrackObjIdx);
+#endif
+				isMatched = false;
+			}
+			else if (Min_Diff_Hist < HISTOGRAM_THRES && /*Min_Diff_Pos < DISTANCE_THRES &&*/ Min_Diff_Size < SIZE_THRES) // tracking sucessfull
+#else
+			if (Min_Diff_Hist < HISTOGRAM_THRES && /*Min_Diff_Pos < DISTANCE_THRES &&*/ Min_Diff_Size < SIZE_THRES) // tracking sucessfull
+#endif
 			{
-				//printf("TrackObjIdx %d is EXPLICITLY matched\n", TrackObjIdx);
-
+#if DEBUG_TRACK_RESULT
+				printf("TrackObjIdx %d is EXPLICITLY matched\n", TrackObjIdx);
+#endif
 				// to narrow down the candidates for the next matching round	
 				DetectedObjList.at<uint8_t>(0, TmpMatchedID) = 1; // important
 				MatchedObjList.at<uint8_t>(0, TmpMatchedID) = 1;
@@ -1629,6 +1681,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				}
 #endif
 			}
+
 #if DEBUG_TRACKING	
 			else {
 				cout << "LargeMVOTracking () : Min_Diff < THR ; HIST: " << Min_Diff_Hist << " POS: " << Min_Diff_Pos << " SIZE: " << Min_Diff_Size << endl;
@@ -1645,7 +1698,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			// track an object using a predictive model
 #if PREDICTIVE_TRACK
 			//if (!isMatched && TrackObj[TrackObjIdx].NumOfHisPt > 3)
-			if (!isMatched && TrackObj[TrackObjIdx].predictionNum < 5)
+			if (!isMatched /*&& TrackObj[TrackObjIdx].predictionNum < 5*/)
 			{
 				// predict the new center of the lost-track object
 				Point2i HisPos_1 = TrackObj[TrackObjIdx].HisPos[HIS_POS_SIZE - 1];
@@ -1680,8 +1733,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 					//if (Diff_Pos < DISTANCE_THRES)
 					{
 						//printf("TrackObjIdx %d PREDICTIVELY matched\n", TrackObjIdx);
-
-						// update the newly matched object							
+						 //update the newly matched object							
 						TrackObj[TrackObjIdx].b_hist = pred_b_hist_obj;
 						TrackObj[TrackObjIdx].g_hist = pred_g_hist_obj;
 						TrackObj[TrackObjIdx].r_hist = pred_r_hist_obj;
@@ -1690,18 +1742,17 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 						TrackObj[TrackObjIdx].NumOfHisPt++;
 						TrackObj[TrackObjIdx].NumOfHisPt %= HIS_POS_SIZE ;
 						TrackObj[TrackObjIdx].predictionNum++;
-						//TrackObj[TrackObjIdx].NumOfHisPt += 4;
 						isMatched = true;
 						//cout << "TrackObj[TrackObjIdx].NumOfHisPt  : " << TrackObj[TrackObjIdx].NumOfHisPt << endl;
-						cout << "TrackObj[TrackObjIdx].predictionNum: " << TrackObj[TrackObjIdx].predictionNum<< endl;
-						std::cout << "prediction SUCCESS" << std::endl;
+						//std::cout << TrackObj[TrackObjIdx].vID <<" : prediction SUCCESS" << std::endl;
 					}
 					else {
-						std::cout << "prediction FAIL : Diff_Hist < HISTOGRAM_THRES && Diff_Pos < DISTANCE_THRES" << std::endl;
+						//std::cout << "prediction FAIL : Diff_Hist < HISTOGRAM_THRES && Diff_Pos < DISTANCE_THRES" << std::endl;
+						// update the center in the image plane and the transformed plane
 					}
-
-					// update the center in the image plane and the transformed plane
 					TrackObj[TrackObjIdx].CenterImgPlane = TrackObj[TrackObjIdx].HisPos[HIS_POS_SIZE - 1];
+
+
 #if TRANSFORM_CRITICAL_POINT
 					TrackObj[TrackObjIdx].CenterTrans = TransformPoint(TrackObj[TrackObjIdx].CenterImgPlane);
 					TrackObj[TrackObjIdx].Direction = (Point2f)TrackObj[TrackObjIdx].CenterImgPlane - (Point2f)TrackObj[TrackObjIdx].HisPos[HIS_POS_SIZE - 2] +
@@ -1734,6 +1785,24 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			else {
 				cout << "TrackObj[TrackObjIdx].NumOfHisPt  : " << TrackObj[TrackObjIdx].NumOfHisPt << endl;
 			}
+#endif
+
+#if WAITING_TRACK
+			//if (!isMatched && TrackObj[TrackObjIdx].NumOfHisPt > 3)
+			if (!isMatched /*&& TrackObj[TrackObjIdx].predictionNum < 5*/)
+			{
+				if (CheckInsideGate(TrackObj[TrackObjIdx].ROI)) {
+					isMatched = false;
+				}
+				else {
+#if DEBUG_TRACK_RESULT
+					printf("TrackObjIdx %d is WAITING\n", TrackObjIdx);
+#endif
+					isMatched = true;
+				}
+
+			}
+
 #endif
 
 #if DETECT_DIRECTION
@@ -1822,23 +1891,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			}
 			else // terminate the object if there is no match for it
 			{
-				std::cout << "not matched" << std::endl;
-
-//#if KALMAN_TRACK
-//				// the predict phase
-//				Mat pred = TrackObj[TrackObjIdx].KF.predict(); 
-//
-//				// update the measurement
-//				TrackObj[TrackObjIdx].PosMeasure.at<float>(0) = pred.at<float>(0);
-//				TrackObj[TrackObjIdx].PosMeasure.at<float>(1) = pred.at<float>(1);
-//
-//				// get the estimated position
-//				Mat estimated = TrackObj[TrackObjIdx].KF.correct(TrackObj[TrackObjIdx].PosMeasure);
-//				TrackObj[TrackObjIdx].CenterImgPlane.x = (int)estimated.at<float>(0);
-//				TrackObj[TrackObjIdx].CenterImgPlane.y = (int)estimated.at<float>(1);
-//#else
 				LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
-//#endif
 			}
 #endif
 		}
@@ -1853,14 +1906,20 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			for (size_t j = 0; j < NewDetIdx.total(); j++)
 			{
 				Mat& roi = MVO_ROI.at(NewDetIdx.at<Point2i>(j).x);
-#if NO_NEW_INSIDE_OBJ
-				if (CheckOutsideROI(roi)) {
+#if NO_ID_CHANGE_OUT_GATE
+				if (CheckInsideGate(roi)) {
 					//std::cout << "yes" << std::endl;
-					printf("Can make new obj\n");
+#if DEBUG_TRACK_RESULT
+					printf("CAN make new obj\n");
+#endif
 					CreateNewTrackObjt(I, MVO_SEG.at(NewDetIdx.at<Point2i>(j).x), roi);
 				}
-				//CreateNewTrackObjt(I, MVO_SEG.at(NewDetIdx.at<Point2i>(j).x), roi);
-				printf("Can't make new obj\n");
+				else {
+					//CreateNewTrackObjt(I, MVO_SEG.at(NewDetIdx.at<Point2i>(j).x), roi);
+#if DEBUG_TRACK_RESULT
+					printf("CAN'T make new obj\n");
+#endif
+				}
 #else
 				CreateNewTrackObjt(I, MVO_SEG.at(NewDetIdx.at<Point2i>(j).x), roi);
 #endif
@@ -2022,7 +2081,15 @@ Void CarSnukt::FormROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
 	ROI_iTL_BL_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 }
 
-Void CarSnukt::FormNewObjROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
+Void CarSnukt::FormGateList()
+{
+	for (int i = 0; i < GATE_NUM; i++) {
+		cout << "GATE_BL[i], GATE_BR[i], GATE_TR[i], GATE_TL[i] : " << GATE_BL[i]<<", "<<GATE_BR[i] << ", " << GATE_TR[i] << ", " << GATE_TL[i] << endl;
+		FormGate(GATE_BL[i], GATE_BR[i], GATE_TR[i], GATE_TL[i], i);
+	}
+}
+
+Void CarSnukt::FormGate(Point2i BL, Point2i BR, Point2i TR, Point2i TL, int idx)
 {
 	//		   Image matrix 
 	//0--------------------------> hor
@@ -2040,71 +2107,101 @@ Void CarSnukt::FormNewObjROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
 	//   ver
 
 	// Form the outer ROI mask
-	newObj_ROI_BL = BL;
-	newObj_ROI_BR = BR;
-	newObj_ROI_TR = TR;
-	newObj_ROI_TL = TL;
+	gate_ROI_BL[idx] = BL;
+	gate_ROI_BR[idx] = BR;
+	gate_ROI_TR[idx] = TR;
+	gate_ROI_TL[idx] = TL;
 
-	newObj_ROI = Mat::zeros(ImVerSize, ImHorSize, CV_32FC1);
+	gate_ROI[idx] = Mat::zeros(ImVerSize, ImHorSize, CV_32FC1);
 	Point poly[4];
-	poly[0] = newObj_ROI_TL;
-	poly[1] = newObj_ROI_TR;
-	poly[2] = newObj_ROI_BR;
-	poly[3] = newObj_ROI_BL;
-	fillConvexPoly(newObj_ROI, poly, 4, Scalar::all(1));
+	poly[0] = gate_ROI_TL[idx];
+	poly[1] = gate_ROI_TR[idx];
+	poly[2] = gate_ROI_BR[idx];
+	poly[3] = gate_ROI_BL[idx];
+	fillConvexPoly(gate_ROI[idx], poly, 4, Scalar::all(1));
 	/*imshow("ROI", ROI);
 	waitKey();*/
 
-	assert(newObj_ROI_TL.x >= 0 && newObj_ROI_TL.x < ImHorSize);
-	assert(newObj_ROI_TR.x >= 0 && newObj_ROI_TR.x < ImHorSize);
-	assert(newObj_ROI_BL.x >= 0 && newObj_ROI_BL.x < ImHorSize);
-	assert(newObj_ROI_BR.x >= 0 && newObj_ROI_BR.x < ImHorSize);
+	assert(gate_ROI_TL[idx].x >= 0 && gate_ROI_TL[idx].x < ImHorSize);
+	assert(gate_ROI_TR[idx].x >= 0 && gate_ROI_TR[idx].x < ImHorSize);
+	assert(gate_ROI_BL[idx].x >= 0 && gate_ROI_BL[idx].x < ImHorSize);
+	assert(gate_ROI_BR[idx].x >= 0 && gate_ROI_BR[idx].x < ImHorSize);
 
-	assert(newObj_ROI_TL.y >= 0 && newObj_ROI_TL.y < ImVerSize);
-	assert(newObj_ROI_TR.y >= 0 && newObj_ROI_TR.y < ImVerSize);
-	assert(newObj_ROI_BL.y >= 0 && newObj_ROI_BL.y < ImVerSize);
-	assert(newObj_ROI_BR.y >= 0 && newObj_ROI_BR.y < ImVerSize);
+	assert(gate_ROI_TL[idx].y >= 0 && gate_ROI_TL[idx].y < ImVerSize);
+	assert(gate_ROI_TR[idx].y >= 0 && gate_ROI_TR[idx].y < ImVerSize);
+	assert(gate_ROI_BL[idx].y >= 0 && gate_ROI_BL[idx].y < ImVerSize);
+	assert(gate_ROI_BR[idx].y >= 0 && gate_ROI_BR[idx].y < ImVerSize);
 
-	// Form a virtual ROI which is inside the current ROI
-	newObj_ROI_iBL = BL + Point2i(+ROI_VEC, +ROI_VEC);
-	newObj_ROI_iBR = BR + Point2i(-ROI_VEC, +ROI_VEC);
-	newObj_ROI_iTR = TR + Point2i(-ROI_VEC, -ROI_VEC);
-	newObj_ROI_iTL = TL + Point2i(+ROI_VEC, -ROI_VEC);
+	//// Form a virtual ROI which is inside the current ROI
+	//gate_ROI_iBL[idx] = BL + Point2i(+ROI_VEC, +ROI_VEC);
+	//gate_ROI_iBR[idx] = BR + Point2i(-ROI_VEC, +ROI_VEC);
+	//gate_ROI_iTR[idx] = TR + Point2i(-ROI_VEC, -ROI_VEC);
+	//gate_ROI_iTL[idx] = TL + Point2i(+ROI_VEC, -ROI_VEC);
 
-	assert(newObj_ROI_iTL.x >= 0 && newObj_ROI_iTL.x < ImHorSize);
-	assert(newObj_ROI_iTR.x >= 0 && newObj_ROI_iTR.x < ImHorSize);
-	assert(newObj_ROI_iBL.x >= 0 && newObj_ROI_iBL.x < ImHorSize);
-	assert(newObj_ROI_iBR.x >= 0 && newObj_ROI_iBR.x < ImHorSize);
+	//assert(gate_ROI_iTL[idx].x >= 0 && gate_ROI_iTL[idx].x < ImHorSize);
+	//assert(gate_ROI_iTR[idx].x >= 0 && gate_ROI_iTR[idx].x < ImHorSize);
+	//assert(gate_ROI_iBL[idx].x >= 0 && gate_ROI_iBL[idx].x < ImHorSize);
+	//assert(gate_ROI_iBR[idx].x >= 0 && gate_ROI_iBR[idx].x < ImHorSize);
 
-	assert(newObj_ROI_iTL.y >= 0 && newObj_ROI_iTL.y < ImVerSize);
-	assert(newObj_ROI_iTR.y >= 0 && newObj_ROI_iTR.y < ImVerSize);
-	assert(newObj_ROI_iBL.y >= 0 && newObj_ROI_iBL.y < ImVerSize);
-	assert(newObj_ROI_iBR.y >= 0 && newObj_ROI_iBR.y < ImVerSize);
+	//cout << "idx :"<< idx << endl;
+	//cout << "TL : " << TL << endl;
+	//cout << gate_ROI_iTL[idx].y << endl;
+	//cout << ImVerSize << endl;
+	//assert(gate_ROI_iTL[idx].y >= 0 && gate_ROI_iTL[idx].y < ImVerSize);
+	//assert(gate_ROI_iTR[idx].y >= 0 && gate_ROI_iTR[idx].y < ImVerSize);
+	//assert(gate_ROI_iBL[idx].y >= 0 && gate_ROI_iBL[idx].y < ImVerSize);
+	//assert(gate_ROI_iBR[idx].y >= 0 && gate_ROI_iBR[idx].y < ImVerSize);
+
+	//Point2f p0, p1;
+	//p0 = (Point2f)gate_ROI_iBL[idx];
+	//p1 = (Point2f)gate_ROI_iBR[idx];
+	//gate_ROI_iBL_BR_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	//gate_ROI_iBL_BR_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	//gate_ROI_iBL_BR_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+
+	//p0 = (Point2f)gate_ROI_iBR[idx];
+	//p1 = (Point2f)gate_ROI_iTR[idx];
+	//gate_ROI_iBR_TR_Param[idx][0] = p0.y - p1.y;	// a = yo-y1
+	//gate_ROI_iBR_TR_Param[idx][1] = p1.x - p0.x;	// b = x1-x0
+	//gate_ROI_iBR_TR_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; // c = (y1-y0)x0 + (x0-x1)y0
+
+	//p0 = (Point2f)gate_ROI_iTL[idx];
+	//p1 = (Point2f)gate_ROI_iTR[idx];
+	//gate_ROI_iTR_TL_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	//gate_ROI_iTR_TL_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	//gate_ROI_iTR_TL_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+
+	//p0 = (Point2f)gate_ROI_iBL[idx];
+	//p1 = (Point2f)gate_ROI_iTL[idx];
+	//gate_ROI_iTL_BL_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	//gate_ROI_iTL_BL_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	//gate_ROI_iTL_BL_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 
 	Point2f p0, p1;
-	p0 = (Point2f)newObj_ROI_iBL;
-	p1 = (Point2f)newObj_ROI_iBR;
-	newObj_ROI_iBL_BR_Param[0] = p0.y - p1.y;	// yo-y1
-	newObj_ROI_iBL_BR_Param[1] = p1.x - p0.x;	// x1-x0
-	newObj_ROI_iBL_BR_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+	p0 = (Point2f)gate_ROI_BL[idx];
+	p1 = (Point2f)gate_ROI_BR[idx];
+	gate_ROI_BL_BR_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	gate_ROI_BL_BR_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	gate_ROI_BL_BR_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 
-	p0 = (Point2f)newObj_ROI_iBR;
-	p1 = (Point2f)newObj_ROI_iTR;
-	newObj_ROI_iBR_TR_Param[0] = p0.y - p1.y;	// a = yo-y1
-	newObj_ROI_iBR_TR_Param[1] = p1.x - p0.x;	// b = x1-x0
-	newObj_ROI_iBR_TR_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; // c = (y1-y0)x0 + (x0-x1)y0
+	p0 = (Point2f)gate_ROI_BR[idx];
+	p1 = (Point2f)gate_ROI_TR[idx];
+	gate_ROI_BR_TR_Param[idx][0] = p0.y - p1.y;	// a = yo-y1
+	gate_ROI_BR_TR_Param[idx][1] = p1.x - p0.x;	// b = x1-x0
+	gate_ROI_BR_TR_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; // c = (y1-y0)x0 + (x0-x1)y0
 
-	p0 = (Point2f)newObj_ROI_iTL;
-	p1 = (Point2f)newObj_ROI_iTR;
-	newObj_ROI_iTR_TL_Param[0] = p0.y - p1.y;	// yo-y1
-	newObj_ROI_iTR_TL_Param[1] = p1.x - p0.x;	// x1-x0
-	newObj_ROI_iTR_TL_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+	p0 = (Point2f)gate_ROI_TL[idx];
+	p1 = (Point2f)gate_ROI_TR[idx];
+	gate_ROI_TR_TL_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	gate_ROI_TR_TL_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	gate_ROI_TR_TL_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 
-	p0 = (Point2f)newObj_ROI_iBL;
-	p1 = (Point2f)newObj_ROI_iTL;
-	newObj_ROI_iTL_BL_Param[0] = p0.y - p1.y;	// yo-y1
-	newObj_ROI_iTL_BL_Param[1] = p1.x - p0.x;	// x1-x0
-	newObj_ROI_iTL_BL_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+	p0 = (Point2f)gate_ROI_BL[idx];
+	p1 = (Point2f)gate_ROI_TL[idx];
+	gate_ROI_TL_BL_Param[idx][0] = p0.y - p1.y;	// yo-y1
+	gate_ROI_TL_BL_Param[idx][1] = p1.x - p0.x;	// x1-x0
+	gate_ROI_TL_BL_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
+
 }
 
 Void CarSnukt::InputROIandPersMap(Mat &tmpI)
@@ -2370,7 +2467,7 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 	MOV_ROI.clear();
 	isLargeObject.clear();
 	
-	vector<bbox_t> yoloResutVec = pYolo->detect(I);
+	vector<bbox_t> yoloResutVec = pYolo->detect(I, 0.05);
 	//cout << "yolo size: "<<yoloResutVec.size() << endl;
 	for (int i = 0; i < yoloResutVec.size(); i++) {
 		// (x1, y1)	.	. 
@@ -2414,7 +2511,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 
 #if DEBUG_TARGET_LINE
 #if CAR_0 == 1
-	for (uint8_t j = R0_PATH_0; j <= R0_PATH_5; j++){
+	for (uint8_t j = R0_PATH_0; j <= R0_PATH_5; j++) {
 		Point2d tmp[4];
 		tmp[0] = Point2d(mRouteMap.mEntrInfo[j].minX, mRouteMap.mEntrInfo[j].minY);
 		tmp[1] = Point2d(mRouteMap.mEntrInfo[j].minX, mRouteMap.mEntrInfo[j].maxY);
@@ -2429,13 +2526,13 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		line(tmpI, tmp[2], tmp[3], Scalar(0, 250, 250), 2, 4, 0);
 		line(tmpI, tmp[1], tmp[3], Scalar(0, 250, 250), 2, 4, 0);
 
-		if (mRouteMap.mTargetLine[j].expo.isUsed){
-			for (unsigned i = 0; i < NUM_ROUTE_SAMPLE; i++){
+		if (mRouteMap.mTargetLine[j].expo.isUsed) {
+			for (unsigned i = 0; i < NUM_ROUTE_SAMPLE; i++) {
 				Point2d tmp = mRouteMap.mTargetLine[j].expo.Samples.at(i);
 				circle(tmpI, tmp, 1, Scalar(0, 255, 0), 1, 4, 0);
 			}
 		}
-		else if (mRouteMap.mTargetLine[j].line.isUsed){
+		else if (mRouteMap.mTargetLine[j].line.isUsed) {
 			line(tmpI, mRouteMap.mTargetLine[j].line.A, mRouteMap.mTargetLine[j].line.B, Scalar(0, 255, 0), 2, 4, 0);
 		}
 	}
@@ -2449,14 +2546,13 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		for (uint8_t i = 0; i < NonZ.total(); i++)
 		{
 			uint8_t ID = NonZ.at<Point2i>(i).x;
-
-			// Draw the bounding boxes in the image plane
-			Mat& CurROI = TrackObj[ID].ROI;
+				// Draw the bounding boxes in the image plane
+				Mat& CurROI = TrackObj[ID].ROI;
 			Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
 				MAX(CurROI.at<int>(2) - 2, 0),
 				MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
 				MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
-				);
+			);
 			rectangle(tmpI, rect, Scalar(0, 0, 255), 1);
 
 			// Draw the object center in the image plane
@@ -2567,7 +2663,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 			MAX(CurROI.at<int>(2) - 2, 0),
 			MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, tmpI.cols - 1),
 			MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, tmpI.rows - 1)
-			);
+		);
 		rectangle(tmpI, rect, Scalar(0, 255, 0), 1);
 	}
 #endif
@@ -2578,6 +2674,18 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	line(tmpI, ROI_TR, ROI_TL, Scalar(255, 0, 255), 2, 4, 0);
 	line(tmpI, ROI_TL, ROI_BL, Scalar(255, 0, 255), 2, 4, 0);
 
+#if DEBUG_GATE
+	//for (int i = 0; i < GATE_NUM; i++) {
+	//	cout << gate_ROI_BL[i] << " " << gate_ROI_BR[i] << endl;
+	//	cout << gate_ROI_TL[i] << " " << gate_ROI_BL[i] << endl;
+	//}
+	for (int i = 0; i < GATE_NUM; i++) {
+		line(tmpI, gate_ROI_BL[i], gate_ROI_BR[i], Scalar(0, 0, 100), 2, 1, 0);
+		line(tmpI, gate_ROI_BR[i], gate_ROI_TR[i], Scalar(0, 0, 100), 2, 1, 0);
+		line(tmpI, gate_ROI_TR[i], gate_ROI_TL[i], Scalar(0, 0, 100), 2, 1, 0);
+		line(tmpI, gate_ROI_TL[i], gate_ROI_BL[i], Scalar(0, 0, 100), 2, 1, 0);
+	}
+#endif
 
 	// Draw the inner ROI
 	//line(tmpI, ROI_iBL, ROI_iBR, Scalar(255, 0, 0), 2, 4, 0);
@@ -2618,7 +2726,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("velocity", IforGps);
 
 #endif
-	cv::waitKey(0);
+	cv::waitKey(1);
 	//cout << "line drawing : " << clock() - now << endl;
 
 }
@@ -2647,7 +2755,7 @@ inline Void CarSnukt::prepareSendData() {
 #if PIXEL2GPS_HOMOGRAPHY
 			pixel2gps.getTargetGps64INT(TrackObj[ID].CenterImgPlane, curGps);
 #elif PIXEL2GPS_TABLE
-			std::cout << TrackObj[ID].CenterImgPlane << std::endl;
+			//std::cout << TrackObj[ID].CenterImgPlane << std::endl;
 			//if no data, reuse past data
 			if (gpsT.getGps64INT(TrackObj[ID].CenterImgPlane, curGps) == -1) {
 				curGps = Point2l(pastLat, pastLon);

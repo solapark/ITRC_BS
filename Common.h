@@ -105,10 +105,12 @@ CarSnukt detector
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
-#define NO_NEW_INSIDE_OBJ			0
+#define NO_ID_CHANGE_OUT_GATE		1
+#define GATE_NUM					3
 
-#define PREDICTIVE_TRACK			1
+#define PREDICTIVE_TRACK			0
 #define KALMAN_TRACK				0
+#define WAITING_TRACK				1
  
 // Debug
 #define DEBUG_FINAL					1
@@ -131,9 +133,13 @@ CarSnukt detector
 #define DEBUG_GPS					0
 #define DEBUG_VELOCITY				0
 #define	DEBUG_AUTO_CAR_DETECTION	0
+#define DEBUG_GATE					0
+#define DEBUG_TRACK_RESULT			0
+#define DEBUG_YOLO_MVO				0
 
 #define DEBUG_IMG_IDX				0
 #define TARGET_IMG_IDX				173
+
 
 #define SAVE_NEW_BG					0
 
@@ -640,16 +646,10 @@ const uint32_t Trans_H = 450;
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-//#define FIRST_IMG_IDX				603
-//#define LAST_IMG_IDX				1170
-#define FIRST_IMG_IDX				12000
+//#define FIRST_IMG_IDX				4098 
+#define FIRST_IMG_IDX				10000
 #define LAST_IMG_IDX				100000
-//#define FIRST_IMG_IDX				345
-//#define LAST_IMG_IDX				940
-//#define FIRST_IMG_IDX				0
-//#define LAST_IMG_IDX				652
-//#define FIRST_IMG_IDX				0
-//#define LAST_IMG_IDX				2156
+
 #if DETECTOR_YOLO
 #define WEIGHT_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1_32000.weights"
 #define CFG_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1.cfg"
@@ -782,10 +782,32 @@ const uint32_t Trans_H = 450;
 #define SIZE_THRES					200
 #define HISTOGRAM_THRES				200
 
-const Point2i NEW_OBJ_PERMITTED_AREA_BL(ROI_BL.x + 20, ROI_BL.y + 20);
-const Point2i NEW_OBJ_PERMITTED_AREA_BR(ROI_BR.x - 20, ROI_BR.y + 20);
-const Point2i NEW_OBJ_PERMITTED_AREA_TL(ROI_TL.x + 20, ROI_TL.y - 20);
-const Point2i NEW_OBJ_PERMITTED_AREA_TR(ROI_TR.x - 20, ROI_TR.y - 20);
+#if NO_ID_CHANGE_OUT_GATE
+const Point2i GATE_BL[GATE_NUM] = {
+	Point2i(1, 240),
+	Point2i(610, 50),
+	Point2i(470, 310)
+};
+
+const Point2i GATE_BR[GATE_NUM] = {
+	Point2i(40, 240),
+	Point2i(639, 50),
+	Point2i(639, 310)
+};
+
+const Point2i GATE_TR[GATE_NUM] = {
+	Point2i(40, 330),
+	Point2i(639, 120),
+	Point2i(639, 359)
+};
+
+const Point2i GATE_TL[GATE_NUM] = {
+	Point2i(1, 330),
+	Point2i(610, 120),
+	Point2i(470, 359)
+};
+#endif
+
 #endif
 
 #if IP_CAM_NUM == 177
