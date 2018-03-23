@@ -6,20 +6,19 @@ colorDetector::colorDetector() {}
 colorDetector::colorDetector(const float lowH, const float highH,
 	const float lowS, const float highS,
 	const float lowV, const float highV,
-	const bool isRefine)
-	:lowH(lowH), highH(highH), lowS(lowS), highS(highS), lowV(lowV), highV(highV), isRefine(isRefine) {}
+	const bool isRefine, bool isImgNormed)
+	:lowH(lowH), highH(highH), lowS(lowS), highS(highS), lowV(lowV), highV(highV), isRefine(isRefine), isImgNormed(isImgNormed){}
 
 void colorDetector::getThrImg(const Mat &imgOrg, Mat & imgThr) {
 	imgOrg.copyTo(imgOriginal);
+
+	if (!isImgNormed) {
+		imgOriginal.convertTo(imgOriginal, CV_32FC3, 1 / 255.0);
+		GaussianBlur(imgOriginal, imgOriginal, cv::Size(5, 5), 0.3);
+	}
+
 	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
-	//std::vector<Mat> hsvChannels;
-	//split(imgHSV, hsvChannels);
-	//double minHue, maxHue, minSat, maxSat, minVal, maxVal;
-	//cv::minMaxIdx(hsvChannels[0], &minHue, &maxHue, 0, 0);
-	//cv::minMaxIdx(hsvChannels[1], &minSat, &maxSat, 0, 0);
-	//cv::minMaxIdx(hsvChannels[2], &minVal, &maxVal, 0, 0);
-	//std::cout <<"minHue : "<< minHue << " maxHue : "<<maxHue << " minSat : " << minSat << " maxSat : " << maxSat << " minVal : " << minVal << " maxVal : " << maxVal << std::endl;
-	//std::cout<<imgHSV.type()<< std::endl;
+												  
 	inRange(imgHSV, Scalar(lowH, lowS, lowV), Scalar(highH, highS, highV), imgThr); //Threshold the image
 
 	if (isRefine) {

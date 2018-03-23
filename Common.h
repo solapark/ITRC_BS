@@ -55,8 +55,10 @@ typedef       unsigned int			UInt;
 typedef       double				Double;
 typedef       float					Float;
 
+#define DEBUGGING_MODE				1
+
 // Type of input (enable for an input only)
-#define STATIC_IMAGE				1		  
+#define STATIC_IMAGE				1	  
 #define VIDEO						0	  
 #define CAMERA						0
 #define IP_CAM_NUM					176
@@ -113,6 +115,7 @@ CarSnukt detector
 #define WAITING_TRACK				1
  
 // Debug
+#if DEBUGGING_MODE
 #define DEBUG_FINAL					1
 #define PAUSE_FRAME					1
 #define FULL_SCREEN					0
@@ -139,32 +142,34 @@ CarSnukt detector
 #define DEBUG_YOLO_MVO				1
 
 #define DEBUG_IMG_IDX				1
-//#define DEBUG_FINAL					1
-//#define PAUSE_FRAME					0
-//#define FULL_SCREEN					0
-//#define DEBUG_CRITICAL_POINT		0
-//#define DEBUG_TRACKING				0
-//#define DEBUG_NONZ_SEG				0
-//#define DEBUG_NONZ_SEG_TWICE		0
-//#define DEBUG_SHADOW_DET			0
-//#define DEBUG_MVO_CLASSSIFY			0
-//#define DEBUG_BKG_UPDATE			0
-//#define DEBUG_TARGET_LINE			0
-//#define DEBUG_SEND_DATA				0
-//
-////sola
-//#define DEBUG_SUB					0
-//#define DEBUG_RAW_SEG_SAL_N_SIZE	0
-//#define DEBUG_TRACK_DIFF			0
-//#define DEBUG_RUNNING_TIME			0
-//#define DEBUG_GPS					0
-//#define DEBUG_VELOCITY				0
-//#define	DEBUG_AUTO_CAR_DETECTION	0
-//#define DEBUG_GATE					0
-//#define DEBUG_TRACK_RESULT			0
-//#define DEBUG_YOLO_MVO				1
-//
-//#define DEBUG_IMG_IDX				0
+#else
+#define DEBUG_FINAL					1
+#define PAUSE_FRAME					0
+#define FULL_SCREEN					0
+#define DEBUG_CRITICAL_POINT		0
+#define DEBUG_TRACKING				0
+#define DEBUG_NONZ_SEG				0
+#define DEBUG_NONZ_SEG_TWICE		0
+#define DEBUG_SHADOW_DET			0
+#define DEBUG_MVO_CLASSSIFY			0
+#define DEBUG_BKG_UPDATE			0
+#define DEBUG_TARGET_LINE			0
+#define DEBUG_SEND_DATA				0
+
+//sola
+#define DEBUG_SUB					0
+#define DEBUG_RAW_SEG_SAL_N_SIZE	0
+#define DEBUG_TRACK_DIFF			0
+#define DEBUG_RUNNING_TIME			0
+#define DEBUG_GPS					0
+#define DEBUG_VELOCITY				0
+#define	DEBUG_AUTO_CAR_DETECTION	0
+#define DEBUG_GATE					0
+#define DEBUG_TRACK_RESULT			0
+#define DEBUG_YOLO_MVO				1
+
+#define DEBUG_IMG_IDX				0
+#endif
 #define TARGET_IMG_IDX				173
 
 
@@ -363,8 +368,8 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				1636
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1_32000.weights"
-#define CFG_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1.cfg"
+#define WEIGHT_FILE					"data/yolo/yolo_small1_174_car_4000/yolo-obj-small1_10000.weights"
+#define CFG_FILE					"data/yolo/yolo_small1_174_car_4000/yolo-obj-small1.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -658,8 +663,8 @@ const uint32_t Trans_H = 450;
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.176/video1"
 #define VIDEO_FILE					""
-//#define DATASET_DIR					"data/176_2018318151048/176_2018318151048_"
-#define DATASET_DIR					"C:/Users/user/Documents/Visual Studio 2015/Projects/imWrite/imWrite/data/176/176_2018322125214_"
+#define DATASET_DIR					"data/176/4/176_20171123105829_"
+//#define DATASET_DIR					"C:/Users/user/Documents/Visual Studio 2015/Projects/imWrite/imWrite/data/176/176_2018322143925_"
 
 
 
@@ -727,7 +732,7 @@ const Point2d mapDouble3(36.9722611, 127.8708721);
 const uint32_t Trans_W = 500;
 const uint32_t Trans_H = 450;
 
-#define AUTO_CAR_DETECTION			0
+#define AUTO_CAR_DETECTION			1
 
 // For background update algorithm
 #define BGM_DYNAMIC					1				// 1: a dynamic background model (BGM) is used, otherwise a statistical BGM is used
@@ -784,13 +789,13 @@ const uint32_t Trans_H = 450;
 #define HIGH_S						255		/255.0
 #define LOW_V						126		/255.0
 #define HIGH_V						255		/255.0
-//#define LOW_H						0
-//#define HIGH_H						160
-//#define LOW_S						0
-//#define HIGH_S						255
-//#define LOW_V						0
-//#define HIGH_V						255
+
 #define REFINE						0
+#if DETECTOR_YOLO
+#define IS_IMG_NORMED				0
+#else
+#define IS_IMG_NORMED				1
+#endif
 #define NUM_COLOR_PIXEL_THR			30			
 
 
@@ -809,17 +814,19 @@ const uint32_t Trans_H = 450;
 const Point2i GATE_BL[GATE_NUM] = {
 	Point2i(1, 240),
 	Point2i(610, 50),
-	Point2i(470, 310)
+	//Point2i(470, 310)
+	Point2i(470, 250)
 };
 
 const Point2i GATE_BR[GATE_NUM] = {
-	Point2i(40, 240),
+	Point2i(60, 240),
 	Point2i(639, 50),
-	Point2i(639, 310)
+	//Point2i(639, 310)
+	Point2i(639, 250)
 };
 
 const Point2i GATE_TR[GATE_NUM] = {
-	Point2i(40, 330),
+	Point2i(60, 330),
 	Point2i(639, 120),
 	Point2i(639, 359)
 };

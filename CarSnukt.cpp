@@ -28,8 +28,8 @@ Void CallBackFunc(int event, int x, int y, int flags, void *userdata)
 }
 
 CarSnukt::CarSnukt() 
-#if AUTO_CAR_DETECTION
-	: colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE)
+#if AUTO_CAR_DETECTION 
+	: colDet(LOW_H, HIGH_H, LOW_S, HIGH_S, LOW_V, HIGH_V, REFINE, IS_IMG_NORMED)
 #endif
 {
 #if DETECTOR_YOLO
@@ -1504,9 +1504,13 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			if (isLargeObject.at(i))
 			{
 				//printf("TrackObjectID = %d is created\n", NewTrackObj);
+#if NO_ID_CHANGE_OUT_GATE
 				if (CheckInsideGate(MVO_ROI.at(i))) {
 					CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
 				}
+#else
+				CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
+#endif
 			}
 		}
 	}
@@ -1598,9 +1602,15 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 #if NO_ID_CHANGE_OUT_GATE
 			//cout << "Min_Diff_Pos : " << Min_Diff_Pos << endl;
 			//cout << "CheckInsideGate(TrackObj[TrackObjIdx].ROI) : " << CheckInsideGate(TrackObj[TrackObjIdx].ROI) << endl;
-			if (Min_Diff_Pos > DISTANCE_THRES && CheckInsideGate(TrackObj[TrackObjIdx].ROI)) {
+			if (Min_Diff_Pos > DISTANCE_THRES && CheckInsideGate(TrackObj[TrackObjIdx].ROI)){
 #if DEBUG_TRACK_RESULT
+				printf("Min_Diff_Pos > DISTANCE_THRES\n");
 				printf("TrackObjIdx %d is Disapeared\n", TrackObjIdx);
+#endif
+				isMatched = false;
+			}else if (Min_Diff_Pos > DISTANCE_THRES  && TmpMatchedID != INT_MAX && CheckInsideGate(MVO_ROI.at(TmpMatchedID))) {
+#if DEBUG_TRACK_RESULT
+				printf("TrackObjIdx %d is WAITING\n", TrackObjIdx);
 #endif
 				isMatched = false;
 			}
@@ -1789,7 +1799,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			}
 #endif
 
-#if WAITING_TRACK
+#if WAITING_TRACK && NO_ID_CHANGE_OUT_GATE
 			//if (!isMatched && TrackObj[TrackObjIdx].NumOfHisPt > 3)
 			if (!isMatched /*&& TrackObj[TrackObjIdx].predictionNum < 5*/)
 			{
@@ -2083,6 +2093,7 @@ Void CarSnukt::FormROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
 	ROI_iTL_BL_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 }
 
+#if NO_ID_CHANGE_OUT_GATE
 Void CarSnukt::FormGateList()
 {
 	for (int i = 0; i < GATE_NUM; i++) {
@@ -2205,6 +2216,7 @@ Void CarSnukt::FormGate(Point2i BL, Point2i BR, Point2i TR, Point2i TL, int idx)
 	gate_ROI_TL_BL_Param[idx][2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 
 }
+#endif
 
 Void CarSnukt::InputROIandPersMap(Mat &tmpI)
 {
@@ -2389,6 +2401,7 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 	//cout << "YOLO time " << clock() - a << endl;
 
 #if AUTO_CAR_DETECTION
+	detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
 	trackAutoCar(MVO_ROI, isAutoCar);
 #endif
 
@@ -2498,6 +2511,7 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		default:
 			break;
 		}
+
 	}
 
 #endif
@@ -2578,7 +2592,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 		}
 	}
 
-#if DEBUG_AUTO_CAR_DETECTION
+#if AUTO_CAR_DETECTION
 	if (countNonZero(LiveAutoCarList) > 0)
 	{
 		Mat NonZ;
@@ -2814,11 +2828,11 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 	//Mat roiImg = Mat::ones(curROI.at<int>(3) + 1- curROI.at<int>(2)+1, curROI.at<int>(1) + 1 - curROI.at<int>(0)+1, CV_8UC1);
 
 #if DEBUG_AUTO_CAR_DETECTION
-	//namedWindow("roiImg", WINDOW_NORMAL);
-	//resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
-	//imshow("roiImg", roiImg);
-	//waitKey();
-	//destroyWindow("roiImg");
+	namedWindow("roiImg", WINDOW_NORMAL);
+	resizeWindow("roiImg", roiImg.cols*2, roiImg.rows * 2);
+	imshow("roiImg", roiImg);
+	waitKey();
+	destroyWindow("roiImg");
 
 #endif
 
@@ -2827,35 +2841,26 @@ inline bool CarSnukt::isAutoCar(const Mat &img, const Mat& curSEG, const Mat &cu
 
 	colDet.getThrImg(roiImg, thrImg);
 #if DEBUG_AUTO_CAR_DETECTION
-	//namedWindow("thrImg", WINDOW_NORMAL);
-	//resizeWindow("thrImg", thrImg.cols*1.5, thrImg.rows * 1.5);
-	//imshow("thrImg", thrImg);
-	//waitKey();
-	//destroyWindow("thrImg");
+	namedWindow("thrImg", WINDOW_NORMAL);
+	resizeWindow("thrImg", thrImg.cols*1.5, thrImg.rows * 1.5);
+	imshow("thrImg", thrImg);
+	waitKey();
+	destroyWindow("thrImg");
 
-	//namedWindow("curSEG", WINDOW_NORMAL);
-	//resizeWindow("curSEG", curSEG.cols*1.5, curSEG.rows * 1.5);
-	//imshow("curSEG", curSEG);
-	//waitKey();
-	//destroyWindow("curSEG");
+	namedWindow("curSEG", WINDOW_NORMAL);
+	resizeWindow("curSEG", curSEG.cols*1.5, curSEG.rows * 1.5);
+	imshow("curSEG", curSEG);
+	waitKey();
+	destroyWindow("curSEG");
 #endif
 
 	//3. find intersection of SEG & COLOR
 	Mat interSec;
-	//cv::bitwise_and(curSEG, thrImg, interSec);
-#if DEBUG_AUTO_CAR_DETECTION
-	//namedWindow("interSec", WINDOW_NORMAL);
-	//resizeWindow("interSec", interSec.cols*1.5, interSec.rows * 1.5);
-	//imshow("interSec", interSec);
-	//waitKey();
-	//destroyWindow("interSec");
-#endif
 
 	//4. count intersection pixel.
-	//int interSecCnt = countNonZero(interSec);
 	int interSecCnt = countNonZero(thrImg);
 #if DEBUG_AUTO_CAR_DETECTION
-	//cout << "interSecCnt : " << interSecCnt << endl;
+	cout << "interSecCnt : " << interSecCnt << endl;
 #endif
 	if (interSecCnt> NUM_COLOR_PIXEL_THR) {
 		colCnt = interSecCnt;
@@ -2968,7 +2973,6 @@ Void CarSnukt::detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const ve
 			isAutoCarVec.push_back(false);
 		}
 	}
-
 }
 
 void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
@@ -2978,7 +2982,13 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 	{
 		for (size_t i = 0; i < MVO_ROI.size(); i++)
 		{
+#if NO_ID_CHANGE_OUT_GATE
+			Mat autoCarCandROI = MVO_ROI[i];
+			if (isAutoCar.at(i) && CheckInsideGate(autoCarCandROI))
+#else
 			if (isAutoCar.at(i))
+#endif
+
 			{
 				// 1) LiveAutoCarList update
 				LiveAutoCarList.at<uint8_t>(0, NewAutoTrackObj) = 1;
@@ -3027,6 +3037,11 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 			findNonZero(LiveAutoCarList, NonZIdx);
 			for (int i = 0; i < NonZIdx.total(); i++) {
 				int TrackObjIdx = NonZIdx.at<Point2i>(i).x;
+#if NO_ID_CHANGE_OUT_GATE
+				if (!CheckInsideGate(autoCar[TrackObjIdx].ROI)) {
+					continue;
+				}
+#endif
 				LiveAutoCarList.at<uint8_t>(0, TrackObjIdx) = 0;
 			}
 

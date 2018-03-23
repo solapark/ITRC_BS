@@ -13,7 +13,7 @@ public:
 		const float lowH, const float highH,
 		const float lowS, const float highS,
 		const float lowV, const float highV,
-		const bool isRefine);
+		const bool isRefine, bool isImgNormed);
 	
 	void getThrImg(const Mat &imgOrg, Mat & mgThr);
 	void showResult();
@@ -21,5 +21,6 @@ public:
 private:
 	float lowH, highH, lowS, highS, lowV, highV;
 	bool isRefine;
+	bool isImgNormed;
 	Mat imgOriginal, imgHSV, imgThresholded;
 };

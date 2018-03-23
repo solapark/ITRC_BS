@@ -316,9 +316,12 @@ public:
 	@Brief: Form the ROI parameters given by 4 polar points
 	*/
 
+#if NO_ID_CHANGE_OUT_GATE
 	Void FormGate(Point2i BL, Point2i BR, Point2i TR, Point2i TL, int index);
 
 	Void FormGateList();
+#endif
+
 	/*
 		@Brief: Form the top-down perspective background for displaying
 		*/
