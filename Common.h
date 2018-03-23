@@ -808,7 +808,7 @@ const uint32_t Trans_H = 450;
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
-#define DISTANCE_THRES				200
+#define DISTANCE_THRES				16000
 #define SIZE_THRES					200
 #define HISTOGRAM_THRES				200
 

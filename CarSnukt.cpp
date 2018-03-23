@@ -3025,10 +3025,20 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar,
 			{
 				//if there is match car, update the info.
 				Mat curROI = MVO_ROI.at(i);
-				autoCar[NewAutoTrackObj].ROI = curROI;
 				///update the centerimag from ROI
 				Point2i CurPos = Point2i((curROI.at<int>(0) + curROI.at<int>(1)) >> 1,
 					(curROI.at<int>(2) + curROI.at<int>(3)) >> 1);
+				Point2i PastPos = autoCar[NewAutoTrackObj].CenterImgPlane;
+				Point2i Diff_Point = (CurPos - PastPos);
+				double Diff_Pos = Diff_Point.x*Diff_Point.x + Diff_Point.y*Diff_Point.y;
+
+				if (Diff_Pos > DISTANCE_THRES) {
+#if DEBUG_TRACK_DIFF
+					cout << "auto car candidate fail. track diff : " << Diff_Pos << endl;
+#endif
+					continue;
+				}
+				autoCar[NewAutoTrackObj].ROI = curROI;
 				autoCar[NewAutoTrackObj].CenterImgPlane =  CurPos;
 				isThereMatchAutoCar = true;
 			}
