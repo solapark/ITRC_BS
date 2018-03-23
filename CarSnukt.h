@@ -233,7 +233,8 @@ private:
 		vector<Mat> &MVO_SEG,
 		vector<Mat> &MVO_ROI,
 		vector<bool> &isLargeObject,
-		vector<int> &hardIdCode);
+		vector<int> &hardIdCode,
+		bool isFirstFrame);
 
 	/*
 		@Brief:	Annotation
@@ -332,7 +333,7 @@ public:
 		It's output is the structure: CarSnuktOutp that is used for the mapping process.
 		*/
 
-	Void CarSnuktDet(Mat &I, Mat &lastI);
+	Void CarSnuktDet(Mat &I, Mat &lastI, bool isFirstFrame);
 
 	Void MOVDetector(const Mat& I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_SEG, vector<bool> &isLargeObject);
 
@@ -359,7 +360,7 @@ public:
 
 	Void detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const vector<Mat> &mvoRoi, vector<bool> &isLargeObj, vector<bool> &isAutoCarVec);
 
-	void trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar);
+	void trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar, bool isFirstFrame);
 };
 #endif
 

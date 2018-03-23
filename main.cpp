@@ -359,7 +359,6 @@ myCarSnukt.setGps2Pixel(gps, pixel, LAT_SAME_DIGIT, LON_SAME_DIGIT, LAT_WHOLE_DI
 myCarSnukt.setPixel2GpsTable(GPS_TABLE_NAME, SIZE_VER, SIZE_HOR);
 #endif
 
-
 #if STATIC_IMAGE
 for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = tmpImgIdx + 1)
 #elif VIDEO || CAMERA
@@ -367,9 +366,6 @@ for (uint32_t tmpImgIdx = FIRST_IMG_IDX; tmpImgIdx < LAST_IMG_IDX; tmpImgIdx = t
 while (!isStop)
 #endif
 {
-#if DEBUG_IMG_IDX
-	cout << "ImgIdx : " << ImgIdx << endl;
-#endif
 
 #if DEBUG_RUNNING_TIME
 	t_arr[i++] = clock();
@@ -395,12 +391,13 @@ while (!isStop)
 #endif
 
 #if DEBUG_IMG_IDX
+	cout << "ImgIdx : " << ImgIdx << endl;
 	char str[200];
 	sprintf(str, "idx = %d", ImgIdx);
 	putText(I, str, Point2f(1, 10), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 255, 255), 2);
 #endif
 	// CarSnukt algorithm 
-	myCarSnukt.CarSnuktDet(I, III);
+	myCarSnukt.CarSnuktDet(I, III, isFirstFrame);
 
 #if DEBUG_RUNNING_TIME
 	t_arr[i++] = clock();
@@ -451,7 +448,10 @@ while (!isStop)
 
 #endif
 
-	// Check the termination condition		
+	// Check the termination condition
+	if (isFirstFrame == true) {
+		isFirstFrame = false;
+	}
 	ImgIdx++;
 #if VIDEO
 	if (ImgIdx > LAST_IMG_IDX)

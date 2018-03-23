@@ -663,7 +663,9 @@ const uint32_t Trans_H = 450;
 // Dataset configurations
 #define CAM_ID						"rtsp://admin:1234@222.116.156.176/video1"
 #define VIDEO_FILE					""
-#define DATASET_DIR					"data/176/4/176_20171123105829_"
+#define DATASET_DIR					"data/176/2/176_20171123104944_"
+//#define DATASET_DIR					"data/176/3/176_20171123105044_"
+//#define DATASET_DIR					"data/176/4/176_20171123105829_"
 //#define DATASET_DIR					"C:/Users/user/Documents/Visual Studio 2015/Projects/imWrite/imWrite/data/176/176_2018322143925_"
 
 
@@ -673,9 +675,9 @@ const uint32_t Trans_H = 450;
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-//#define FIRST_IMG_IDX				4098 
-//#define FIRST_IMG_IDX				10000
 #define FIRST_IMG_IDX				0
+//#define FIRST_IMG_IDX				345
+//#define FIRST_IMG_IDX				0
 #define LAST_IMG_IDX				100000
 
 #if DETECTOR_YOLO
@@ -814,15 +816,15 @@ const uint32_t Trans_H = 450;
 const Point2i GATE_BL[GATE_NUM] = {
 	Point2i(1, 240),
 	Point2i(610, 50),
-	//Point2i(470, 310)
-	Point2i(470, 250)
+	Point2i(470, 310)
+	//Point2i(470, 250)
 };
 
 const Point2i GATE_BR[GATE_NUM] = {
 	Point2i(60, 240),
 	Point2i(639, 50),
-	//Point2i(639, 310)
-	Point2i(639, 250)
+	Point2i(639, 310)
+	//Point2i(639, 250)
 };
 
 const Point2i GATE_TR[GATE_NUM] = {

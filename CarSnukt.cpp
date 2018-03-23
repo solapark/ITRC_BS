@@ -1478,7 +1478,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 	vector<Mat> &MVO_SEG,
 	vector<Mat> &MVO_ROI,
 	vector<bool> &isLargeObject,
-	vector<int> &hardIdCode)
+	vector<int> &hardIdCode, bool isFirstFrame)
 {
 	//cout << "MVO size : " << MVO_ROI.size() << endl;
 #if DEBUG_YOLO_MVO
@@ -1505,7 +1505,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			{
 				//printf("TrackObjectID = %d is created\n", NewTrackObj);
 #if NO_ID_CHANGE_OUT_GATE
-				if (CheckInsideGate(MVO_ROI.at(i))) {
+				if (isFirstFrame || CheckInsideGate(MVO_ROI.at(i))) {
 					CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
 				}
 #else
@@ -2385,7 +2385,7 @@ Void CarSnukt::UpdateBGM(Mat &I)
 	UpdateBs();
 }
 
-Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
+Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI, bool isFirstFrame)
 {
 	vector<Mat> MVO_ROI;
 	vector<Mat> MVO_SEG;
@@ -2402,11 +2402,11 @@ Void CarSnukt::CarSnuktDet(Mat &I, Mat &lastI)
 
 #if AUTO_CAR_DETECTION
 	detectAutoCar(I, MVO_SEG, MVO_ROI, isLargeObject, isAutoCar);
-	trackAutoCar(MVO_ROI, isAutoCar);
+	trackAutoCar(MVO_ROI, isAutoCar, isFirstFrame);
 #endif
 
 	a = clock();
-	LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode);
+	LargeMVOTracking(I, MVO_SEG, MVO_ROI, isLargeObject, hardIdCode, isFirstFrame);
 	//cout << "tracking time " << clock() - a << endl;
 
 	a = clock();
@@ -2609,6 +2609,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 				MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
 			);
 			rectangle(tmpI, rect, Scalar(255, 0, 0), 1);
+			circle(tmpI, autoCar[ID].CenterImgPlane, 3, (255, 0, 0), 2, 4, 0);
 
 			// Draw the object center in the image plane
 			//circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
@@ -2975,7 +2976,7 @@ Void CarSnukt::detectAutoCar(const Mat &img, const vector<Mat> &mvoSeg, const ve
 	}
 }
 
-void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
+void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar, bool isFirstFrame)
 {
 	// 1. if there are new auto car
 	if (countNonZero(LiveAutoCarList) == 0)
@@ -2984,7 +2985,8 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar)
 		{
 #if NO_ID_CHANGE_OUT_GATE
 			Mat autoCarCandROI = MVO_ROI[i];
-			if (isAutoCar.at(i) && CheckInsideGate(autoCarCandROI))
+
+			if( (isFirstFrame && isAutoCar.at(i)) || (isAutoCar.at(i) && CheckInsideGate(autoCarCandROI)) )
 #else
 			if (isAutoCar.at(i))
 #endif
