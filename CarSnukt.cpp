@@ -1074,8 +1074,8 @@ inline Bool CarSnukt::CheckInsideROI(Mat &MVO_ROI)
 	x = BL.x;
 	y = BL.y;
 
-	if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TL_BL
-		((a[1] * x + b[1] * y + c[1]) > 0))		// BL_BR
+	if (((a[0] * x + b[0] * y + c[0]) <= 0) &&	// TL_BL
+		((a[1] * x + b[1] * y + c[1]) >= 0))		// BL_BR
 		isBLSatisfied = true;
 
 	// for the BR point of the detected object			
@@ -1087,8 +1087,8 @@ inline Bool CarSnukt::CheckInsideROI(Mat &MVO_ROI)
 	c[1] = ROI_iBR_TR_Param[2];
 	x = BR.x;
 	y = BR.y;
-	if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BL_BR
-		((a[1] * x + b[1] * y + c[1]) > 0))		// BR_TR
+	if (((a[0] * x + b[0] * y + c[0]) >= 0) &&	// BL_BR
+		((a[1] * x + b[1] * y + c[1]) >= 0))		// BR_TR
 		isBRSatisfied = true;
 
 	// for the TR point of the detected object			
@@ -1100,8 +1100,8 @@ inline Bool CarSnukt::CheckInsideROI(Mat &MVO_ROI)
 	c[1] = ROI_iTR_TL_Param[2];
 	x = TR.x;
 	y = TR.y;
-	if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BR_TR
-		((a[1] * x + b[1] * y + c[1]) < 0))		// TR_TL
+	if (((a[0] * x + b[0] * y + c[0]) >= 0) &&	// BR_TR
+		((a[1] * x + b[1] * y + c[1]) <= 0))		// TR_TL
 		isTRSatisfied = true;
 
 	// for the TR point of the detected object			
@@ -1113,11 +1113,11 @@ inline Bool CarSnukt::CheckInsideROI(Mat &MVO_ROI)
 	c[1] = ROI_iTL_BL_Param[2];
 	x = TL.x;
 	y = TL.y;
-	if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TR_TL
-		((a[1] * x + b[1] * y + c[1]) < 0))		// TL_BL
+	if (((a[0] * x + b[0] * y + c[0]) <= 0) &&	// TR_TL
+		((a[1] * x + b[1] * y + c[1]) <= 0))		// TL_BL
 		isTLSatisfied = true;
 
-	cout << "ROI : " << isBLSatisfied << ", " << isBRSatisfied << ", " << isTRSatisfied << ", " << isTLSatisfied << endl;
+	//cout << "ROI : " << isBLSatisfied << ", " << isBRSatisfied << ", " << isTRSatisfied << ", " << isTLSatisfied << endl;
 
 	bool isInsideROI = isBLSatisfied &
 		isBRSatisfied &
@@ -1160,8 +1160,8 @@ inline Bool CarSnukt::CheckInsideGate(Mat &MVO_ROI)
 		x = BL.x;
 		y = BL.y;
 
-		if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TL_BL
-			((a[1] * x + b[1] * y + c[1]) > 0))		// BL_BR
+		if (((a[0] * x + b[0] * y + c[0]) <= 0) &&	// TL_BL
+			((a[1] * x + b[1] * y + c[1]) >= 0))		// BL_BR
 			isBLSatisfied = true;
 
 		// for the BR point of the detected object			
@@ -1174,8 +1174,8 @@ inline Bool CarSnukt::CheckInsideGate(Mat &MVO_ROI)
 
 		x = BR.x;
 		y = BR.y;
-		if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BL_BR
-			((a[1] * x + b[1] * y + c[1]) > 0))		// BR_TR
+		if (((a[0] * x + b[0] * y + c[0]) >= 0) &&	// BL_BR
+			((a[1] * x + b[1] * y + c[1]) >= 0))		// BR_TR
 			isBRSatisfied = true;
 
 		// for the TR point of the detected object			
@@ -1187,8 +1187,8 @@ inline Bool CarSnukt::CheckInsideGate(Mat &MVO_ROI)
 		c[1] = gate_ROI_TR_TL_Param[i][2];
 		x = TR.x;
 		y = TR.y;
-		if (((a[0] * x + b[0] * y + c[0]) > 0) &&	// BR_TR
-			((a[1] * x + b[1] * y + c[1]) < 0))		// TR_TL
+		if (((a[0] * x + b[0] * y + c[0]) >= 0) &&	// BR_TR
+			((a[1] * x + b[1] * y + c[1]) <= 0))		// TR_TL
 			isTRSatisfied = true;
 
 		// for the TR point of the detected object			
@@ -1200,8 +1200,8 @@ inline Bool CarSnukt::CheckInsideGate(Mat &MVO_ROI)
 		c[1] = gate_ROI_TL_BL_Param[i][2];
 		x = TL.x;
 		y = TL.y;
-		if (((a[0] * x + b[0] * y + c[0]) < 0) &&	// TR_TL
-			((a[1] * x + b[1] * y + c[1]) < 0))		// TL_BL
+		if (((a[0] * x + b[0] * y + c[0]) <= 0) &&	// TR_TL
+			((a[1] * x + b[1] * y + c[1]) <= 0))		// TL_BL
 			isTLSatisfied = true;
 
 		//cout << "isBLSatisfied isBRSatisfied isTRSatisfied isTLSatisfied  : "<<	isBLSatisfied <<", "<< isBRSatisfied << ", " << isTRSatisfied << ", " << isTLSatisfied << endl;
@@ -1420,9 +1420,15 @@ inline Void CarSnukt::CreateNewTrackObjt(Mat &I, Mat &curSeg, Mat &curROI)
 	TrackObj[NewTrackObj].KF.statePre.at<float>(2) = 0;
 	TrackObj[NewTrackObj].KF.statePre.at<float>(3) = 0;
 
+	//TrackObj[NewTrackObj].KF.statePre.at<float>(0) = (float)CurPos.x;
+	//TrackObj[NewTrackObj].KF.statePre.at<float>(1) = (float)CurPos.y;
+	//TrackObj[NewTrackObj].KF.statePre.at<float>(2) = (float)CurPos.x;
+	//TrackObj[NewTrackObj].KF.statePre.at<float>(3) = (float)CurPos.y;
+
 	setIdentity(TrackObj[NewTrackObj].KF.measurementMatrix);
 	setIdentity(TrackObj[NewTrackObj].KF.processNoiseCov, Scalar::all(1e-3));
 	setIdentity(TrackObj[NewTrackObj].KF.measurementNoiseCov, Scalar::all(1e-2));
+	setIdentity(TrackObj[NewTrackObj].KF.errorCovPost, Scalar::all(1));
 	//setIdentity(TrackObj[NewTrackObj].KF.errorCovPost, Scalar::all(0.2));
 #endif
 
@@ -1481,20 +1487,6 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 	vector<int> &hardIdCode, bool isFirstFrame)
 {
 	//cout << "MVO size : " << MVO_ROI.size() << endl;
-#if DEBUG_YOLO_MVO
-	Mat tmpI = I;
-	for (int i = 0; i < MVO_ROI.size(); i++) {
-		Mat CurROI = MVO_ROI[i];
-		Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
-			MAX(CurROI.at<int>(2) - 2, 0),
-			MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
-			MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
-		);
-		rectangle(tmpI, rect, Scalar(0, 255, 0), 1);
-	}
-	imshow("MVO", tmpI);
-	waitKey(1);
-#endif
 
 	// create new track objects if currently there is no live trackObject				
 	if (countNonZero(LiveObjList) == 0)
@@ -1504,7 +1496,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			if (isLargeObject.at(i))
 			{
 				//printf("TrackObjectID = %d is created\n", NewTrackObj);
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 				if (isFirstFrame || CheckInsideGate(MVO_ROI.at(i))) {
 					CreateNewTrackObjt(I, MVO_SEG.at(i), MVO_ROI.at(i));
 				}
@@ -1581,7 +1573,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 						TrackObj[TrackObjIdx].ROI.at<int>(3) - TrackObj[TrackObjIdx].ROI.at<int>(2));
 
 					double Diff_Hist = sum(dif_b_hist)[0] + sum(dif_g_hist)[0] + sum(dif_r_hist)[0];
-					double Diff_Pos = Diff_Point.x*Diff_Point.x + Diff_Point.y*Diff_Point.y;
+					double Diff_Pos = sqrt(Diff_Point.x*Diff_Point.x + Diff_Point.y*Diff_Point.y);
 					double Diff_Size = (CurSize.x - CurDetSize[j].x)*(CurSize.x - CurDetSize[j].x) +
 						(CurSize.y - CurDetSize[j].y)*(CurSize.y - CurDetSize[j].y);
 					double DiffSum = Diff_Hist + Diff_Pos + Diff_Size;
@@ -1599,28 +1591,22 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				}
 			}
 
-#if NO_ID_CHANGE_OUT_GATE
-			//cout << "Min_Diff_Pos : " << Min_Diff_Pos << endl;
-			//cout << "CheckInsideGate(TrackObj[TrackObjIdx].ROI) : " << CheckInsideGate(TrackObj[TrackObjIdx].ROI) << endl;
-			if (Min_Diff_Pos > DISTANCE_THRES && CheckInsideGate(TrackObj[TrackObjIdx].ROI)){
-#if DEBUG_TRACK_RESULT
-				printf("Min_Diff_Pos > DISTANCE_THRES\n");
-				printf("TrackObjIdx %d is Disapeared\n", TrackObjIdx);
-#endif
-				isMatched = false;
-			}else if (Min_Diff_Pos > DISTANCE_THRES  && TmpMatchedID != INT_MAX && CheckInsideGate(MVO_ROI.at(TmpMatchedID))) {
-#if DEBUG_TRACK_RESULT
-				printf("TrackObjIdx %d is WAITING\n", TrackObjIdx);
-#endif
-				isMatched = false;
-			}
-			else if (Min_Diff_Hist < HISTOGRAM_THRES && /*Min_Diff_Pos < DISTANCE_THRES &&*/ Min_Diff_Size < SIZE_THRES) // tracking sucessfull
-#else
-			if (Min_Diff_Hist < HISTOGRAM_THRES && /*Min_Diff_Pos < DISTANCE_THRES &&*/ Min_Diff_Size < SIZE_THRES) // tracking sucessfull
-#endif
+			//#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
+			//			if (Min_Diff_Pos > DISTANCE_THRES && CheckInsideGate(TrackObj[TrackObjIdx].ROI)){
+			//				isMatched = false;
+			//			}else if (Min_Diff_Pos > DISTANCE_THRES  && TmpMatchedID != INT_MAX && CheckInsideGate(MVO_ROI.at(TmpMatchedID))) {
+			//
+			//				isMatched = false;
+			//			}
+			//			else if (Min_Diff_Hist < HISTOGRAM_THRES && /*Min_Diff_Pos < DISTANCE_THRES &&*/ Min_Diff_Size < SIZE_THRES) // tracking sucessfull
+			//#else
+			if ( ( Min_Diff_Hist < HISTOGRAM_THRES && Min_Diff_Pos < DISTANCE_THRES&& Min_Diff_Size < SIZE_THRES) // tracking sucessfull
+				|| (TrackObj[TrackObjIdx].predictionNum > 2 && Min_Diff_Hist < HISTOGRAM_THRES && Min_Diff_Size < SIZE_THRES) )
 			{
 #if DEBUG_TRACK_RESULT
 				printf("TrackObjIdx %d is EXPLICITLY matched\n", TrackObjIdx);
+				//cout << "HIST, POS, SIZE: " << Min_Diff_Hist << ", " << Min_Diff_Pos << ", " << Min_Diff_Size << endl;
+
 #endif
 				// to narrow down the candidates for the next matching round	
 				DetectedObjList.at<uint8_t>(0, TmpMatchedID) = 1; // important
@@ -1693,20 +1679,9 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				}
 #endif
 			}
-
-#if DEBUG_TRACKING	
 			else {
-				cout << "LargeMVOTracking () : Min_Diff < THR ; HIST: " << Min_Diff_Hist << " POS: " << Min_Diff_Pos << " SIZE: " << Min_Diff_Size << endl;
+				cout << "HIST, POS, SIZE: " << Min_Diff_Hist << ", " << Min_Diff_Pos << ", " << Min_Diff_Size << endl;
 			}
-#endif
-
-#if DEBUG_TRACK_DIFF
-			else {
-				cout << "Min_Diff_Hist , Min_Diff_Pos , Min_Diff_Size "<<Min_Diff_Hist <<" "<< Min_Diff_Pos << " " << Min_Diff_Size << endl;
-			}
-
-#endif
-
 			// track an object using a predictive model
 #if PREDICTIVE_TRACK
 			//if (!isMatched && TrackObj[TrackObjIdx].NumOfHisPt > 3)
@@ -1742,7 +1717,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 					double Diff_Hist = sum(dif_b_hist)[0] + sum(dif_g_hist)[0] + sum(dif_r_hist)[0];
 					double Diff_Pos = Diff_Point.x*Diff_Point.x + Diff_Point.y*Diff_Point.y;
 					if (Diff_Hist < HISTOGRAM_THRES && Diff_Pos < DISTANCE_THRES)
-					//if (Diff_Pos < DISTANCE_THRES)
+						//if (Diff_Pos < DISTANCE_THRES)
 					{
 						//printf("TrackObjIdx %d PREDICTIVELY matched\n", TrackObjIdx);
 						 //update the newly matched object							
@@ -1752,7 +1727,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 						TrackObj[TrackObjIdx].ROI = PredROI;
 						UpdateHisPos(TrackObj[TrackObjIdx].HisPos, PredPos);
 						TrackObj[TrackObjIdx].NumOfHisPt++;
-						TrackObj[TrackObjIdx].NumOfHisPt %= HIS_POS_SIZE ;
+						TrackObj[TrackObjIdx].NumOfHisPt %= HIS_POS_SIZE;
 						TrackObj[TrackObjIdx].predictionNum++;
 						isMatched = true;
 						//cout << "TrackObj[TrackObjIdx].NumOfHisPt  : " << TrackObj[TrackObjIdx].NumOfHisPt << endl;
@@ -1799,9 +1774,9 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			}
 #endif
 
-#if WAITING_TRACK && NO_ID_CHANGE_OUT_GATE
-			//if (!isMatched && TrackObj[TrackObjIdx].NumOfHisPt > 3)
-			if (!isMatched /*&& TrackObj[TrackObjIdx].predictionNum < 5*/)
+
+#if WAITING_TRACK &&  NO_GEN_DISAPEAR_OBJ_OUT_GATE
+			if (!isMatched)
 			{
 				if (CheckInsideGate(TrackObj[TrackObjIdx].ROI)) {
 					isMatched = false;
@@ -1810,6 +1785,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 #if DEBUG_TRACK_RESULT
 					printf("TrackObjIdx %d is WAITING\n", TrackObjIdx);
 #endif
+					TrackObj[TrackObjIdx].predictionNum++;
 					isMatched = true;
 				}
 
@@ -1828,14 +1804,14 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				resize(ObjectRGB, ObjectRGB, doubleSize);
 				// access the red channel
 				Mat RedChannel;
-				inRange(ObjectRGB, Scalar(0.05,0.05,0.4), Scalar(0.3,0.3,1), RedChannel);
+				inRange(ObjectRGB, Scalar(0.05, 0.05, 0.4), Scalar(0.3, 0.3, 1), RedChannel);
 				GaussianBlur(RedChannel, RedChannel, Size(5, 5), 0.8);
 				inRange(RedChannel, 150, 255, RedChannel);
 				vector<Mat> Marker_ROI;
-				vector<Mat> Marker_SEG; 
+				vector<Mat> Marker_SEG;
 				vector<int> Marker_nonZPixl;
-				NonZeroSegTwice(RedChannel, Marker_ROI, Marker_SEG, Marker_nonZPixl);	
-				assert(Marker_ROI.size() >= 2 && "It must have at least 2-red-color segments.");				
+				NonZeroSegTwice(RedChannel, Marker_ROI, Marker_SEG, Marker_nonZPixl);
+				assert(Marker_ROI.size() >= 2 && "It must have at least 2-red-color segments.");
 				// determine the head and tail
 				int MaxIdx = 0;
 				int SecondMaxIdx = 0;
@@ -1861,7 +1837,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				Head.y = (MarkerROI.at<int>(3) + MarkerROI.at<int>(2)) >> 1;
 				Head.x = (MarkerROI.at<int>(1) + MarkerROI.at<int>(0)) >> 1;
 				MarkerROI = Marker_ROI.at(SecondMaxIdx);
-				Tail.y = (MarkerROI.at<int>(3) + MarkerROI.at<int>(2)) >> 1;       
+				Tail.y = (MarkerROI.at<int>(3) + MarkerROI.at<int>(2)) >> 1;
 				Tail.x = (MarkerROI.at<int>(1) + MarkerROI.at<int>(0)) >> 1;
 
 				TrackObj[TrackObjIdx].Head = Point2i(Head.x >> 3, Head.y >> 3) + Point2i(curROI.at<int>(0), curROI.at<int>(2));
@@ -1869,7 +1845,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				// debug   
 				circle(ObjectRGB, Head, 3, Scalar(0, 255, 0), 2, 4, 0);
 				circle(ObjectRGB, Tail, 3, Scalar(255, 0, 0), 2, 4, 0);
-				imshow("ObjectRGB", ObjectRGB);								
+				imshow("ObjectRGB", ObjectRGB);
 				imshow("RedChannel", RedChannel);
 				waitKey(0);
 			}
@@ -1878,13 +1854,13 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				//printf("TrackObjIdx %d is terminated\n", TrackObjIdx);
 				LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
 			}
-#else
+#endif
 			// predict the future position using Kalman filter for the next several iterations
 			// this step is used for the control algorithm
-			if (isMatched )
+			if (isMatched)
 			{
 #if KALMAN_TRACK
-				std::cout << "BF kalman center Img : " << TrackObj[TrackObjIdx].CenterImgPlane << std::endl;
+				//std::cout << "BF kalman center Img : " << TrackObj[TrackObjIdx].CenterImgPlane << std::endl;
 				// the predict phase
 				Mat pred = TrackObj[TrackObjIdx].KF.predict();
 
@@ -1896,16 +1872,113 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 				Mat estimated = TrackObj[TrackObjIdx].KF.correct(TrackObj[TrackObjIdx].PosMeasure);
 				TrackObj[TrackObjIdx].CenterImgPlane.x = (int)estimated.at<float>(0);
 				TrackObj[TrackObjIdx].CenterImgPlane.y = (int)estimated.at<float>(1);
-				std::cout << "kalman center Img : " << TrackObj[TrackObjIdx].CenterImgPlane << std::endl;
+				//std::cout << "kalman center Img : " << TrackObj[TrackObjIdx].CenterImgPlane << std::endl;
 
 #endif
 
 			}
-			else // terminate the object if there is no match for it
+			else // if there is no match for the left tracked object
 			{
-				LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
-			}
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE && WAITING_TRACK
+				if (CheckInsideGate(TrackObj[TrackObjIdx].ROI)) {
+					printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+					LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+				}
 #endif
+
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE && KALMAN_TRACK
+				if (CheckInsideGate(TrackObj[TrackObjIdx].ROI))
+				{
+					if (TrackObj[TrackObjIdx].predictionNum < 3) {
+						int pastX = TrackObj[TrackObjIdx].CenterImgPlane.x;
+						int pastY = TrackObj[TrackObjIdx].CenterImgPlane.y;
+
+						// the predict phase
+						Mat pred = TrackObj[TrackObjIdx].KF.predict();
+						int predX = (int)pred.at<float>(0);
+						int predY = (int)pred.at<float>(1);
+
+						TrackObj[TrackObjIdx].ROI.at<int>(0) += (predX- pastX);
+						TrackObj[TrackObjIdx].ROI.at<int>(1) += (predX - pastX);
+						TrackObj[TrackObjIdx].ROI.at<int>(2) += (predY - pastY);
+						TrackObj[TrackObjIdx].ROI.at<int>(3) += (predY - pastY);
+						//Mat CurROI = (Mat_<int>(1, 4) << x1, x2, y1, y2);
+						//Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
+
+						TrackObj[TrackObjIdx].CenterImgPlane.x = predX;
+						TrackObj[TrackObjIdx].CenterImgPlane.y = predY;
+						TrackObj[TrackObjIdx].predictionNum++;
+
+						//outside imgae check
+						if (TrackObj[TrackObjIdx].NumOfHisPt == 1) {
+							printf("TrackObj[TrackObjIdx].NumOfHisPt == 1\n", TrackObjIdx);
+							printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+							LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+						}else if(TrackObj[TrackObjIdx].CenterImgPlane.x < 0
+							|| TrackObj[TrackObjIdx].CenterImgPlane.x > ImHorSize - 1
+							|| TrackObj[TrackObjIdx].CenterImgPlane.y < 0
+							|| TrackObj[TrackObjIdx].CenterImgPlane.y > ImVerSize - 1
+							) {
+							printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+							LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+						}
+						else {
+							printf("TrackObjIdx %d is Predicted\n", TrackObjIdx);
+
+						}
+						//std::cout << "kalman center Img : " << TrackObj[TrackObjIdx].CenterImgPlane << std::endl;
+					}
+					else {
+						printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+						LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+					}
+				}
+				else {
+					// the predict phase
+					int pastX = TrackObj[TrackObjIdx].CenterImgPlane.x;
+					int pastY = TrackObj[TrackObjIdx].CenterImgPlane.y;
+
+					// the predict phase
+					Mat pred = TrackObj[TrackObjIdx].KF.predict();
+					int predX = (int)pred.at<float>(0);
+					int predY = (int)pred.at<float>(1);
+
+					TrackObj[TrackObjIdx].ROI.at<int>(0) += (predX - pastX);
+					TrackObj[TrackObjIdx].ROI.at<int>(1) += (predX - pastX);
+					TrackObj[TrackObjIdx].ROI.at<int>(2) += (predY - pastY);
+					TrackObj[TrackObjIdx].ROI.at<int>(3) += (predY - pastY);
+					//Mat CurROI = (Mat_<int>(1, 4) << x1, x2, y1, y2);
+					//Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
+
+					TrackObj[TrackObjIdx].CenterImgPlane.x = predX;
+					TrackObj[TrackObjIdx].CenterImgPlane.y = predY;
+					TrackObj[TrackObjIdx].predictionNum++;
+
+
+					//outside imgae check
+					if (TrackObj[TrackObjIdx].NumOfHisPt == 1) {
+						printf("TrackObj[TrackObjIdx].NumOfHisPt == 1\n", TrackObjIdx);
+						printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+						LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+					}
+					else if (TrackObj[TrackObjIdx].CenterImgPlane.x < 0
+						|| TrackObj[TrackObjIdx].CenterImgPlane.x > ImHorSize - 1
+						|| TrackObj[TrackObjIdx].CenterImgPlane.y < 0
+						|| TrackObj[TrackObjIdx].CenterImgPlane.y > ImVerSize - 1
+						) {
+						printf("outside image\n", TrackObjIdx);
+						printf("TrackObjIdx %d is Diseapeared\n", TrackObjIdx);
+						LiveObjList.at<uint8_t>(0, TrackObjIdx) = 0;
+					}
+					else {
+						printf("TrackObjIdx %d is Predicted\n", TrackObjIdx);
+
+					}
+				}
+
+#endif
+			}
+
 		}
 
 		// add a new tracking object
@@ -1918,7 +1991,7 @@ inline Void CarSnukt::LargeMVOTracking(Mat &I,
 			for (size_t j = 0; j < NewDetIdx.total(); j++)
 			{
 				Mat& roi = MVO_ROI.at(NewDetIdx.at<Point2i>(j).x);
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 				if (CheckInsideGate(roi)) {
 					//std::cout << "yes" << std::endl;
 #if DEBUG_TRACK_RESULT
@@ -2031,6 +2104,7 @@ Void CarSnukt::FormROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
 	ROI_TR = TR;
 	ROI_TL = TL;
 
+
 	ROI = Mat::zeros(ImVerSize, ImHorSize, CV_32FC1);
 	Point poly[4];
 	poly[0] = ROI_TL;
@@ -2093,7 +2167,7 @@ Void CarSnukt::FormROI(Point2i BL, Point2i BR, Point2i TR, Point2i TL)
 	ROI_iTL_BL_Param[2] = (p1.y - p0.y)*p0.x + (p0.x - p1.x)*p0.y; //(y1-y0)x0 + (x0-x1)y0
 }
 
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 Void CarSnukt::FormGateList()
 {
 	for (int i = 0; i < GATE_NUM; i++) {
@@ -2495,6 +2569,11 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		y1 = MAX(yoloResutVec[i].y,0);
 		y2 = MIN(y1 + yoloResutVec[i].h, SIZE_VER-1);
 		Mat objRect = (Mat_<int>(1, 4) << x1, x2, y1, y2);
+#if CHECK_INSIDE_ROI
+		if (!CheckInsideROI(objRect)) {
+			continue;
+		}
+#endif
 		MOV_ROI.push_back(objRect);
 		//cout << x1 << " " << x2 << " " << y1 << " " << y2<< endl;
 		Mat objSeg= I(Range(y1, y2), Range(x1, x2));
@@ -2513,6 +2592,35 @@ Void CarSnukt::MOVDetector(const Mat &I, vector<Mat> &MOV_ROI, vector<Mat> &MVO_
 		}
 
 	}
+
+#if DEBUG_YOLO_MVO
+	Mat tmpI;
+	tmpI = I;
+	//I.copyTo(tmpI);
+	for (int i = 0; i < yoloResutVec.size(); i++) {
+		int id, x1, x2, y1, y2;
+
+		x1 = MAX(yoloResutVec[i].x, 0);
+		x2 = MIN(x1 + yoloResutVec[i].w, SIZE_HOR - 1);
+		y1 = MAX(yoloResutVec[i].y, 0);
+		y2 = MIN(y1 + yoloResutVec[i].h, SIZE_VER - 1);
+		Mat CurROI = (Mat_<int>(1, 4) << x1, x2, y1, y2);
+
+		Rect rect(MAX(CurROI.at<int>(0) - 2, 0),
+			MAX(CurROI.at<int>(2) - 2, 0),
+			MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
+			MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
+		);
+		if (CheckInsideROI(CurROI)) {
+			rectangle(tmpI, rect, Scalar(0, 255, 0), 2);
+		}
+		else {
+			rectangle(tmpI, rect, Scalar(0, 100, 0), 2);
+		}
+	}
+	//imshow("MVO", tmpI);
+	//waitKey(1);
+#endif
 
 #endif
 }
@@ -2569,10 +2677,10 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 				MIN(CurROI.at<int>(1) - CurROI.at<int>(0) + 4, I.cols - 1),
 				MIN(CurROI.at<int>(3) - CurROI.at<int>(2) + 4, I.rows - 1)
 			);
-			rectangle(tmpI, rect, Scalar(0, 0, 255), 1);
+			rectangle(tmpI, rect, Scalar(0, 0, 255), 2);
 
 			// Draw the object center in the image plane
-			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4, 0);
+			circle(tmpI, TrackObj[ID].CenterImgPlane, 3, Scalar(0, 0, 255), 2, 4);
 
 #if DETECT_DIRECTION
 			// Draw the object head-tail in the image plane
@@ -2743,12 +2851,7 @@ inline Void CarSnukt::Annotation(Mat &I, vector<Mat> &SmallObjectROI)
 	imshow("velocity", IforGps);
 
 #endif
-#if PAUSE_FRAME
-	cv::waitKey(0);
-#else
-	cv::waitKey(1);
-#endif
-	//cout << "line drawing : " << clock() - now << endl;
+	cv::waitKey(WAIT_KEY_TIME);
 
 }
 
@@ -2983,7 +3086,7 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar,
 	{
 		for (size_t i = 0; i < MVO_ROI.size(); i++)
 		{
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 			Mat autoCarCandROI = MVO_ROI[i];
 
 			if( (isFirstFrame && isAutoCar.at(i)) || (isAutoCar.at(i) && CheckInsideGate(autoCarCandROI)) )
@@ -3049,7 +3152,8 @@ void CarSnukt::trackAutoCar(const vector<Mat> &MVO_ROI, vector<bool> &isAutoCar,
 			findNonZero(LiveAutoCarList, NonZIdx);
 			for (int i = 0; i < NonZIdx.total(); i++) {
 				int TrackObjIdx = NonZIdx.at<Point2i>(i).x;
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
+
 				if (!CheckInsideGate(autoCar[TrackObjIdx].ROI)) {
 					continue;
 				}

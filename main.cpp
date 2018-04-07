@@ -341,7 +341,7 @@ Mat tmpI = imread("C:/Users/user/source/repos/ITRC_bus_171004/ITRC_bus_171004/IT
 myCarSnukt.InputROIandPersMap(tmpI);
 #endif	
 
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 myCarSnukt.FormGateList();
 #endif
 

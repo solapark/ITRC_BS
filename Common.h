@@ -61,7 +61,7 @@ typedef       float					Float;
 #define STATIC_IMAGE				1	  
 #define VIDEO						0	  
 #define CAMERA						0
-#define IP_CAM_NUM					176
+#define IP_CAM_NUM					175
 
 // Image size
 #define SIZE_HOR					640
@@ -95,7 +95,7 @@ CarSnukt detector
 #define LOAD_STORE_BG				0
 #define REOPEN_CAM_WHEN_TIME_OVER	1					//Reopen cam when processing time > TIME_LIMIT
 #define TIME_LIMIT					3000
-#define CHECK_INSIDE_ROI			0
+#define CHECK_INSIDE_ROI			1
 
 #define PIXEL2GPS_HOMOGRAPHY		0
 #define PIXEL2GPS_TABLE				1
@@ -107,8 +107,8 @@ CarSnukt detector
 #define GHOST_REMOVE				1				//Assume BGM_DYNAMIC=1.
 #define SEND_DATA					1
 
-#define NO_ID_CHANGE_OUT_GATE		1
-#define GATE_NUM					3
+#define NO_GEN_DISAPEAR_OBJ_OUT_GATE		1
+#define GATE_NUM					4
 
 #define PREDICTIVE_TRACK			0
 #define KALMAN_TRACK				0
@@ -117,7 +117,6 @@ CarSnukt detector
 // Debug
 #if DEBUGGING_MODE
 #define DEBUG_FINAL					1
-#define PAUSE_FRAME					1
 #define FULL_SCREEN					0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
@@ -140,11 +139,11 @@ CarSnukt detector
 #define DEBUG_GATE					1
 #define DEBUG_TRACK_RESULT			1
 #define DEBUG_YOLO_MVO				1
+#define WAIT_KEY_TIME				1
 
 #define DEBUG_IMG_IDX				1
 #else
 #define DEBUG_FINAL					1
-#define PAUSE_FRAME					0
 #define FULL_SCREEN					0
 #define DEBUG_CRITICAL_POINT		0
 #define DEBUG_TRACKING				0
@@ -205,9 +204,8 @@ CarSnukt detector
 //#define LAST_IMG_IDX				1636
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
-#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
-#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#define WEIGHT_FILE					"yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"yolo/yolo_176_car_4100/yolo-obj.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -242,7 +240,7 @@ const Point2d mapDouble1(36.9691541, 127.8717977);
 const Point2d mapDouble2(36.9688922, 127.8717741);
 const Point2d mapDouble3(36.9687236, 127.8716605);
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_173.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_173.txt"
 #endif
 
 //For GPS transforamtion
@@ -368,8 +366,8 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				1636
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_small1_174_car_4000/yolo-obj-small1_10000.weights"
-#define CFG_FILE					"data/yolo/yolo_small1_174_car_4000/yolo-obj-small1.cfg"
+#define WEIGHT_FILE					"yolo/yolo_small1_174_car_4000/yolo-obj-small1_10000.weights"
+#define CFG_FILE					"yolo/yolo_small1_174_car_4000/yolo-obj-small1.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -403,7 +401,7 @@ const Point2d mapDouble1(36.9704718, 127.8719885);
 const Point2d mapDouble2(36.9698856, 127.8718563);
 const Point2d mapDouble3(36.9698512, 127.8717732);
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_174.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_174.txt"
 #endif
 
 //For GPS transforamtion
@@ -505,7 +503,7 @@ const uint32_t Trans_H = 450;
 #define CAM_ID						"rtsp://admin:1234@222.116.156.175/video1"
 #define VIDEO_FILE					""
 //#define VIDEO_FILE					"data/1.avi"
-#define DATASET_DIR					"data/175/1/175_2017112310359_"
+#define DATASET_DIR					"D:/ITRC_175_testset/1/175_201846181134_"
 //#define DATASET_DIR					"data/175/2/175_20171123105121_"
 //#define DATASET_DIR					"data/175/3/175_20171123105740_"
 //#define DATASET_DIR					"data/175_gps_test_2/"
@@ -517,8 +515,8 @@ const uint32_t Trans_H = 450;
 #define FILE_FORMAT					"%s%d%s"
 #define FILE_EXT					".jpg"
 
-#define FIRST_IMG_IDX				0
-#define LAST_IMG_IDX				351
+#define FIRST_IMG_IDX				1500
+#define LAST_IMG_IDX				60000
 //#define FIRST_IMG_IDX				0
 //#define LAST_IMG_IDX				415
 //#define FIRST_IMG_IDX				825
@@ -527,19 +525,19 @@ const uint32_t Trans_H = 450;
 //#define LAST_IMG_IDX				72
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1_32000.weights"
-#define CFG_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1.cfg"
+#define WEIGHT_FILE					"yolo/yolo_small1_175_car_4100/yolo-obj-small1_22000.weights"
+#define CFG_FILE					"yolo/yolo_small1_175_car_4100/yolo-obj-small1.cfg"
 #endif	
 
 #if STATIC_ROI
 ///////////////////////////////////////////////////////////////
 //////////			ROI static setup			///////////////
 ///////////////////////////////////////////////////////////////
-
-const Point2i ROI_BL(1, 270);
-const Point2i ROI_BR(460, 1);
+//const Point2i ROI_BL(0, 270);
+const Point2i ROI_BL= Point2i(0, 270);
+const Point2i ROI_BR(460, 0);
 const Point2i ROI_TR(SIZE_HOR - 1, SIZE_VER - 1);
-const Point2i ROI_TL(1, SIZE_VER - 1);
+const Point2i ROI_TL(0, SIZE_VER - 1);
 ///////////////////////////////////////////////////////////////
 //////////	Perspective transform static setup	///////////////
 ///////////////////////////////////////////////////////////////
@@ -563,7 +561,7 @@ const Point2d mapDouble2(36.9718047, 127.8718005);
 const Point2d mapDouble3(36.9717033, 127.8712464);
 
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_175.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_175.txt"
 #endif
 
 //For GPS transforamtion
@@ -618,7 +616,7 @@ const uint32_t Trans_H = 450;
 
 #define GFTHR_LOW					220				  // the lower bound after applying a Gaussian filter for shadow objects
 #define GFTHR_HIGH					255				  // the upper bound after applying a Gaussian filter for shadow objects
-#define ROI_VEC						5				  // outer-inner ROI gap
+#define ROI_VEC						0				  // outer-inner ROI gap
 #define VECTOR_UNIT_LENGTH			30
 #define MOVING_THRESH				5
 
@@ -654,9 +652,40 @@ const uint32_t Trans_H = 450;
 #define HISTOGRAM_BIN_SIZE			256
 #define UNKNOW_HARD_ID				111
 
-#define DISTANCE_THRES				200
-#define SIZE_THRES					200
-#define HISTOGRAM_THRES				200
+#define DISTANCE_THRES				50
+#define SIZE_THRES					100
+#define HISTOGRAM_THRES				30
+
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
+const Point2i GATE_BL[GATE_NUM] = {
+	Point2i(169, 150),
+	Point2i(396, 0),
+	Point2i(0, 273),
+	Point2i(476, 235)
+};
+
+const Point2i GATE_BR[GATE_NUM] = {
+	Point2i(295, 150),
+	Point2i(477, 0),
+	Point2i(109, 273),
+	Point2i(639, 235)
+};
+
+const Point2i GATE_TR[GATE_NUM] = {
+	Point2i(295, 211),
+	Point2i(477, 88),
+	Point2i(109, 359),
+	Point2i(639, 359)
+};
+
+const Point2i GATE_TL[GATE_NUM] = {
+	Point2i(169, 211),
+	Point2i(396, 88),
+	Point2i(0, 359),
+	Point2i(476, 359)
+};
+#endif
+
 #endif
 
 #if IP_CAM_NUM == 176
@@ -681,8 +710,8 @@ const uint32_t Trans_H = 450;
 #define LAST_IMG_IDX				100000
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1_32000.weights"
-#define CFG_FILE					"data/yolo/yolo_small1_176_car_4100/yolo-obj-small1.cfg"
+#define WEIGHT_FILE					"yolo/yolo_small1_176_car_4100/yolo-obj-small1_32000.weights"
+#define CFG_FILE					"yolo/yolo_small1_176_car_4100/yolo-obj-small1.cfg"
 #endif	
 
 
@@ -717,7 +746,7 @@ const Point2d mapDouble1(36.9723460, 127.8704575);
 const Point2d mapDouble2(36.9724826, 127.8707809);
 const Point2d mapDouble3(36.9722611, 127.8708721);
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_176.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_176.txt"
 #endif
 
 //For GPS transforamtion
@@ -812,7 +841,7 @@ const uint32_t Trans_H = 450;
 #define SIZE_THRES					200
 #define HISTOGRAM_THRES				200
 
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 const Point2i GATE_BL[GATE_NUM] = {
 	Point2i(1, 240),
 	Point2i(610, 50),
@@ -858,9 +887,8 @@ const Point2i GATE_TL[GATE_NUM] = {
 #define LAST_IMG_IDX				3476
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
-#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
-#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#define WEIGHT_FILE					"yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"yolo/yolo_176_car_4100/yolo-obj.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -894,7 +922,7 @@ const Point2d mapDouble1(36.9683374, 127.8713895);
 const Point2d mapDouble2(36.9682452, 127.8714586);
 const Point2d mapDouble3(36.9682820, 127.8715888);
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_177.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_177.txt"
 #endif
 
 //For GPS transforamtion
@@ -1004,9 +1032,8 @@ const uint32_t Trans_H = 450;
 #define LAST_IMG_IDX				998
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
-#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
-#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#define WEIGHT_FILE					"yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"yolo/yolo_176_car_4100/yolo-obj.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -1041,7 +1068,7 @@ const Point2d mapDouble2(36.9665292, 127.8716415);
 const Point2d mapDouble3(36.9665292, 127.8714353);
 
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_181.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_181.txt"
 #endif
 
 //For GPS transforamtion
@@ -1151,9 +1178,8 @@ const uint32_t Trans_H = 450;
 #define LAST_IMG_IDX				998
 
 #if DETECTOR_YOLO
-#define WEIGHT_FILE					"data/yolo/yolo_176_car_4100/yolo-obj_7000.weights"
-#define CFG_FILE					"data/yolo/yolo_176_car_4100/yolo-obj.cfg"
-#define NAME_FILE					"data/yolo/yolo_176_car_4100/obj.names"
+#define WEIGHT_FILE					"yolo/yolo_176_car_4100/yolo-obj_7000.weights"
+#define CFG_FILE					"yolo/yolo_176_car_4100/yolo-obj.cfg"
 #endif	
 
 #if STATIC_ROI
@@ -1186,7 +1212,7 @@ const Point2d mapDouble1(36.9673035, 127.8717672);
 const Point2d mapDouble2(36.9671451, 127.8715260);
 const Point2d mapDouble3(36.9669830, 127.8716165);
 #elif PIXEL2GPS_TABLE
-#define GPS_TABLE_NAME				"gpsTable_182.txt"
+#define GPS_TABLE_NAME				"gpsTable/gpsTable_182.txt"
 #endif
 
 //For GPS transforamtion

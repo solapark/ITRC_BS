@@ -317,7 +317,7 @@ public:
 	@Brief: Form the ROI parameters given by 4 polar points
 	*/
 
-#if NO_ID_CHANGE_OUT_GATE
+#if NO_GEN_DISAPEAR_OBJ_OUT_GATE
 	Void FormGate(Point2i BL, Point2i BR, Point2i TR, Point2i TL, int index);
 
 	Void FormGateList();
